@@ -60,6 +60,8 @@ import org.homeunix.thecave.buddi.view.menu.items.FileOpen;
 import org.homeunix.thecave.buddi.view.menu.items.FileQuit;
 import org.homeunix.thecave.buddi.view.menu.items.HelpAbout;
 
+import sun.security.action.GetLongAction;
+
 import ca.digitalcave.moss.application.document.exception.DocumentLoadException;
 import ca.digitalcave.moss.application.document.exception.DocumentSaveException;
 import ca.digitalcave.moss.common.LogUtil;
@@ -658,7 +660,15 @@ public class Buddi {
 		//Extract file to stdout, and exit.
 		if (results.getString("--extract") != null){
 			extractFile(new File(results.getString("--extract")));
-			System.exit(0);
+			while(true){
+				try {
+					Thread.sleep(1000);
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				System.out.println("Extracting data file...");
+			}
 		}
 		
 		if (!"none".equals(results.getString("--lnf"))) {
