@@ -128,10 +128,13 @@ public class HtmlHelper {
 		sb.append("<tr><td width='15%'>");
 		sb.append(TextFormatter.getDateFormat().format(t.getDate()));
 
-		sb.append("</td><td width='20%'>");
+		sb.append("</td><td width='15%'>");
 		sb.append(TextFormatter.getTranslation(t.getDescription()));
 
-		sb.append("</td><td width='30%'>");
+		sb.append("</td><td width='15%'>");
+		sb.append(TextFormatter.getTranslation(t.getNumber()));
+
+		sb.append("</td><td width='20%'>");
 		if (t.getFrom() instanceof ImmutableSplit)
 			//We assume that if there is an immutable split, then the given source is the from / to source.  Is this right?
 			sb.append(TextFormatter.getTranslation(source + ""));
@@ -197,6 +200,8 @@ public class HtmlHelper {
 		sb.append(TextFormatter.getTranslation(BuddiKeys.DATE));
 		sb.append("</th><th>");
 		sb.append(TextFormatter.getTranslation(BuddiKeys.DESCRIPTION));
+		sb.append("</th><th>");
+		sb.append(TextFormatter.getTranslation(BuddiKeys.NUMBER));
 		sb.append("</th><th>");
 		sb.append(TextFormatter.getTranslation(BuddiKeys.SOURCE_TO_FROM));
 		sb.append("</th><th>");

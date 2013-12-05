@@ -1,5 +1,6 @@
 #Created by Wyatt Olson's Language Editor, included in Moss: http://moss.thecave.homeunix.org
 #Sun Jun 23 18:56:39 MDT 2013
+NUMBER=Number
 BUTTON_CLEAR=Clear
 DELETE_TRANSACTION=Delete Transaction
 BUDGET_CATEGORIES_COMBOBOX_HEADER=--Budget Categories--
