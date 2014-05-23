@@ -1,3 +1,6 @@
+3.4.1.13
+-Updated Norsk translation (thanks to Gudbrand Hegge for this)
+
 3.4.1.12 (May 2 2014)
 -Added 'Number' column for transaction details in HTML reports
 
