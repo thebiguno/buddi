@@ -105,7 +105,7 @@
 	        name="${FULL_NAME}"
 	        shortname="${FULL_NAME}"
 	        signature="????"
-	        stubfile="${ETC}/osx/JavaApplicationStub"
+	        stubfile="${ETC}/osx/universalJavaApplicationStub"
 	        mainclass="${MAIN_CLASS}"
 	        icon="${IMG}/osx/${FULL_NAME}.icns"
 	        jvmversion="1.5+"
