@@ -11,7 +11,7 @@ SSH_KEY_PASSPHRASE=password
 #Launch4J (http://launch4j.sourceforge.net/) - Creates Windows .exe files as a wrapper for Java .jar
 LAUNCH4J_PATH=/Users/Wyatt/Documents/Programming/Workplace/build_tools/launch4j
 #JarBundler (http://fjep.sourceforge.net/) - Creates OS X application bundles
-JARBUNDLER_JAR=/Users/Wyatt/Documents/Programming/Workplace/build_tools/jarbundler/jarbundler-1.9.jar
+JARBUNDLER_JAR=/Users/Wyatt/Documents/Programming/Workspace/build_tools/jarbundler-2.3.1/jarbundler-2.3.1.jar
 #JDeb (http://vafer.org/projects/jdeb) - Create Debian packages
 JDEB_JAR=/Users/Wyatt/Documents/Programming/Workplace/build_tools/jdeb/jdeb-0.3.jar
 #IzPack Ant - Cross platform installer

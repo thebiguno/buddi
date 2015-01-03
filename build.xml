@@ -102,16 +102,16 @@
 
 		<mkdir dir="${BUILD}/${FULL_NAME}"/>
 		<jarbundler dir="${BUILD}/${FULL_NAME}" verbose="true" showPlist="false"
-	        name="${FULL_NAME}"
-	        shortname="${FULL_NAME}"
-	        signature="????"
-	        stubfile="${ETC}/osx/universalJavaApplicationStub"
-	        mainclass="${MAIN_CLASS}"
-	        icon="${IMG}/osx/${FULL_NAME}.icns"
-	        jvmversion="1.5+"
-	        version="${VERSION}"
-	        infostring="${FULL_NAME}, ${VERSION}"
-	        bundleid="${MAIN_CLASS}"
+			name="${FULL_NAME}"
+			shortname="${FULL_NAME}"
+			signature="????"
+			stubfile="${ETC}/osx/universalJavaApplicationStub"
+			mainclass="${MAIN_CLASS}"
+			icon="${IMG}/osx/${FULL_NAME}.icns"
+			jvmversion="1.5+"
+			version="${VERSION}"
+			infostring="${FULL_NAME}, ${VERSION}"
+			bundleid="${MAIN_CLASS}"
 			vmoptions="-Xmx512m"
 			>
 
@@ -133,18 +133,23 @@
 				extensions="buddi3"
 				iconFile="${IMG}/osx/BuddiData.icns"
 				role="Editor"/>
-				                
+
 			<documenttype name="Buddi Plugin"
 				extensions="buddi3plugin" 
 				iconFile="${IMG}/osx/BuddiPlugin.icns"
 				role="Editor"/>
-			
+
 			<documenttype name="Buddi Translation"
 				extensions="lang" 
 				iconFile="${IMG}/osx/BuddiLanguage.icns"
 				role="Editor"/>
 
 		</jarbundler>
+		
+		<replace file="${BUILD}/${FULL_NAME}/${FULL_NAME}.app/Contents/Info.plist">
+			<replacetoken><![CDATA[<key>Java</key>]]></replacetoken>
+			<replacevalue><![CDATA[<key>JavaX</key>]]></replacevalue>
+		</replace>
 
 		<copy todir="${BUILD}/${FULL_NAME}">
 			<fileset dir="${DOCS}">
