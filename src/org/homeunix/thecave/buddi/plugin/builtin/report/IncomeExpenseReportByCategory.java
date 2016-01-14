@@ -13,7 +13,6 @@ import org.homeunix.thecave.buddi.i18n.keys.PluginReportDateRangeChoices;
 import org.homeunix.thecave.buddi.plugin.api.BuddiReportPlugin;
 import org.homeunix.thecave.buddi.plugin.api.model.ImmutableBudgetCategory;
 import org.homeunix.thecave.buddi.plugin.api.model.ImmutableDocument;
-import org.homeunix.thecave.buddi.plugin.api.model.ImmutableSplit;
 import org.homeunix.thecave.buddi.plugin.api.model.ImmutableTransaction;
 import org.homeunix.thecave.buddi.plugin.api.model.ImmutableTransactionSplit;
 import org.homeunix.thecave.buddi.plugin.api.util.HtmlHelper;
@@ -80,7 +79,7 @@ public class IncomeExpenseReportByCategory extends BuddiReportPlugin {
 					
 					//Figure out the actual amounts
 					if (transaction.getFrom().equals(c) || transaction.getTo().equals(c)){
-						actual += transaction.getAmount();						
+						actual += transaction.getAmount();
 					}
 					
 					for (ImmutableTransactionSplit split : transaction.getImmutableToSplits()) {
@@ -93,50 +92,28 @@ public class IncomeExpenseReportByCategory extends BuddiReportPlugin {
 							actual += split.getAmount();
 						}
 					}
-
-					//Add to total for non-split transactions
-					if (transaction.getTo() instanceof ImmutableBudgetCategory){
-						totalActual -= transaction.getAmount();
-					}
-					else if (transaction.getFrom() instanceof ImmutableBudgetCategory){
-						totalActual += transaction.getAmount();
-					}
-
-					//Add to total for split transactions
-					if (transaction.getTo() instanceof ImmutableSplit){
-						for (ImmutableTransactionSplit split : transaction.getImmutableToSplits()) {
-							if (split.getSource().equals(c)){
-								totalActual -= split.getAmount();
-							}
-						}
-					}
-					if (transaction.getFrom() instanceof ImmutableSplit){
-						for (ImmutableTransactionSplit split : transaction.getImmutableFromSplits()) {
-							if (split.getSource().equals(c)){
-								totalActual += split.getAmount();
-							}
-						}
-					}
 				}
 			}
 			
 			long budgeted = c.getAmount(startDate, endDate);
 			if (c.isIncome()){
+				totalActual += actual;
 				totalBudgeted += budgeted;
 			}
 			else {
+				totalActual -= actual;
 				totalBudgeted -= budgeted;
 			}
 			
 
-			if (budgeted != 0 || transactions.size() > 0){				
+			if (budgeted != 0 || transactions.size() > 0){
 				sb.append("<tr>");
 				sb.append("<td>");
 				sb.append(TextFormatter.getTranslation(c.toString()));
 				sb.append("</td><td class='right" + (TextFormatter.isRed(c, actual) ? " red'>" : "'>"));
 				sb.append(TextFormatter.getFormattedCurrency(actual));
 				sb.append("</td><td class='right" + (TextFormatter.isRed(c, budgeted) ? " red'>" : "'>"));
-				sb.append(TextFormatter.getFormattedCurrency(budgeted));				
+				sb.append(TextFormatter.getFormattedCurrency(budgeted));
 				long difference = actual - budgeted;
 				sb.append("</td><td class='right" + (difference > 0 ^ c.isIncome() ? " red'>" : "'>"));
 				sb.append(TextFormatter.getFormattedCurrency(difference, false, difference < 0));				

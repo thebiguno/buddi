@@ -14,7 +14,6 @@ import org.homeunix.thecave.buddi.i18n.keys.PluginReportDateRangeChoices;
 import org.homeunix.thecave.buddi.plugin.api.BuddiReportPlugin;
 import org.homeunix.thecave.buddi.plugin.api.model.ImmutableBudgetCategory;
 import org.homeunix.thecave.buddi.plugin.api.model.ImmutableDocument;
-import org.homeunix.thecave.buddi.plugin.api.model.ImmutableSplit;
 import org.homeunix.thecave.buddi.plugin.api.model.ImmutableTransaction;
 import org.homeunix.thecave.buddi.plugin.api.model.ImmutableTransactionSplit;
 import org.homeunix.thecave.buddi.plugin.api.util.HtmlHelper;
@@ -94,7 +93,7 @@ public class AverageIncomeExpenseByCategory extends BuddiReportPlugin {
 				if (!transaction.isDeleted()){
 					//Figure out the actual amounts
 					if (transaction.getFrom().equals(c) || transaction.getTo().equals(c)){
-						actual += transaction.getAmount();						
+						actual += transaction.getAmount();
 					}
 					
 					for (ImmutableTransactionSplit split : transaction.getImmutableToSplits()) {
@@ -107,57 +106,35 @@ public class AverageIncomeExpenseByCategory extends BuddiReportPlugin {
 							actual += split.getAmount();
 						}
 					}
-
-					//Add to total for non-split transactions
-					if (transaction.getTo() instanceof ImmutableBudgetCategory){
-						totalActual -= transaction.getAmount();
-					}
-					else if (transaction.getFrom() instanceof ImmutableBudgetCategory){
-						totalActual += transaction.getAmount();
-					}
-
-					//Add to total for split transactions
-					if (transaction.getTo() instanceof ImmutableSplit){
-						for (ImmutableTransactionSplit split : transaction.getImmutableToSplits()) {
-							if (split.getSource().equals(c)){
-								totalActual -= split.getAmount();
-							}
-						}
-					}
-					if (transaction.getFrom() instanceof ImmutableSplit){
-						for (ImmutableTransactionSplit split : transaction.getImmutableFromSplits()) {
-							if (split.getSource().equals(c)){
-								totalActual += split.getAmount();
-							}
-						}
-					}
 				}
 			}
-                        //////the following code has been modified for the average calculation bug:
+			//////the following code has been modified for the average calculation bug:
 			long average;
-                       
-                       if(isQuarter(startDate, endDate,model.getBudgetCategoryType(BudgetCategoryTypes.BUDGET_CATEGORY_TYPE_MONTH).getDaysInPeriod(endDate)))
-                           average = (long) ((double) actual / 3.0);
-                       else 
+
+			if(isQuarter(startDate, endDate,model.getBudgetCategoryType(BudgetCategoryTypes.BUDGET_CATEGORY_TYPE_MONTH).getDaysInPeriod(endDate)))
+				average = (long) ((double) actual / 3.0);
+			else 
 			average = (long) ((double) actual / (double) DateUtil.getDaysBetween(startDate, endDate, true) * 
 				model.getBudgetCategoryType(BudgetCategoryTypes.BUDGET_CATEGORY_TYPE_MONTH).getDaysInPeriod(endDate));
-                        //////////////////
+			//////////////////
 			if (c.isIncome()){
+				totalActual += actual;
 				totalAverage += average;
 			}
 			else {
+				totalActual -= actual;
 				totalAverage -= average;
 			}
 			
 
-			if (transactions.size() > 0){				
+			if (transactions.size() > 0){
 				sb.append("<tr>");
 				sb.append("<td>");
 				sb.append(TextFormatter.getTranslation(c.toString()));
 				sb.append("</td><td class='right" + (TextFormatter.isRed(c, actual) ? " red'" : "'") + ">");
 				sb.append(TextFormatter.getFormattedCurrency(actual));
 				sb.append("</td><td class='right" + (TextFormatter.isRed(c, average) ? " red'" : "'") + "'>");
-				sb.append(TextFormatter.getFormattedCurrency(average));				
+				sb.append(TextFormatter.getFormattedCurrency(average));
 				sb.append("</td></tr>\n");
 			}
 		}
