@@ -77,6 +77,7 @@ public class PrefsModelBean {
 	private boolean showPromptAtStartup;
 	private String transactionCellRenderer;
 	private String backupLocation;
+	private int scheduledTransactionOffset = 0;
 	
 	//Transaction Pane collapsible panes
 	private boolean searchPaneVisible;
@@ -465,5 +466,12 @@ public class PrefsModelBean {
 	
 	public void setBackupLocation(String backupLocation) {
 		this.backupLocation = backupLocation;
+	}
+	
+	public int getScheduledTransactionOffset() {
+		return scheduledTransactionOffset;
+	}
+	public void setScheduledTransactionOffset(int scheduledTransactionOffset) {
+		this.scheduledTransactionOffset = scheduledTransactionOffset;
 	}
 }

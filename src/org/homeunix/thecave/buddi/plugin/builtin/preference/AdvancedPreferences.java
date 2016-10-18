@@ -33,9 +33,10 @@ import ca.digitalcave.moss.swing.model.BackedComboBoxModel;
 public class AdvancedPreferences extends BuddiPreferencePlugin {
 	public static final long serialVersionUID = 0;
 
-	private final JComboBox numberOfBackups;
-	private final JComboBox transactionCellRenderer;
-	private final JComboBox autosavePeriod;
+	private final JComboBox<Integer> numberOfBackups;
+	private final JComboBox<Integer> transactionCellRenderer;
+	private final JComboBox<Integer> autosavePeriod;
+	private final JComboBox<Integer> scheduledTransactionOffset;
 	private final JCheckBox showPromptForDataFile;
 //	private final JCheckBox sendCrashReport;
 	private final JCheckBox showUpdateNotifications;
@@ -45,9 +46,10 @@ public class AdvancedPreferences extends BuddiPreferencePlugin {
 	
 	@SuppressWarnings("unchecked")
 	public AdvancedPreferences() {
-		transactionCellRenderer = new JComboBox(new BackedComboBoxModel<BuddiTransactionCellRendererPlugin>((List<BuddiTransactionCellRendererPlugin>) BuddiPluginFactory.getPlugins(BuddiTransactionCellRendererPlugin.class)));
-		numberOfBackups = new JComboBox(new Integer[]{0, 3, 5, 10, 25, 50});
-		autosavePeriod = new JComboBox(new Integer[]{15, 30, 60, 120, 300});
+		transactionCellRenderer = new JComboBox<Integer>(new BackedComboBoxModel<BuddiTransactionCellRendererPlugin>((List<BuddiTransactionCellRendererPlugin>) BuddiPluginFactory.getPlugins(BuddiTransactionCellRendererPlugin.class)));
+		numberOfBackups = new JComboBox<Integer>(new Integer[]{0, 3, 5, 10, 25, 50});
+		autosavePeriod = new JComboBox<Integer>(new Integer[]{15, 30, 60, 120, 300});
+		scheduledTransactionOffset = new JComboBox<Integer>(new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14});
 		showPromptForDataFile = new JCheckBox(TextFormatter.getTranslation(BuddiKeys.PREFERENCE_PROMPT_FOR_DATA_FILE_AT_STARTUP));
 //		sendCrashReport = new JCheckBox(TextFormatter.getTranslation(BuddiKeys.PREFERENCE_SEND_CRASH_REPORTS));
 		showUpdateNotifications = new JCheckBox(TextFormatter.getTranslation(BuddiKeys.PREFERENCE_ENABLE_UPDATE_NOTIFICATIONS));
@@ -127,11 +129,13 @@ public class AdvancedPreferences extends BuddiPreferencePlugin {
 		JPanel hideNegativePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		JPanel transactionCellRendererPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		JPanel backupLocationPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JPanel scheduledTransactionOffsetPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
 		JLabel autosavePeriodLabel = new JLabel(TextFormatter.getTranslation(BuddiKeys.AUTOSAVE_PERIOD));
 		JLabel numberOfBackupsLabel = new JLabel(TextFormatter.getTranslation(BuddiKeys.NUMBER_OF_BACKUPS));
 		JLabel transactionCellRendererLabel = new JLabel(TextFormatter.getTranslation(BuddiKeys.TRANSACTION_CELL_RENDERER));
 		JLabel backupLocationLabel = new JLabel(TextFormatter.getTranslation(BuddiKeys.BACKUP_LOCATION));
+		JLabel scheduledTransactionOffsetLabel = new JLabel(TextFormatter.getTranslation(BuddiKeys.SCHEDULED_TRANSACTION_OFFSET));
 		
 		backupLocation.setPreferredSize(InternalFormatter.getComponentSize(backupLocation, 300));
 
@@ -156,6 +160,9 @@ public class AdvancedPreferences extends BuddiPreferencePlugin {
 		backupLocationPanel.add(backupLocationLabel);
 		backupLocationPanel.add(backupLocation);
 				
+		scheduledTransactionOffsetPanel.add(scheduledTransactionOffsetLabel);
+		scheduledTransactionOffsetPanel.add(scheduledTransactionOffset);
+				
 		panel.add(autosavePeriodPanel);
 		panel.add(numberOfBackupsPanel);
 		panel.add(transactionCellRendererPanel);
@@ -167,6 +174,7 @@ public class AdvancedPreferences extends BuddiPreferencePlugin {
 		panel.add(checkForUpdatesPanel);
 		panel.add(backupLocationPanel);
 //		panel.add(sendCrashReportPanel);
+		panel.add(scheduledTransactionOffsetPanel);
 		
 		return panel;
 	}
@@ -189,6 +197,8 @@ public class AdvancedPreferences extends BuddiPreferencePlugin {
 //		sendCrashReport.setSelected(PrefsModel.getInstance().isSendCrashReports());
 		hideNegativeSign.setSelected(PrefsModel.getInstance().isDontShowNegativeSign());
 		backupLocation.setText(PrefsModel.getInstance().getBackupLocation());
+		scheduledTransactionOffset.setSelectedItem(PrefsModel.getInstance().getScheduledTransactionOffset());
+		
 	}
 
 	public boolean save() {
@@ -200,6 +210,7 @@ public class AdvancedPreferences extends BuddiPreferencePlugin {
 //		PrefsModel.getInstance().setSendCrashReports(sendCrashReport.isSelected());
 		PrefsModel.getInstance().setShowNegativeSign(hideNegativeSign.isSelected());
 		PrefsModel.getInstance().setBackupLocation(backupLocation.getText());
+		PrefsModel.getInstance().setScheduledTransactionOffset((Integer) scheduledTransactionOffset.getSelectedItem());
 		
 		return false;
 	}

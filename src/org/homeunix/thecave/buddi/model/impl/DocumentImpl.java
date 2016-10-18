@@ -977,7 +977,7 @@ public class DocumentImpl extends AbstractDocument implements ModelObject, Docum
 		startBatchChange();
 
 		//Update any scheduled transactions
-		final Date today = DateUtil.getEndOfDay(currentDate);
+		final Date today = DateUtil.getEndOfDay(DateUtil.addDays(currentDate, PrefsModel.getInstance().getScheduledTransactionOffset()));
 		//We specify a GregorianCalendar because we make some assumptions
 		// about numbering of months, etc that may break if we 
 		// use the default calendar for the locale.  It's not the

@@ -645,5 +645,13 @@ public class PrefsModel {
 	public void setBackupLocation(String backupLocation){
 		prefsModel.setBackupLocation(backupLocation);
 	}
+	
+	public int getScheduledTransactionOffset(){
+		return prefsModel.getScheduledTransactionOffset();
+	}
+	
+	public void setScheduledTransactionOffset(int scheduledTransactionOffset){
+		prefsModel.setScheduledTransactionOffset(scheduledTransactionOffset);
+	}
 }
 
