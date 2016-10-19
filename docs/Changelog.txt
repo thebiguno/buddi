@@ -1,4 +1,11 @@
-3.4.1.13
+3.4.1.15 (October 19 2016)
+-Added a scheduled transaction offset to allow scheduled transactions to fire prior to the scheduled day. For instance, if the offset is set to 1, it will fire the day before the trigger is set; if it is set to 7, it will fire a week before. Requested by Trevor S.
+
+3.4.1.14 (January 14 2016)
+-Fixed an issue on income and expese reports where splits which are both from and to a budget category result in incorrect totals.
+
+3.4.1.13 (January 2 2014)
+-Fixed an issue with OSX Jar Launcher
 -Updated Norsk translation (thanks to Gudbrand Hegge for this)
 
 3.4.1.12 (May 2 2014)
