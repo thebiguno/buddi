@@ -49,7 +49,7 @@ public class AdvancedPreferences extends BuddiPreferencePlugin {
 		transactionCellRenderer = new JComboBox<Integer>(new BackedComboBoxModel<BuddiTransactionCellRendererPlugin>((List<BuddiTransactionCellRendererPlugin>) BuddiPluginFactory.getPlugins(BuddiTransactionCellRendererPlugin.class)));
 		numberOfBackups = new JComboBox<Integer>(new Integer[]{0, 3, 5, 10, 25, 50});
 		autosavePeriod = new JComboBox<Integer>(new Integer[]{15, 30, 60, 120, 300});
-		scheduledTransactionOffset = new JComboBox<Integer>(new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14});
+		scheduledTransactionOffset = new JComboBox<Integer>(new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31});
 		showPromptForDataFile = new JCheckBox(TextFormatter.getTranslation(BuddiKeys.PREFERENCE_PROMPT_FOR_DATA_FILE_AT_STARTUP));
 //		sendCrashReport = new JCheckBox(TextFormatter.getTranslation(BuddiKeys.PREFERENCE_SEND_CRASH_REPORTS));
 		showUpdateNotifications = new JCheckBox(TextFormatter.getTranslation(BuddiKeys.PREFERENCE_ENABLE_UPDATE_NOTIFICATIONS));
