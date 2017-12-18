@@ -60,8 +60,6 @@ import org.homeunix.thecave.buddi.view.menu.items.FileOpen;
 import org.homeunix.thecave.buddi.view.menu.items.FileQuit;
 import org.homeunix.thecave.buddi.view.menu.items.HelpAbout;
 
-import sun.security.action.GetLongAction;
-
 import ca.digitalcave.moss.application.document.exception.DocumentLoadException;
 import ca.digitalcave.moss.application.document.exception.DocumentSaveException;
 import ca.digitalcave.moss.common.LogUtil;
@@ -716,58 +714,63 @@ public class Buddi {
 		//Early on, we need to catch any open requests from Apple Launchd.
 		if (OperatingSystemUtil.isMac()){
 			Application application = Application.getApplication();
-			application.addAboutMenuItem();
-			application.addPreferencesMenuItem();
-			application.setEnabledAboutMenu(true);
-			application.setEnabledPreferencesMenu(true);
-			application.addApplicationListener(new ApplicationAdapter(){
-				@Override
-				public void handleAbout(ApplicationEvent arg0) {
-					new HelpAbout(null).doClick();
-					arg0.setHandled(true);
-				}
-
-				@Override
-				public void handleOpenFile(final ApplicationEvent arg0) {
-					arg0.setHandled(true);
-					SwingUtilities.invokeLater(new Runnable(){
-						public void run() {
-							openFile(new File(arg0.getFilename()));
-						}
-					});
-				}
-
-				@Override
-				public void handleReOpenApplication(ApplicationEvent arg0) {
-					arg0.setHandled(true);
-
-					if (ApplicationModel.getInstance().getOpenFrames().size() == 0){
-						try {
-							Document model = ModelFactory.createDocument();
-							MainFrame mainWndow = new MainFrame(model);
-							mainWndow.openWindow(
-									PrefsModel.getInstance().getWindowSize(model.getFile() + ""), 
-									PrefsModel.getInstance().getWindowLocation(model.getFile() + ""));
-						}
-						catch (ModelException me){
-							Logger.getLogger(Buddi.class.getName()).log(Level.WARNING, "Model Exception", me);
-						}
-						catch (WindowOpenException woe){}
+			try {
+				application.addAboutMenuItem();
+				application.addPreferencesMenuItem();
+				application.setEnabledAboutMenu(true);
+				application.setEnabledPreferencesMenu(true);
+				application.addApplicationListener(new ApplicationAdapter(){
+					@Override
+					public void handleAbout(ApplicationEvent arg0) {
+						new HelpAbout(null).doClick();
+						arg0.setHandled(true);
 					}
-				}
 
-				@Override
-				public void handlePreferences(ApplicationEvent arg0) {
-					new EditPreferences(null).doClick();
-					arg0.setHandled(true);
-				}
+					@Override
+					public void handleOpenFile(final ApplicationEvent arg0) {
+						arg0.setHandled(true);
+						SwingUtilities.invokeLater(new Runnable(){
+							public void run() {
+								openFile(new File(arg0.getFilename()));
+							}
+						});
+					}
 
-				@Override
-				public void handleQuit(ApplicationEvent arg0) {
-					arg0.setHandled(false);  //You must set this to false if you want to be able to cancel it.
-					new FileQuit(null).doClick();
-				}
-			});
+					@Override
+					public void handleReOpenApplication(ApplicationEvent arg0) {
+						arg0.setHandled(true);
+
+						if (ApplicationModel.getInstance().getOpenFrames().size() == 0){
+							try {
+								Document model = ModelFactory.createDocument();
+								MainFrame mainWndow = new MainFrame(model);
+								mainWndow.openWindow(
+										PrefsModel.getInstance().getWindowSize(model.getFile() + ""), 
+										PrefsModel.getInstance().getWindowLocation(model.getFile() + ""));
+							}
+							catch (ModelException me){
+								Logger.getLogger(Buddi.class.getName()).log(Level.WARNING, "Model Exception", me);
+							}
+							catch (WindowOpenException woe){}
+						}
+					}
+
+					@Override
+					public void handlePreferences(ApplicationEvent arg0) {
+						new EditPreferences(null).doClick();
+						arg0.setHandled(true);
+					}
+
+					@Override
+					public void handleQuit(ApplicationEvent arg0) {
+						arg0.setHandled(false);  //You must set this to false if you want to be able to cancel it.
+						new FileQuit(null).doClick();
+					}
+				});
+			}
+			catch (RuntimeException e){
+				;	//This will happen on later JVM versions in OSX.  Boo-urns.
+			}
 		}
 
 		//Set up the logging system.  If we have specified --log, we first
