@@ -22,7 +22,7 @@ public class HelpMenu extends MossMenu {
 	public HelpMenu(MossFrame frame) {
 		super(frame, PrefsModel.getInstance().getTranslator().get(MenuKeys.MENU_HELP));
 	
-		if (!OperatingSystemUtil.isMac() && Application.isAppleExtensionsAvailable()){
+		if (!OperatingSystemUtil.isMac() || !Application.isAppleExtensionsAvailable()){
 			this.add(new HelpAbout(frame));
 			this.addSeparator();
 		}

@@ -75,7 +75,7 @@ public class EditMenu extends MossMenu {
 
 			this.add(new EditEditScheduledTransactions(frame));
 			
-			if (!OperatingSystemUtil.isMac() && Application.isAppleExtensionsAvailable()){
+			if (!OperatingSystemUtil.isMac() || !Application.isAppleExtensionsAvailable()){
 				this.addSeparator();
 				this.add(new EditPreferences(frame));
 			}
@@ -92,7 +92,7 @@ public class EditMenu extends MossMenu {
 				this.add(new EditReconcileAndAdvanceTransaction(frame));
 			if (PrefsModel.getInstance().isShowCleared())
 				this.add(new EditClearAndAdvanceTransaction(frame));			
-			if (!OperatingSystemUtil.isMac() && Application.isAppleExtensionsAvailable()){
+			if (!OperatingSystemUtil.isMac() || !Application.isAppleExtensionsAvailable()){
 				this.addSeparator();
 				this.add(new EditPreferences(frame));
 			}

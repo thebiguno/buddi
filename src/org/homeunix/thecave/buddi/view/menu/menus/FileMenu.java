@@ -41,7 +41,7 @@ public class FileMenu extends MossMenu {
 		this.add(new FileSynchronizeMenu(frame));
 		this.addSeparator();
 		this.add(new FileCloseWindow(frame));
-		if (!OperatingSystemUtil.isMac() && Application.isAppleExtensionsAvailable()){
+		if (!OperatingSystemUtil.isMac() || !Application.isAppleExtensionsAvailable()){
 			this.addSeparator();
 			this.add(new FileQuit(frame));
 		}
