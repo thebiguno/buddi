@@ -12,6 +12,7 @@ import org.homeunix.thecave.buddi.view.menu.items.HelpHelp;
 import org.homeunix.thecave.buddi.view.menu.items.HelpTutorial;
 
 import ca.digitalcave.moss.common.OperatingSystemUtil;
+import ca.digitalcave.moss.osx.Application;
 import ca.digitalcave.moss.swing.MossFrame;
 import ca.digitalcave.moss.swing.MossMenu;
 
@@ -21,7 +22,7 @@ public class HelpMenu extends MossMenu {
 	public HelpMenu(MossFrame frame) {
 		super(frame, PrefsModel.getInstance().getTranslator().get(MenuKeys.MENU_HELP));
 	
-		if (!OperatingSystemUtil.isMac()){
+		if (!OperatingSystemUtil.isMac() && Application.isAppleExtensionsAvailable()){
 			this.add(new HelpAbout(frame));
 			this.addSeparator();
 		}

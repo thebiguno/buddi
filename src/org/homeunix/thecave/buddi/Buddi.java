@@ -225,7 +225,7 @@ public class Buddi {
 	 */
 	private static void launchGUI(){
 		//If we are on a Mac, open a new Frameless menu bar.
-		if (OperatingSystemUtil.isMac()){
+		if (OperatingSystemUtil.isMac() && Application.isAppleExtensionsAvailable()){
 			Application.getApplication().setFramessMenuBar(new FramelessMenuBar());
 		}
 
@@ -712,7 +712,7 @@ public class Buddi {
 		});
 
 		//Early on, we need to catch any open requests from Apple Launchd.
-		if (OperatingSystemUtil.isMac()){
+		if (OperatingSystemUtil.isMac() && Application.isAppleExtensionsAvailable()){
 			Application application = Application.getApplication();
 			try {
 				application.addAboutMenuItem();

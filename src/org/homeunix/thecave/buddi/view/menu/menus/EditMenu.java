@@ -29,6 +29,7 @@ import org.homeunix.thecave.buddi.view.menu.items.EditUndeleteAccount;
 import org.homeunix.thecave.buddi.view.menu.items.EditUndeleteBudgetCategory;
 
 import ca.digitalcave.moss.common.OperatingSystemUtil;
+import ca.digitalcave.moss.osx.Application;
 import ca.digitalcave.moss.swing.MossFrame;
 import ca.digitalcave.moss.swing.MossMenu;
 
@@ -74,7 +75,7 @@ public class EditMenu extends MossMenu {
 
 			this.add(new EditEditScheduledTransactions(frame));
 			
-			if (!OperatingSystemUtil.isMac()){
+			if (!OperatingSystemUtil.isMac() && Application.isAppleExtensionsAvailable()){
 				this.addSeparator();
 				this.add(new EditPreferences(frame));
 			}
@@ -91,7 +92,7 @@ public class EditMenu extends MossMenu {
 				this.add(new EditReconcileAndAdvanceTransaction(frame));
 			if (PrefsModel.getInstance().isShowCleared())
 				this.add(new EditClearAndAdvanceTransaction(frame));			
-			if (!OperatingSystemUtil.isMac()){
+			if (!OperatingSystemUtil.isMac() && Application.isAppleExtensionsAvailable()){
 				this.addSeparator();
 				this.add(new EditPreferences(frame));
 			}
