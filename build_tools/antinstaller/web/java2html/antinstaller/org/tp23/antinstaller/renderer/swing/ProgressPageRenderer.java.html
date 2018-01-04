@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.renderer.swing.ProgressPageRenderer (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">ProgressPageRenderer.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../../org.tp23.antinstaller.renderer.swing.index.html" target="packageFrame">org.tp23.antinstaller.renderer.swing</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.awt.BorderLayout;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.awt.Dimension;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.awt.Insets;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.awt.Rectangle;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.awt.event.ActionEvent;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> java.awt.event.ActionListener;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> java.io.PrintStream;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> java.util.ResourceBundle;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A>
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> javax.swing.BorderFactory;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A><FONT CLASS="Import">import</FONT> javax.swing.JLabel;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Import">import</FONT> javax.swing.JPanel;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> javax.swing.JScrollPane;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A><FONT CLASS="Import">import</FONT> javax.swing.JTabbedPane;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Import">import</FONT> javax.swing.JToggleButton;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A>
+<FONT CLASS="LN">34</FONT><A NAME="34"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/page/ProgressPage.java.html">org.tp23.antinstaller.page.ProgressPage</A>;
+<FONT CLASS="LN">35</FONT><A NAME="35"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/renderer/AntOutputRenderer.java.html">org.tp23.antinstaller.renderer.AntOutputRenderer</A>;
+<FONT CLASS="LN">36</FONT><A NAME="36"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/gui/widget/SystemOutJTextArea.java.html">org.tp23.gui.widget.SystemOutJTextArea</A>;
+<FONT CLASS="LN">37</FONT><A NAME="37"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">38</FONT><A NAME="38"></A> *
+<FONT CLASS="LN">39</FONT><A NAME="39"></A> * &lt;p&gt;Copyright: Copyright (c) 2004&lt;/p&gt;
+<FONT CLASS="LN">40</FONT><A NAME="40"></A> * &lt;p&gt;Company: tp23&lt;/p&gt;
+<FONT CLASS="LN">41</FONT><A NAME="41"></A> * @todo change absolute to Border layout and panels
+<FONT CLASS="LN">42</FONT><A NAME="42"></A> * @author Paul Hinds
+<FONT CLASS="LN">43</FONT><A NAME="43"></A> * @version $Id: ProgressPageRenderer.java,v 1.4 2006/12/21 00:03:00 teknopaul Exp $
+<FONT CLASS="LN">44</FONT><A NAME="44"></A> */</FONT>
+<FONT CLASS="LN">45</FONT><A NAME="45"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> ProgressPageRenderer
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>    <FONT CLASS="Extends">extends</FONT> <A HREF="../../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A>
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>    <FONT CLASS="Implements">implements</FONT> <A HREF="../../../../../org/tp23/antinstaller/renderer/AntOutputRenderer.java.html">AntOutputRenderer</A> {
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> ResourceBundle res = ResourceBundle.getBundle(<FONT CLASS="StringLiteral">"org.tp23.antinstaller.renderer.Res"</FONT>);
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> MESSAGE_PANEL_HEIGHT = <FONT CLASS="IntegerLiteral">30</FONT>;
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>    <FONT CLASS="Private">private</FONT> JPanel contentPanel = <FONT CLASS="New">new</FONT> JPanel();
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>    <FONT CLASS="Private">private</FONT> JTabbedPane jTabbedPane = <FONT CLASS="New">new</FONT> JTabbedPane();
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>    <FONT CLASS="Private">private</FONT> JPanel messagesPanel = <FONT CLASS="New">new</FONT> JPanel();
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>    <FONT CLASS="Private">private</FONT> BorderLayout borderLayout1 = <FONT CLASS="New">new</FONT> BorderLayout();
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>    <FONT CLASS="Private">private</FONT> JToggleButton jToggleButton = <FONT CLASS="New">new</FONT> JToggleButton();
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>    <FONT CLASS="Private">private</FONT> JLabel feedBackLabel = <FONT CLASS="New">new</FONT> JLabel();
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../../../org/tp23/gui/widget/SystemOutJTextArea.java.html">SystemOutJTextArea</A> outPanel = <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/gui/widget/SystemOutJTextArea.java.html">SystemOutJTextArea</A>();
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../../../org/tp23/gui/widget/SystemOutJTextArea.java.html">SystemOutJTextArea</A> errPanel = <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/gui/widget/SystemOutJTextArea.java.html">SystemOutJTextArea</A>();
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>    
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> showTargets = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>    <FONT CLASS="Private">private</FONT> JScrollPane progressScrollPane = <FONT CLASS="New">new</FONT> JScrollPane();;
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../../../org/tp23/antinstaller/renderer/swing/ProgressPanel.java.html">ProgressPanel</A> progressPanel;
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>    <FONT CLASS="Public">public</FONT> ProgressPageRenderer() {
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>        errPanel.setAsSystemErr();
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>        outPanel.setAsSystemOut();
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>    }
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>     * getErr
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>     * @return PrintStream
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>     */</FONT>
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>    <FONT CLASS="Public">public</FONT> PrintStream getErr() {
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>        <FONT CLASS="Return">return</FONT> errPanel.getOut();
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>    }
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>     * getOut
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>     * @return PrintStream
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>     */</FONT>
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>    <FONT CLASS="Public">public</FONT> PrintStream getOut() {
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>        <FONT CLASS="Return">return</FONT> outPanel.getOut();
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>    }
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>     * instanceInit
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>     */</FONT>
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> instanceInit() {
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>        showTargets = ((<A HREF="../../../../../org/tp23/antinstaller/page/ProgressPage.java.html">ProgressPage</A>)page).isShowTargets();
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>        contentPanel.setLayout(borderLayout1);
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>        <FONT CLASS="This">this</FONT>.add(contentPanel,BorderLayout.CENTER);
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>        
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>        <FONT CLASS="SingleLineComment">//progressScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+<FONT CLASS="LN">96</FONT><A NAME="96"></A></FONT>
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>        messagesPanel.setLayout(<FONT CLASS="Null">null</FONT>);
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>        Dimension messPanelSize = <FONT CLASS="New">new</FONT> Dimension(SizeConstants.PAGE_WIDTH,MESSAGE_PANEL_HEIGHT);
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>        messagesPanel.setSize(messPanelSize);
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>        messagesPanel.setPreferredSize(messPanelSize);
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>        messagesPanel.setMaximumSize(messPanelSize);
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>        messagesPanel.setMinimumSize(messPanelSize);
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>        <FONT CLASS="SingleLineComment">//FIXME not i18n properly since the sentence is not correct ordering in German
+<FONT CLASS="LN">05</FONT><A NAME="105"></A></FONT>        feedBackLabel.setText(res.getString(<FONT CLASS="StringLiteral">"click"</FONT>)+<FONT CLASS="StringLiteral">" "</FONT>+ctx.getInstaller().getFinishButtonText()+<FONT CLASS="StringLiteral">" "</FONT>+res.getString(<FONT CLASS="StringLiteral">"toContinue"</FONT>));
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>        feedBackLabel.setBounds(<FONT CLASS="New">new</FONT> Rectangle(<FONT CLASS="IntegerLiteral">115</FONT>, <FONT CLASS="IntegerLiteral">7</FONT>, <FONT CLASS="IntegerLiteral">272</FONT>, <FONT CLASS="IntegerLiteral">22</FONT>));
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>        jToggleButton.setText(res.getString(<FONT CLASS="StringLiteral">"showDetails"</FONT>));
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>        jToggleButton.setBounds(<FONT CLASS="New">new</FONT> Rectangle(<FONT CLASS="IntegerLiteral">5</FONT>, <FONT CLASS="IntegerLiteral">7</FONT>, <FONT CLASS="IntegerLiteral">104</FONT>, <FONT CLASS="IntegerLiteral">22</FONT>));
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>        jToggleButton.setMargin(<FONT CLASS="New">new</FONT> Insets(<FONT CLASS="IntegerLiteral">0</FONT>,<FONT CLASS="IntegerLiteral">0</FONT>,<FONT CLASS="IntegerLiteral">0</FONT>,<FONT CLASS="IntegerLiteral">0</FONT>));
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>        messagesPanel.add(jToggleButton, <FONT CLASS="Null">null</FONT>);
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>        messagesPanel.add(feedBackLabel, <FONT CLASS="Null">null</FONT>);
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>        jToggleButton.addActionListener(<FONT CLASS="New">new</FONT> ActionListener(){
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>            <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> actionPerformed(ActionEvent e) {
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>                <FONT CLASS="If">if</FONT>(jToggleButton.isSelected()){
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>                    <FONT CLASS="If">if</FONT>(showTargets){
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>                        contentPanel.remove(progressScrollPane);
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>                    }
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>                    contentPanel.add(jTabbedPane, BorderLayout.CENTER);
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>                    contentPanel.doLayout();
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>                    contentPanel.repaint();
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>                }
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>                <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>                    contentPanel.remove(jTabbedPane);
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>                    <FONT CLASS="If">if</FONT>(showTargets){
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>                        contentPanel.add(progressScrollPane, BorderLayout.CENTER);
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>                        progressScrollPane.revalidate();
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>                    }
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>                    contentPanel.doLayout();
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>                    contentPanel.repaint();
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>                }
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>            }
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>        });
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>        jToggleButton.setIcon(getImage(<FONT CLASS="StringLiteral">"/resources/icons/showdetails.png"</FONT>));
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>        contentPanel.add(messagesPanel, BorderLayout.NORTH);
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>        <FONT CLASS="If">if</FONT>(showTargets){
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>            progressScrollPane.setBorder(BorderFactory.createEmptyBorder(<FONT CLASS="IntegerLiteral">10</FONT>,<FONT CLASS="IntegerLiteral">5</FONT>,<FONT CLASS="IntegerLiteral">5</FONT>,<FONT CLASS="IntegerLiteral">5</FONT>));
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>            contentPanel.add(progressScrollPane, BorderLayout.CENTER);
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>        }
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>        jTabbedPane.add(res.getString(<FONT CLASS="StringLiteral">"output"</FONT>), outPanel);
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>        jTabbedPane.add(res.getString(<FONT CLASS="StringLiteral">"errors"</FONT>), errPanel);
+<FONT CLASS="LN">42</FONT><A NAME="142"></A><FONT CLASS="SingleLineComment">//      if(OutputField.isTrue( ctx.getInstaller().getAntialiased())){
+<FONT CLASS="LN">43</FONT><A NAME="143"></A></FONT><FONT CLASS="SingleLineComment">//          outPanel.setAntialiased(true);
+<FONT CLASS="LN">44</FONT><A NAME="144"></A></FONT><FONT CLASS="SingleLineComment">//          errPanel.setAntialiased(true);
+<FONT CLASS="LN">45</FONT><A NAME="145"></A></FONT><FONT CLASS="SingleLineComment">//      }
+<FONT CLASS="LN">46</FONT><A NAME="146"></A></FONT>
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>        <FONT CLASS="SingleLineComment">//jTabbedPane.setVisible(false);
+<FONT CLASS="LN">48</FONT><A NAME="148"></A></FONT>        jTabbedPane.setBorder(BorderFactory.createEmptyBorder(<FONT CLASS="IntegerLiteral">5</FONT>,<FONT CLASS="IntegerLiteral">5</FONT>,<FONT CLASS="IntegerLiteral">5</FONT>,<FONT CLASS="IntegerLiteral">5</FONT>));
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>        contentPanel.setMaximumSize(<FONT CLASS="New">new</FONT> Dimension(SizeConstants.PAGE_WIDTH, Integer.MAX_VALUE));
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>        contentPanel.setMinimumSize(<FONT CLASS="New">new</FONT> Dimension(SizeConstants.PAGE_WIDTH, <FONT CLASS="IntegerLiteral">100</FONT>));
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>        contentPanel.setPreferredSize(<FONT CLASS="New">new</FONT> Dimension(SizeConstants.PAGE_WIDTH, SizeConstants.PAGE_HEIGHT-<FONT CLASS="IntegerLiteral">100</FONT>));
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>        <FONT CLASS="SingleLineComment">//contentPanel.add(jTabbedPane, null);
+<FONT CLASS="LN">53</FONT><A NAME="153"></A></FONT>        <FONT CLASS="SingleLineComment">//jTabbedPane.setBounds(new Rectangle(4, MESSAGE_PANEL_HEIGHT, PAGE_WIDTH-12, 214));
+<FONT CLASS="LN">54</FONT><A NAME="154"></A></FONT>
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>        <FONT CLASS="This">this</FONT>.getNextButton().setEnabled(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>        <FONT CLASS="This">this</FONT>.getFinishButton().setText(ctx.getInstaller().getFinishButtonText());
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>        <FONT CLASS="This">this</FONT>.getFinishButton().setEnabled(<FONT CLASS="True">true</FONT>);
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>    }
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setContext(<A HREF="../../../../../org/tp23/antinstaller/renderer/swing/SwingInstallerContext.java.html">SwingInstallerContext</A> swingCtx){
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>        <FONT CLASS="Super">super</FONT>.setContext(swingCtx);
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>        <FONT CLASS="If">if</FONT>(showTargets){
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>            progressPanel = <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/renderer/swing/ProgressPanel.java.html">ProgressPanel</A>(swingCtx.getInstallerContext());
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>            progressScrollPane.getViewport().add(progressPanel);
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>            <FONT CLASS="This">this</FONT>.swingCtx.setProgressPanel(progressPanel);
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>        }
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>        <FONT CLASS="This">this</FONT>.swingCtx.setFeedBackLabel(feedBackLabel);
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>    }
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>     * updateInputFields
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>     */</FONT>
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> updateInputFields() {
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>    }
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>     * validateFields
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>     *
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>     * @return boolean
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>     */</FONT>
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> validateFields() {
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>    }
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>     * updateDefaultValues
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>     */</FONT>
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> updateDefaultValues() {
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>    }
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>}
+<FONT CLASS="LN">97</FONT><A NAME="197"></A></pre>
+</BODY>
+</HTML>

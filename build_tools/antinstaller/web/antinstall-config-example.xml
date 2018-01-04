@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
+
+<installer
+		ui="swing,text"
+		verbose="true"
+		debug="true"
+		lookAndFeel="org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel"
+		name="HttpFileServer Installer"
+		windowIcon="/resources/gkmain_inv.png"
+		defaultImageResource="/resources/httpfileserver.png"
+		minJavaVersion="1.4"
+		antialiased="true"
+		finishButtonText="Install"
+		version="1.0">
+	<page
+		type="splash"
+		name="splash"
+		displayText="Auto-Installer"
+		splashResource="/resources/httpfileserver-splash.png"
+		altText="--(o--HttpFileSrver--o)--">
+	</page>
+	<page
+		type="input"
+		name="intro"
+		displayText="Welcome">
+		<comment
+			displayText=""
+			explanatoryText="Before you can install this server you must have Tomcat installed locally, and you must be able to find it"
+			/>
+		<comment displayText=""/>
+		<comment displayText="Installer made with"/>
+		<comment displayText="http://antinstaller.sourceforge.net" bold="true"/>
+	</page>
+	<page
+		type="license"
+		name="license"
+		displayText="License conditions"
+		resource="/resources/GPL.txt"
+		target="Install Webapp"
+		usePaging="true"/>
+	<page
+		type="input"
+		name="properties"
+		displayText="Select server features">
+		<text
+			property="server.name"
+			displayText="Server Name"
+			defaultValue="My HttpFileServer">
+		</text>
+		<target
+			target="Enable M3U"
+			displayText="Playlist streaming"
+			defaultValue="false">
+		</target>
+		<target
+			target="Enable JEdit"
+			displayText="JEdit applet editor"
+			defaultValue="false">
+		</target>
+		<target
+			target="Enable Groups"
+			displayText="Groups security"
+			defaultValue="false">
+		</target>
+		<target
+			target="Enable Linux Search"
+			displayText="Linux search in files"
+			defaultValue="false">
+		</target>
+		<target
+			target="Enable Linux Search Names"
+			displayText="Linux search file names"
+			defaultValue="false">
+		</target>
+		<target
+			target="Create Users"
+			displayText="Create Tomcat Users"
+			defaultValue="true">
+		</target>
+		<target
+			target="Install Source"
+			displayText="Install source code"
+			defaultValue="true">
+		</target>
+	</page>
+	<page
+		type="input"
+		name="server.properties"
+		displayText="Server options">
+		<validated
+			property="server.url" 
+			defaultValue="http://localhost:8080" 
+			explanatoryText="Enter the protocol, host and port by which users reference your server"
+			displayText="Enter the desired URL"
+			regex="^http[s]*://[0-9a-zA-Z-.]+:*[0-9]*.*$"/>
+		<validated
+			property="context.name" 
+			defaultValue="fileserver" 
+			explanatoryText="Only use letter and numbers for the context URL"
+			displayText="Enter the desired context URL"
+			regex="^[0-9a-zA-Z]+$"/>
+		<app-root
+			property="tomcat.dir"
+			defaultValue="/usr/local/jakarta-tomcat-4.0.1"
+			defaultValueWin="C:\jakarta-tomcat-4.0.1"
+			displayText="Locate the Tomcat dir"
+			checkFile1="conf/server.xml"
+			checkFile2="conf/tomcat-users.xml"
+			checkDir1="webapps">
+		</app-root>
+		<directory
+			property="files.dir"
+			defaultValue="/var/www"
+			defaultValueWin="C:\www"
+			displayText="Enter the data directory"
+			create="true"
+			checkExists="true">
+		</directory>
+		<directory
+			property="temp.dir"
+			defaultValue="/tmp/httpfileserver"
+			defaultValueWin="C:\wwwtmp"
+			displayText="Enter a directory for temporary files"
+			create="true"
+			checkExists="true">
+		</directory>
+	</page>
+	<page
+		type="input"
+		name="source.code"
+		displayText="Source destination"
+		ifTarget="Install Source">
+		<directory
+			property="src.dir"
+			defaultValue="${java.user.home}/HttpFileServer"
+			defaultValueWin="${java.user.home}/HttpFileServer"
+			displayText="Select directory for the source code"
+			create="true"
+			checkExists="true">
+		</directory>
+	</page>
+	<page
+		type="progress"
+		name="progress"
+		displayText="Installation progress">
+	</page>
+</installer>

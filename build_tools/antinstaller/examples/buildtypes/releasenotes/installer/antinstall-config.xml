@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
+
+<installer
+			ui="swing,text"
+			verbose="true"
+			debug="true"
+			lookAndFeel="org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel"
+			name="Demo Installer"
+			windowIcon="/resources/gkmain_inv.png"
+			defaultImageResource="/resources/greens.png"
+			minJavaVersion="1.4">
+	<!--  each page element represents a page of the installer -->
+	<page
+			type="input"
+			name="intro"
+			displayText="Welcome to the example installer program"
+			imageResource="/resources/greens.png">
+		<comment
+				displayText="This is a demo install"
+				title="true"/>
+		<comment
+				displayText="The application installed is yer typical Hello World"
+				bold="true"/>
+		<comment
+				displayText="There is not much more to be said really."/>
+	</page>
+	<!--  type="license" shows a license page to click through -->
+	<page
+			type="license"
+			name="license"
+			displayText="License conditions"
+			resource="/resources/GPL.txt"
+			imageResource="/resources/rockstiles.png">
+	</page>
+	<!--  type="input" shows a list of editable options for the installer -->
+	<page
+			type="input"
+			name="properties"
+			displayText="Required install options">
+		<directory
+				property="installDir"
+				defaultValue="/usr/local/demoapp"
+				defaultValueWin="${env.ProgramFiles}\demoapp"
+				displayText="Select an installation directory"
+				create="true"/>
+	</page>
+	<page
+			type="input"
+			name="selector"
+			displayText="Components to install">
+		<comment
+				displayText="Choose the components you want to install"
+				bold="true"/>
+		<target
+			displayText="Core components"
+			target="default"
+			defaultValue="true"
+			force="true"/>
+		<target
+			displayText="Source code"
+			target="tgsrc"
+			defaultValue="false"/>
+		<target
+			displayText="Documentation"
+			target="tgdoc"
+			defaultValue="true"/>
+	</page>
+	<!--  These are some other input types -->
+	<page
+			type="input"
+			name="other-input-types"
+			displayText="Pointless install options">
+		<text
+				property="myProperty"
+				defaultValue="blah blah"
+				displayText="Enter any text"/>
+		<checkbox
+				property="truefalseprop"
+				displayText="Make a boolean decision"
+				defaultValue="true"
+				force="false"/>
+		<select
+				property="colour"
+				defaultValue="#FF0000"
+				displayText="Choose the option"
+				explanatoryText="This field can be used on any input field to render further descriptive text
+				This field can be used on any input field to render further descriptive text">
+			<option text="Red" value="#FF0000"/>
+			<option text="Green" value="#00FF00"/>
+			<option text="Blue" value="#0000FF"/>
+		</select>
+		<file
+				property="selectedfile"
+				defaultValue="/usr/tomcat/webapps/default/WEB-INF/web.xml"
+				defaultValueWin="C:\autoexec.bat"
+				displayText="Select a file"
+				checkExists="false"/>
+	</page>
+	<page
+			type="input"
+			name="release notes"
+			displayText="Release Notes">
+		<comment
+				displayText="After Install Show Release Notes"
+				title="false"/>
+		<checkbox
+				property="show.release.notes"
+				displayText="Show release notes"
+				defaultValue="true"
+				force="false"/>
+	</page>
+	<!--  page type="progress" shows a progress page with the install button it is a requirement for the final page-->
+	<page type="progress" name="progress" displayText="Installation progress" showTargets="false"/>
+</installer>
+
+

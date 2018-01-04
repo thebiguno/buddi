@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.4.2_11" class="java.beans.XMLDecoder"> 
+ <object id="Project0" class="org.tp23.jtemplate.project.Project"> 
+  <void property="mergeInstructions"> 
+   <array class="org.tp23.jtemplate.project.MergeInstruction" length="2"> 
+    <void index="0"> 
+     <object class="org.tp23.jtemplate.project.MergeInstruction"> 
+      <void property="name"> 
+       <string>HTML Files</string> 
+      </void> 
+      <void property="pages"> 
+       <array class="java.io.File" length="26"/> 
+      </void> 
+      <void property="pagesPaths"> 
+       <array class="java.lang.String" length="26"> 
+        <void index="0"> 
+         <string>antinstall-config-example.jsp</string> 
+        </void> 
+        <void index="1"> 
+         <string>antlinks.html</string> 
+        </void> 
+        <void index="2"> 
+         <string>antricks.html</string> 
+        </void> 
+        <void index="3"> 
+         <string>auto.html</string> 
+        </void> 
+        <void index="4"> 
+         <string>browsersupport.html</string> 
+        </void> 
+        <void index="5"> 
+         <string>changelog.jsp</string> 
+        </void> 
+        <void index="6"> 
+         <string>classpathresources.html</string> 
+        </void> 
+        <void index="7"> 
+         <string>dtds.html</string> 
+        </void> 
+        <void index="8"> 
+         <string>headerframe.html</string> 
+        </void> 
+        <void index="9"> 
+         <string>i18n.html</string> 
+        </void> 
+        <void index="10"> 
+         <string>icons.jsp</string> 
+        </void> 
+        <void index="11"> 
+         <string>index.jsp</string> 
+        </void> 
+        <void index="12"> 
+         <string>installertask.html</string> 
+        </void> 
+        <void index="13"> 
+         <string>installtypes.html</string> 
+        </void> 
+        <void index="14"> 
+         <string>introduction.html</string> 
+        </void> 
+        <void index="15"> 
+         <string>licenses.html</string> 
+        </void> 
+        <void index="16"> 
+         <string>lookandfeels.html</string> 
+        </void> 
+        <void index="17"> 
+         <string>manual.html</string> 
+        </void> 
+        <void index="18"> 
+         <string>miniinstaller.html</string> 
+        </void> 
+        <void index="19"> 
+         <string>posttargets.html</string> 
+        </void> 
+        <void index="20"> 
+         <string>potentialuses.html</string> 
+        </void> 
+        <void index="21"> 
+         <string>quickstart.html</string> 
+        </void> 
+        <void index="22"> 
+         <string>roadmap.html</string> 
+        </void> 
+        <void index="23"> 
+         <string>userusage.html</string> 
+        </void> 
+        <void index="24"> 
+         <string>validationofconfig.html</string> 
+        </void> 
+        <void index="25"> 
+         <string>wanted.html</string> 
+        </void> 
+       </array> 
+      </void> 
+      <void property="parent"> 
+       <object idref="Project0"/> 
+      </void> 
+      <void property="templatePath"> 
+       <string>antinstaller-template.htmlt</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="1"> 
+     <object class="org.tp23.jtemplate.project.JSPMergeInstruction"> 
+      <void property="name"> 
+       <string>JSP Files</string> 
+      </void> 
+      <void property="pages"> 
+       <array class="java.io.File" length="6"/> 
+      </void> 
+      <void property="pagesPaths"> 
+       <array class="java.lang.String" length="6"> 
+        <void index="0"> 
+         <string>antinstall-config-example.jsp</string> 
+        </void> 
+        <void index="1"> 
+         <string>changelog.jsp</string> 
+        </void> 
+        <void index="2"> 
+         <string>contents.jsp</string> 
+        </void> 
+        <void index="3"> 
+         <string>icons.jsp</string> 
+        </void> 
+        <void index="4"> 
+         <string>index.jsp</string> 
+        </void> 
+        <void index="5"> 
+         <string>manual-print.jsp</string> 
+        </void> 
+       </array> 
+      </void> 
+      <void property="parent"> 
+       <object idref="Project0"/> 
+      </void> 
+     </object> 
+    </void> 
+   </array> 
+  </void> 
+  <void property="name"> 
+   <string>AntInstaller</string> 
+  </void> 
+  <void property="projectFilePath"> 
+   <string>/home/teknopaul/workspace/AntInstaller/web/Project.xml</string> 
+  </void> 
+  <void property="rootPath"> 
+   <string>/wrong</string> 
+  </void> 
+ </object> 
+</java> 

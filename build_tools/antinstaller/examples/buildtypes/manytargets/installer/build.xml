@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!--
+
+This is the build.xml run by AntInstaller for the demo app
+
+It is a normal Ant build script, but remember that it is run in a similar
+way to running
+> ant -buildfile build.xml default,tgdoc,tgsrc
+
+this is targets selected in the selector page have dependencies those
+dependencies may be run once for each target selected
+e.g. if tgdoc had depends="default" and the installer passed
+default,tgdoc  ant would run default then default again then tgdoc
+
+To avoid this problem targets can be forced in the gui using the following
+input in the page to choose components to install
+		<input
+			type="target"
+			displayText="Core components"
+			target="default"
+			defaultValue="true"
+			force="true"/>
+
+-->
+
+<project name="Installation Build"  default="default"  basedir="${basedir}">
+
+	<property file="${basedir}/ant.install.properties"/>
+
+
+	<target name="default" depends="">
+		<echo message="default"/>
+		<sleep milliseconds="200"/>
+	</target>
+
+	<target name="target1" depends="">
+		<echo message="target1"/>
+		<sleep milliseconds="200"/>
+	</target>
+
+	<target name="target2" depends="target2a,target2b,target2c">
+		<echo message="target2"/>
+		<sleep milliseconds="200"/>
+	</target>
+
+	<target name="target3" depends="">
+		<echo message="target3"/>
+		<sleep milliseconds="200"/>
+	</target>
+
+	<target name="target2a" depends="">
+		<echo message="target2a"/>
+		<sleep milliseconds="200"/>
+	</target>
+
+	<target name="target2b" depends="">
+		<echo message="target2b"/>
+		<sleep milliseconds="200"/>
+	</target>
+
+	<target name="target2c" depends="">
+		<echo message="target2c"/>
+		<sleep milliseconds="200"/>
+	</target>
+
+	<target name="target4" depends="">
+		<echo message="target4"/>
+		<sleep milliseconds="200"/>
+	</target>
+
+	<target name="target5" depends="">
+		<echo message="target5"/>
+		<sleep milliseconds="200"/>
+	</target>
+
+	<target name="target6" depends="">
+		<echo message="target6"/>
+		<sleep milliseconds="200"/>
+	</target>
+
+	<target name="target7" depends="">
+		<echo message="target7"/>
+		<sleep milliseconds="200"/>
+	</target>
+	
+	<target name="target8" depends="target8a">
+		<echo message="target8"/>
+		<sleep milliseconds="200"/>
+	</target>
+	
+	<target name="target8a" depends="target8aa">
+		<echo message="target8a"/>
+		<sleep milliseconds="200"/>
+	</target>
+	
+	<target name="target8aa" depends="">
+		<echo message="target8aa"/>
+		<sleep milliseconds="200"/>
+	</target>
+</project>

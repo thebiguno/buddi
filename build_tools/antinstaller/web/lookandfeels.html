@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Ant Installer</title>
+  <link href="style.css" type="text/css" rel="stylesheet">
+  <link href="css/nav.css" rel="stylesheet" type="text/css">
+  <link rel="SHORTCUT ICON" type="image/png" href="images/antinstaller-icon.png">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="keywords"
+ content="Ant, installer, AntInstall, gui, console, input, parameters, properties, swing, user interface, validation, configuration">
+ <script type="text/javascript" src="js/menu.js"></script>
+ <script type="text/javascript" src="js/sstree.js"></script>
+ <script type="text/javascript" src="js/winfix.js"></script>
+</head>
+<body onload="collapseAll('contents-panel', ['ol']); "><div id="tpallcontent">
+<table cellspacing="0" width="100%">
+  <tbody>
+    <tr class="tpheader">
+      <th class="tpleft">
+			<a target="_top" href="index.html" title="home"><img src="images/ant-install-small.png" alt="AntInstaller" id="logo" width="76" height="50"/></a>
+			<script type="text/javascript">winFix();</script>
+      </th>
+      <th class="tptop" valign="bottom">
+				<img src="space.gif" height="1" width="440" alt="spacer"/><br/>
+				
+				<table>
+					<tr>
+						<td valign="top">
+							<div class="tpheadertitle">AntInstaller</div>
+							<!--img src="images/ant-install-title.png" alt="AntInstaller"/-->
+						</td>
+						<td width="100%" align="right" valign="bottom" nowrap="NOWRAP">
+				<div class="tpraised">
+				<a class="tpbutton" target="_top" href="index.html">home</a>
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/project/showfiles.php?group_id=123466&amp;package_id=134917">download</a>
+				<a class="tpbutton" target="_top" href="http://sf.net">sourceforge</a> 
+				<a class="tpbutton" target="_top" href="manual-ant.html">antmanual</a> 
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/tracker/?group_id=123466&amp;atid=696615">RFEs</a> 
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/tracker/?group_id=123466&amp;atid=696612">Bugs</a></div>
+						</td>
+					</tr>
+				</table>
+      </th>
+    </tr>
+    <tr class="tpbody">
+		<td class="tpleft" valign="bottom">
+			<br/>
+			<div id="logoset">
+			<a target="_top" href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=123466&amp;type=2" alt="SourceForge.net Logo" border="0" height="37" width="125"></a>
+			<br/><br/>
+			<a target="_top" href="http://sourceforge.net/donate/index.php?group_id=123466">
+			<img src="http://sourceforge.net/images/project-support.jpg" alt="donate to AntInstaller"/>
+			</a>
+			</div>
+		</td>
+      <td class="tpright" valign="top">
+      <div class="tpcontent">
+			<!--[segment-content] page content start -->
+			
+			<h2>Look And Feel</h2>
+			
+			The Swing GUI can be shown with a configurable appearance using Java's pluggable look and feel feature.  AntInstaller includes a look and feel by <a href="http://www.jgoodies.com/">JGoodies</a> which is now licenced under a BSD license.<br/><br/>
+			
+			Since JGoodies is under a good open source license it has been possible to make minor modifications to 
+			the code to enable antialiasing of text components.  This is more resource intensive but looks a lot better.
+			In order not to clash with the original JGoodies code the modifications have be repackaged as <code>org.tp23.jgoodies.*</code>
+			so both UIs can be on the classpath at the sametime.  In AntInstaller the antialiasing can be activated with the antialiased attribute
+			in the installer element.  <br/><br/>
+			
+			When designing a cross platform installer remember that Micro$oft look and feels will not run on other platforms and will throw exceptions.  Some of the JGoodies look and feels have the same issue, so check first.<br/><br/>
+			
+			There is small look and feel included with AntInstaller that is a simple modification of the MetalLookAndFeel that uses a monochrome theme and less use of bold fonts, the font size is also reduced one point.  This look and feel has been included to enable installers to be delivered with a consistent look on multiple platforms and have space on the buttons and labels to show the default English text in the installer. The download size is also reduced. For more space for text the width of the installer can be increased with the <code>wide</code> attribute of the <a href="manual.html#installer">installer</a> element in the configuration file.<br/>
+			The purple theme has been removed because it looks naf! (sorry Sun but its true).
+			<br/><br/>
+
+			<h2>Setting the look and feel</h2>
+			
+			To set the look and feel for the swing GUI the <code>lookAndFeel</code> attribute of the <code>installer</code> element in <code>antinstall-config.xml</code> should be set.  The value of the lookAndFeel attribute should be a fully qualified class name or one of the following values that have special treatment.
+			<ul>
+				<li><code>null</code> - No alterations are made to the look and feel.</li>
+				<li><code>greymetal</code> - The monochrome metal look and feel is used. Equivalent to <code>org.tp23.antinstaller.renderer.swing.plaf.ModMetalLookAndFeel</code>.</li>
+				<li><code>native</code> - The native look and feel of the computer on which the installer is run is used. The value is that returned by <code>UIManager.getSystemLookAndFeelClassName()</code>.</li>
+				<li><code>jgoodies</code> - The JGoodies look and feel <code>org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel</code> is used.</li>
+			</ul>
+			
+			If the lookAndFeel attribute is missing <code>org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel</code> is the default.<br/><br/>
+			
+			If the default look and feel or greymetal is specified in the configuration the <a href="installertask.html">Ant task</a> will include the correct classes automatically in the self-extracting or non-extracting Jar.  If a custom look and feel is to be used the classes must be added specifically to the classpath or inside the Jar.<br/><br/>
+			
+			If the self-extracting jar is used, in order to show the progress panel with the correct look and feel, the value in the configuration file can not be used since it is not yet loaded.  An additional element <code>Look-And-Feel</code> to the <code>META-INF/MANIFEST.mf</code> file should be added.<br/>
+			Provided the installer is build with the <a href="installertask.html">Ant task</a> this is handled automaticaly.
+			
+			<h2>Screenshots</h2>
+			JGoodies - <code>org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel</code><br/>
+			<img src="images/jgoodies.xp.snapshot.png" alt="JGoodies screenshot"/><br/><br/>
+			
+			Metouia - <code>net.sourceforge.mlf.metouia.MetouiaLookAndFeel</code><br/>
+			<img src="images/metouia.snapshot.png" alt="Metouia screenshot"/><br/><br/>
+			
+			Grey Metal - <code>org.tp23.antinstaller.renderer.swing.plaf.ModLookAndFeel</code><br/>
+			<img src="images/greymetal.snapshot.png" alt="Greymetal screenshot"/><br/><br/>
+
+<!-- content end [segment-end]-->
+		 	</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div id="contents-panel">
+<!--[segment-file://contents-include.html] menu start -->
+<div id="contents-menu">
+<ol class="sidebar" id="root">
+	<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><b>Site map</b>
+		<ol>
+			<li class="sidebar"><a href="introduction.html">Introduction</a></li>
+			<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><b>Developer References</b>
+				<ol>
+					<li class="sidebar"><a href="quickstart.html">Quick Start</a></li>
+					<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html">Manual</a>
+						<ol class="init-hidden">
+							<li class="sidebar"><a href="manual.html#config">antinstall-config.xml</a></li>
+							<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html#page">Pages</a>
+								<ol class="init-hidden">
+									<li class="sidebar"><a href="manual.html#pagesplash">Splash Page</a></li>
+									<li class="sidebar"><a href="manual.html#pagetext">Text Page</a></li>
+									<li class="sidebar"><a href="manual.html#pagelicense">License Page</a></li>
+									<li class="sidebar"><a href="manual.html#pageinput">Input Page</a></li>
+									<li class="sidebar"><a href="manual.html#pageprogress">Progress Page</a></li>
+								</ol>
+							</li>
+							<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html#inputtypes">Input types</a>
+								<ol class="init-hidden">
+									<li class="sidebar"><a href="manual.html#app-root">Application Root</a></li>
+									<li class="sidebar"><a href="manual.html#checkbox">Checkbox</a></li>
+									<li class="sidebar"><a href="manual.html#comment">Comment</a></li>
+									<li class="sidebar"><a href="manual.html#date">Date</a></li>
+									<li class="sidebar"><a href="manual.html#directory">Directory</a></li>
+									<li class="sidebar"><a href="manual.html#file">File</a></li>
+									<li class="sidebar"><a href="manual.html#large-select">Large Select</a></li>
+									<li class="sidebar"><a href="manual.html#password">Password Text</a></li>
+									<li class="sidebar"><a href="manual.html#password-confirm">Confirm Password</a></li>
+									<li class="sidebar"><a href="manual.html#select">Select</a></li>
+									<li class="sidebar"><a href="manual.html#target">Target</a></li>
+									<li class="sidebar"><a href="manual.html#target-select">Target Select</a></li>
+									<li class="sidebar"><a href="manual.html#text">Unvalidated Text</a></li>
+									<li class="sidebar"><a href="manual.html#validated">Validated Text</a></li>
+									<li class="sidebar"><a href="manual.html#extvalidated">Externally Validated Text</a></li>
+								</ol>
+							</li>
+							<li class="sidebar"><a href="manual.html#extractor">Self Extractor</a></li>
+							<li class="sidebar"><a href="manual.html#non-extractor">Non Extractor</a></li>
+							<li class="sidebar"><a href="manual.html#scripts">Start Scripts</a></li>
+							<li class="sidebar"><a href="manual.html#refs">Dynamic References</a></li>
+							<li class="sidebar"><a href="manual.html#pagedisplay">Page Displaying</a></li>
+						</ol>
+					</li>
+					<li class="sidebar"><a href="installertask.html">Installer Ant task</a></li>
+					<li class="sidebar"><a href="validationofconfig.html">Validation of config</a></li>
+					<li class="sidebar"><a href="lookandfeels.html">LookAndFeels</a> <br/>(inc screenshots)</li>
+					<li class="sidebar"><a href="classpathresources.html">Resources/Classpath issues</a></li>
+					<li class="sidebar"><a href="i18n.html">Internationalisation</a></li>
+					<li class="sidebar"><a href="auto.html">Automated installs</a></li>
+					<li class="sidebar"><a href="installtypes.html">Multiple install types</a></li>
+					<li class="sidebar"><a href="posttargets.html">Post display targets</a></li>
+					<li class="sidebar"><a href="icons.html">Button Icons</a></li>
+					<li class="sidebar"><a href="antinstall-config-example.html">Example antinstall-config.xml</a></li>
+				</ol>
+			</li>
+			<li class="sidebar"><a href="manual-ant.html">Ant Manual</a></li>
+			<li class="sidebar"><a href="antlinks.html">Ant links</a></li>
+			<li class="sidebar"><a href="userusage.html">User usage</a></li>
+			<li class="sidebar"><a href="licenses.html">Licenses</a></li>
+			<li class="sidebar"><a href="potentialuses.html">Potential uses</a></li>
+			<li class="sidebar"><a href="roadmap.html">Road Map</a></li>
+			<li class="sidebar"><a href="wanted.html">Wanted</a></li>
+			<li class="sidebar"><a href="dtds.html">DTDs</a></li>
+			<li class="sidebar"><a href="changelog.html">Changelog</a></li>
+			<li class="sidebar"><a href="http://sourceforge.net/projects/antinstaller">Project page on SourceForge</a></li>
+			<li class="sidebar"><a href="java2html/antinstaller/index.html">Java2HTML (main)</a></li>
+			<li class="sidebar"><a href="java2html/ext/index.html">Java2HTML (extensions)</a></li>
+			<li class="sidebar"><a href="http://antinstaller.cvs.sourceforge.net/antinstaller">Public CVS over HTTP</a></li>
+			<li class="sidebar"><a href="http://sourceforge.net/sendmessage.php?touser=616485">Contact AntInstaller Admin</a></li>
+		</ol>
+	</li>
+</ol>
+<br/>
+<br/>
+</div>
+
+
+<!-- menu end [segment-end]-->
+</div>
+<div id="contents-options">
+<a id="toggle" href="#" onclick="toggleMenu(); return false;">show menu</a>
+</div>
+
+</div>
+</body>
+</html>

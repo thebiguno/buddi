@@ -1,0 +1,5 @@
+Default Icons: Paul Hinds
+
+http://java.riereta.net
+
+License: Apache 2.0

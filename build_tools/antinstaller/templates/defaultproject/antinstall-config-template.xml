@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
+<installer
+			ui="swing,text"
+			verbose="true"
+			debug="false"
+			lookAndFeel="org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel"
+			name="@PROJECT_NAME@ Installer"
+			windowIcon="/resources/gkmain_inv.png"
+			defaultImageResource="/resources/makewavesdawn.png"
+			minJavaVersion="1.4">
+	<!--  each page element represents a page of the installer -->
+	<page
+			type="input"
+			name="intro"
+			displayText="Welcome to the @PROJECT_NAME@ installer">
+	</page>
+	<!--  type="license" shows a license page to click through -->
+	<page
+			type="license"
+			name="license"
+			displayText="License conditions"
+			resource="/resources/License.txt">
+	</page>
+	<!--  type="input" shows a list of editable options for the installer -->
+	<page
+			type="input"
+			name="properties"
+			displayText="Required install options">
+		<directory
+				property="installDir"
+				defaultValue="/usr/local/@PROJECT_SHORT_NAME@"
+				defaultValueWin="${env.ProgramFiles}\@PROJECT_SHORT_NAME@"
+				displayText="Select an installation directory"
+				create="true"/>
+	</page>
+	<page
+			type="input"
+			name="selector"
+			displayText="Components to install">
+		<comment
+				displayText="Choose the components you want to install"
+				bold="true"/>
+		<target
+			displayText="Core components"
+			target="default"
+			defaultValue="true"
+			force="true"/>
+		<!--SourceCode
+		<target
+			displayText="Source code"
+			target="tgsrc"
+			defaultValue="false"/>
+		SourceCode-->
+		<!--Documentation
+		<target
+			displayText="Documentation"
+			target="tgdoc"
+			defaultValue="true"/>
+		Documentation-->
+	</page>
+	<page
+			type="progress"
+			name="progress"
+			displayText="Installation progress"
+			showTargets="false"
+			target="cleanuptarget">
+	</page>
+</installer>
+
+

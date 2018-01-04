@@ -1,0 +1,17 @@
+
+   <ant-installer> 
+      _-------_ 
+      \ ()0o< / 
+       \ /|\ /
+        \   /
+         \ /
+          ·
+Default icons created with
+
+     - inkscape - 
+http://www.inkscape.org
+
+   - and the gimp -
+  http://www.gimp.org
+
+

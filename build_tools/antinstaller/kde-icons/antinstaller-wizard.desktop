@@ -1,0 +1,14 @@
+[Desktop Entry]
+Comment=AntInstaller Project Wizard
+Path=@installDir@
+Icon=@installDir@/kde-icons/AntInstaller.png
+Exec='@installDir@/wizard.sh'
+Name=AntInstaller Wizard
+StartupNotify=true
+Terminal=0
+TerminalOptions=
+Type=Application
+Encoding=UTF-8
+X-KDE-SubstituteUID=false
+X-KDE-Username=
+Categories=Development;Java

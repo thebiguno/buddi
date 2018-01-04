@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.input.OSSpecific (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">OSSpecific.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.input.index.html" target="packageFrame">org.tp23.antinstaller.input</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">org.tp23.antinstaller.InstallerContext</A>;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">20</FONT><A NAME="20"></A> * Operating System Specific input fields have different default values for Unix and Windoze
+<FONT CLASS="LN">21</FONT><A NAME="21"></A> * TODO something more with defaults for optionally supporting more OSs
+<FONT CLASS="LN">22</FONT><A NAME="22"></A> */</FONT>
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Abstract">abstract</FONT> <FONT CLASS="Class">class</FONT> OSSpecific <FONT CLASS="Extends">extends</FONT> <A HREF="../../../../org/tp23/antinstaller/input/InputField.java.html">InputField</A> {
+<FONT CLASS="LN">24</FONT><A NAME="24"></A>
+<FONT CLASS="LN">25</FONT><A NAME="25"></A>    <FONT CLASS="Private">private</FONT> String defaultValueWin;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A>
+<FONT CLASS="LN">27</FONT><A NAME="27"></A>    <FONT CLASS="Public">public</FONT> String getDefaultValue(<FONT CLASS="Boolean">boolean</FONT> correctForOS) {
+<FONT CLASS="LN">28</FONT><A NAME="28"></A>        <FONT CLASS="If">if</FONT>(InstallerContext.isUnix() || defaultValueWin == <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">29</FONT><A NAME="29"></A>            <FONT CLASS="If">if</FONT>(<FONT CLASS="StringLiteral">""</FONT>.equals(defaultValue)){
+<FONT CLASS="LN">30</FONT><A NAME="30"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="StringLiteral">""</FONT>;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A>            }
+<FONT CLASS="LN">32</FONT><A NAME="32"></A>            <FONT CLASS="Return">return</FONT> resultContainer.getDefaultFileRef(defaultValue);
+<FONT CLASS="LN">33</FONT><A NAME="33"></A>        }
+<FONT CLASS="LN">34</FONT><A NAME="34"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">35</FONT><A NAME="35"></A>            <FONT CLASS="If">if</FONT>(<FONT CLASS="StringLiteral">""</FONT>.equals(defaultValueWin)){
+<FONT CLASS="LN">36</FONT><A NAME="36"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="StringLiteral">""</FONT>;
+<FONT CLASS="LN">37</FONT><A NAME="37"></A>            }
+<FONT CLASS="LN">38</FONT><A NAME="38"></A>            <FONT CLASS="Return">return</FONT> resultContainer.getDefaultFileRef(defaultValueWin);
+<FONT CLASS="LN">39</FONT><A NAME="39"></A>        }
+<FONT CLASS="LN">40</FONT><A NAME="40"></A>    }
+<FONT CLASS="LN">41</FONT><A NAME="41"></A>
+<FONT CLASS="LN">42</FONT><A NAME="42"></A>    <FONT CLASS="Public">public</FONT> String getDefaultValueWin() {
+<FONT CLASS="LN">43</FONT><A NAME="43"></A>        <FONT CLASS="Return">return</FONT> defaultValueWin;
+<FONT CLASS="LN">44</FONT><A NAME="44"></A>    }
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setDefaultValueWin(String defaultValueWin) {
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>        <FONT CLASS="This">this</FONT>.defaultValueWin = defaultValueWin;
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>    }
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>}
+<FONT CLASS="LN">50</FONT><A NAME="50"></A></pre>
+</BODY>
+</HTML>

@@ -1,0 +1,1084 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.antmod.Main (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">Main.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/*
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright  2000-2004 The Apache Software Foundation
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> *  Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> *  you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> *  You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> *      http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> *  Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> *  distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> *  See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> *  limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> *
+<FONT CLASS="LN">16</FONT><A NAME="16"></A> */</FONT>
+<FONT CLASS="LN">17</FONT><A NAME="17"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.antmod.index.html" target="packageFrame">org.tp23.antinstaller.antmod</A>;
+<FONT CLASS="LN">18</FONT><A NAME="18"></A>
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.io.File;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.io.FileInputStream;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.io.FileOutputStream;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.io.IOException;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> java.io.InputStream;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> java.io.PrintStream;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> java.util.Enumeration;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="Import">import</FONT> java.util.Properties;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> java.util.Vector;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A>
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.BuildException;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.BuildListener;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.BuildLogger;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.DefaultLogger;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.Diagnostics;
+<FONT CLASS="LN">34</FONT><A NAME="34"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.ExitStatusException;
+<FONT CLASS="LN">35</FONT><A NAME="35"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.Project;
+<FONT CLASS="LN">36</FONT><A NAME="36"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.ProjectHelper;
+<FONT CLASS="LN">37</FONT><A NAME="37"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.Target;
+<FONT CLASS="LN">38</FONT><A NAME="38"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.input.DefaultInputHandler;
+<FONT CLASS="LN">39</FONT><A NAME="39"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.input.InputHandler;
+<FONT CLASS="LN">40</FONT><A NAME="40"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.launch.AntMain;
+<FONT CLASS="LN">41</FONT><A NAME="41"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.util.JavaEnvUtils;
+<FONT CLASS="LN">42</FONT><A NAME="42"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">org.tp23.antinstaller.InstallerContext</A>;
+<FONT CLASS="LN">43</FONT><A NAME="43"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/PropertiesFileRenderer.java.html">org.tp23.antinstaller.PropertiesFileRenderer</A>;
+<FONT CLASS="LN">44</FONT><A NAME="44"></A>
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>
+<FONT CLASS="LN">46</FONT><A NAME="46"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">47</FONT><A NAME="47"></A> * Command line entry point into Ant. This class is entered via the
+<FONT CLASS="LN">48</FONT><A NAME="48"></A> * canonical `public static void main` entry point and reads the
+<FONT CLASS="LN">49</FONT><A NAME="49"></A> * command line arguments. It then assembles and executes an Ant
+<FONT CLASS="LN">50</FONT><A NAME="50"></A> * project.
+<FONT CLASS="LN">51</FONT><A NAME="51"></A> * &lt;p&gt;
+<FONT CLASS="LN">52</FONT><A NAME="52"></A> * If you integrating Ant into some other tool, this is not the class
+<FONT CLASS="LN">53</FONT><A NAME="53"></A> * to use as an entry point. Please see the source code of this
+<FONT CLASS="LN">54</FONT><A NAME="54"></A> * class to see how it manipulates the Ant project classes.
+<FONT CLASS="LN">55</FONT><A NAME="55"></A> *
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>* This file has been modified by Paul Hinds for Antinstaller and is not the same
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>* as the one delivered with Ant 1.6
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>* @version $Id: Main.java,v 1.5 2007/01/12 10:41:48 anothermwilson Exp $
+<FONT CLASS="LN">59</FONT><A NAME="59"></A> */</FONT>
+<FONT CLASS="LN">60</FONT><A NAME="60"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> Main <FONT CLASS="Implements">implements</FONT> AntMain {
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>    <FONT CLASS="FormalComment">/** The default build file name. */</FONT>
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String DEFAULT_BUILD_FILENAME = <FONT CLASS="StringLiteral">"build.xml"</FONT>;
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>    <FONT CLASS="FormalComment">/** Our current message output status. Follows Project.MSG_XXX. */</FONT>
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Int">int</FONT> msgOutputLevel = Project.MSG_INFO;
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>    <FONT CLASS="FormalComment">/** File that we are using for configuration. */</FONT>
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>    <FONT CLASS="Private">private</FONT> File buildFile; <FONT CLASS="MultiLineComment">/* null */</FONT>
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>    <FONT CLASS="FormalComment">/** Stream to use for logging. */</FONT>
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> PrintStream out = System.out;
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>    <FONT CLASS="FormalComment">/** Stream that we are using for logging error messages. */</FONT>
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> PrintStream err = System.err;
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>    <FONT CLASS="FormalComment">/** The build targets. */</FONT>
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>    <FONT CLASS="Private">private</FONT> Vector targets = <FONT CLASS="New">new</FONT> Vector();
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>    <FONT CLASS="FormalComment">/** Set of properties that can be used by tasks. */</FONT>
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>    <FONT CLASS="Private">private</FONT> Properties definedProps = <FONT CLASS="New">new</FONT> Properties();
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>    <FONT CLASS="FormalComment">/** Names of classes to add as listeners to project. */</FONT>
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>    <FONT CLASS="Private">private</FONT> Vector listeners = <FONT CLASS="New">new</FONT> Vector(<FONT CLASS="IntegerLiteral">1</FONT>);
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>    <FONT CLASS="FormalComment">/** File names of property files to load on startup. */</FONT>
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>    <FONT CLASS="Private">private</FONT> Vector propertyFiles = <FONT CLASS="New">new</FONT> Vector(<FONT CLASS="IntegerLiteral">1</FONT>);
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>    <FONT CLASS="FormalComment">/** Indicates whether this build is to support interactive input */</FONT>
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> allowInput = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>    <FONT CLASS="FormalComment">/** keep going mode */</FONT>
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> keepGoingMode = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>     * The Ant logger class. There may be only one logger. It will have
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>     * the right to use the 'out' PrintStream. The class must implements the
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>     * BuildLogger interface.
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>     */</FONT>
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>    <FONT CLASS="Private">private</FONT> String loggerClassname = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>     * The Ant InputHandler class.  There may be only one input
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>     * handler.
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>     */</FONT>
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>    <FONT CLASS="Private">private</FONT> String inputHandlerClassname = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>     * Whether or not output to the log is to be unadorned.
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>     */</FONT>
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> emacsMode = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>     * Whether or not this instance has successfully been
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>     * constructed and is ready to run.
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>     */</FONT>
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> readyToRun = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>     * Whether or not we should only parse and display the project help
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>     * information.
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>     */</FONT>
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> projectHelp = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>     * Whether or not a logfile is being used. This is used to
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>     * check if the output streams must be closed.
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>     */</FONT>
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Boolean">boolean</FONT> isLogFileUsed = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>     * optional thread priority
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>     */</FONT>
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>    <FONT CLASS="Private">private</FONT> Integer threadPriority = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>     * Installer Context
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>     */</FONT>
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>     * Prints the message of the Throwable if it (the message) is not
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>     * &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>     *
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>     * @param t Throwable to print the message of.
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>     *          Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>     */</FONT>
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> printMessage(Throwable t) {
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>        String message = t.getMessage();
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>        <FONT CLASS="If">if</FONT> (message != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>            System.err.println(message);
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>        }
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>    }
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>     * Creates a new instance of this class using the
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>     * arguments specified, gives it any extra user properties which have been
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>     * specified, and then runs the build using the classloader provided.
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>     *
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>     * @param args Command line arguments. Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>     * @param additionalUserProperties Any extra properties to use in this
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>     *        build. May be &lt;code&gt;null&lt;/code&gt;, which is the equivalent to
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>     *        passing in an empty set of properties.
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>     * @param coreLoader Classloader used for core classes. May be
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>     *        &lt;code&gt;null&lt;/code&gt; in which case the system classloader is used.
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>     */</FONT>
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> start(String[] args, Properties additionalUserProperties,
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>                             ClassLoader coreLoader) {
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>        <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> UnsupportedOperationException(<FONT CLASS="StringLiteral">"Required by Ant interface but not used"</FONT>);
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>        <FONT CLASS="SingleLineComment">//Main m = new Main();
+<FONT CLASS="LN">70</FONT><A NAME="170"></A></FONT>        <FONT CLASS="SingleLineComment">//m.startAnt(args, additionalUserProperties, coreLoader);
+<FONT CLASS="LN">71</FONT><A NAME="171"></A></FONT>    }
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>    
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> startAnt(String[] args, Properties additionalUserProperties,
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>                         ClassLoader coreLoader) {
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>        <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> UnsupportedOperationException(<FONT CLASS="StringLiteral">"Required by Ant interface but not used"</FONT>);
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>        <FONT CLASS="SingleLineComment">//startAnt(args, additionalUserProperties, coreLoader, null); // FindBugs does not like this
+<FONT CLASS="LN">78</FONT><A NAME="178"></A></FONT>    }
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>     * Start Ant
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>     * @param args command line args
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>     * @param additionalUserProperties properties to set beyond those that
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>     *        may be specified on the args list
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>     * @param coreLoader - not used
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>     * @return the return code that was used for System.exit() in the original Ant 
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>     *
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>     * @since Ant 1.6
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>     */</FONT>
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Int">int</FONT> startAnt(String[] args, Properties additionalUserProperties,
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>                         ClassLoader coreLoader, <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx) {
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>         <FONT CLASS="This">this</FONT>.ctx = ctx;
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>         out = ctx.getAntOutputRenderer().getOut();
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>         err = ctx.getAntOutputRenderer().getErr();
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>            Diagnostics.validateVersion();
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>            processArgs(args);
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>        } <FONT CLASS="Catch">catch</FONT> (Throwable exc) {
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>            handleLogfile();
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>            printMessage(exc);
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>        }
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>        <FONT CLASS="If">if</FONT> (additionalUserProperties != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>            <FONT CLASS="For">for</FONT> (Enumeration e = additionalUserProperties.keys();
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>                    e.hasMoreElements();) {
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>                String key = (String) e.nextElement();
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>                String property = additionalUserProperties.getProperty(key);
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>                definedProps.put(key, property);
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>            }
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>        }
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>        <FONT CLASS="SingleLineComment">// expect the worst
+<FONT CLASS="LN">13</FONT><A NAME="213"></A></FONT>        <FONT CLASS="Int">int</FONT> exitCode = <FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>                runBuild(coreLoader);
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>                exitCode = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">18</FONT><A NAME="218"></A>            } <FONT CLASS="Catch">catch</FONT> (ExitStatusException ese) {
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>                exitCode = ese.getStatus();
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>                <FONT CLASS="If">if</FONT> (exitCode != <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>                    <FONT CLASS="Throw">throw</FONT> ese;
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>                }
+<FONT CLASS="LN">23</FONT><A NAME="223"></A>            }
+<FONT CLASS="LN">24</FONT><A NAME="224"></A>        } <FONT CLASS="Catch">catch</FONT> (BuildException be) {
+<FONT CLASS="LN">25</FONT><A NAME="225"></A>            <FONT CLASS="If">if</FONT> (err != System.err) {
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>                printMessage(be);
+<FONT CLASS="LN">27</FONT><A NAME="227"></A>            }
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>        } <FONT CLASS="Catch">catch</FONT> (Throwable exc) {
+<FONT CLASS="LN">29</FONT><A NAME="229"></A>            exc.printStackTrace();
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>            printMessage(exc);
+<FONT CLASS="LN">31</FONT><A NAME="231"></A>        } <FONT CLASS="Finally">finally</FONT> {
+<FONT CLASS="LN">32</FONT><A NAME="232"></A>            handleLogfile();
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>        }
+<FONT CLASS="LN">34</FONT><A NAME="234"></A>        <FONT CLASS="SingleLineComment">//mod by Paul Hinds
+<FONT CLASS="LN">35</FONT><A NAME="235"></A></FONT>        <FONT CLASS="Return">return</FONT> exitCode;
+<FONT CLASS="LN">36</FONT><A NAME="236"></A>        <FONT CLASS="SingleLineComment">//System.exit(exitCode);
+<FONT CLASS="LN">37</FONT><A NAME="237"></A></FONT>    }
+<FONT CLASS="LN">38</FONT><A NAME="238"></A>
+<FONT CLASS="LN">39</FONT><A NAME="239"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">40</FONT><A NAME="240"></A>     * Close logfiles, if we have been writing to them.
+<FONT CLASS="LN">41</FONT><A NAME="241"></A>     *
+<FONT CLASS="LN">42</FONT><A NAME="242"></A>     * @since Ant 1.6
+<FONT CLASS="LN">43</FONT><A NAME="243"></A>     */</FONT>
+<FONT CLASS="LN">44</FONT><A NAME="244"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> handleLogfile() {
+<FONT CLASS="LN">45</FONT><A NAME="245"></A>        <FONT CLASS="If">if</FONT> (isLogFileUsed) {
+<FONT CLASS="LN">46</FONT><A NAME="246"></A>            <FONT CLASS="If">if</FONT> (out != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">47</FONT><A NAME="247"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">48</FONT><A NAME="248"></A>                    out.close();
+<FONT CLASS="LN">49</FONT><A NAME="249"></A>                } <FONT CLASS="Catch">catch</FONT> (<FONT CLASS="Final">final</FONT> Exception e) {
+<FONT CLASS="LN">50</FONT><A NAME="250"></A>                    <FONT CLASS="SingleLineComment">//ignore
+<FONT CLASS="LN">51</FONT><A NAME="251"></A></FONT>                }
+<FONT CLASS="LN">52</FONT><A NAME="252"></A>            }
+<FONT CLASS="LN">53</FONT><A NAME="253"></A>            <FONT CLASS="If">if</FONT> (err != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">54</FONT><A NAME="254"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">55</FONT><A NAME="255"></A>                    err.close();
+<FONT CLASS="LN">56</FONT><A NAME="256"></A>                } <FONT CLASS="Catch">catch</FONT> (<FONT CLASS="Final">final</FONT> Exception e) {
+<FONT CLASS="LN">57</FONT><A NAME="257"></A>                    <FONT CLASS="SingleLineComment">//ignore
+<FONT CLASS="LN">58</FONT><A NAME="258"></A></FONT>                }
+<FONT CLASS="LN">59</FONT><A NAME="259"></A>            }
+<FONT CLASS="LN">60</FONT><A NAME="260"></A>        }
+<FONT CLASS="LN">61</FONT><A NAME="261"></A>    }
+<FONT CLASS="LN">62</FONT><A NAME="262"></A>
+<FONT CLASS="LN">63</FONT><A NAME="263"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">64</FONT><A NAME="264"></A>     * Command line entry point. This method kicks off the building
+<FONT CLASS="LN">65</FONT><A NAME="265"></A>     * of a project object and executes a build using either a given
+<FONT CLASS="LN">66</FONT><A NAME="266"></A>     * target or the default target.
+<FONT CLASS="LN">67</FONT><A NAME="267"></A>     *
+<FONT CLASS="LN">68</FONT><A NAME="268"></A>     * @param args Command line arguments. Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">69</FONT><A NAME="269"></A>     */</FONT>
+<FONT CLASS="LN">70</FONT><A NAME="270"></A><FONT CLASS="SingleLineComment">//    public static void main(String[] args) {
+<FONT CLASS="LN">71</FONT><A NAME="271"></A></FONT><FONT CLASS="SingleLineComment">//        start(args, null, null);
+<FONT CLASS="LN">72</FONT><A NAME="272"></A></FONT><FONT CLASS="SingleLineComment">//    }
+<FONT CLASS="LN">73</FONT><A NAME="273"></A></FONT><FONT CLASS="SingleLineComment">//
+<FONT CLASS="LN">74</FONT><A NAME="274"></A></FONT>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">75</FONT><A NAME="275"></A>     * Constructor used when creating Main for later arg processing
+<FONT CLASS="LN">76</FONT><A NAME="276"></A>     * and startup
+<FONT CLASS="LN">77</FONT><A NAME="277"></A>     */</FONT>
+<FONT CLASS="LN">78</FONT><A NAME="278"></A>    <FONT CLASS="Public">public</FONT> Main() {
+<FONT CLASS="LN">79</FONT><A NAME="279"></A>    }
+<FONT CLASS="LN">80</FONT><A NAME="280"></A>
+<FONT CLASS="LN">81</FONT><A NAME="281"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">82</FONT><A NAME="282"></A>     * Sole constructor, which parses and deals with command line
+<FONT CLASS="LN">83</FONT><A NAME="283"></A>     * arguments.
+<FONT CLASS="LN">84</FONT><A NAME="284"></A>     *
+<FONT CLASS="LN">85</FONT><A NAME="285"></A>     * @param args Command line arguments. Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">86</FONT><A NAME="286"></A>     *
+<FONT CLASS="LN">87</FONT><A NAME="287"></A>     * @exception BuildException if the specified build file doesn't exist
+<FONT CLASS="LN">88</FONT><A NAME="288"></A>     *                           or is a directory.
+<FONT CLASS="LN">89</FONT><A NAME="289"></A>     *
+<FONT CLASS="LN">90</FONT><A NAME="290"></A>     * @deprecated
+<FONT CLASS="LN">91</FONT><A NAME="291"></A>     */</FONT>
+<FONT CLASS="LN">92</FONT><A NAME="292"></A>    <FONT CLASS="Protected">protected</FONT> Main(String[] args) <FONT CLASS="Throws">throws</FONT> BuildException {
+<FONT CLASS="LN">93</FONT><A NAME="293"></A>        processArgs(args);
+<FONT CLASS="LN">94</FONT><A NAME="294"></A>    }
+<FONT CLASS="LN">95</FONT><A NAME="295"></A>
+<FONT CLASS="LN">96</FONT><A NAME="296"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">97</FONT><A NAME="297"></A>     * Process command line arguments.
+<FONT CLASS="LN">98</FONT><A NAME="298"></A>     * When ant is started from Launcher, the -lib argument does not get
+<FONT CLASS="LN">99</FONT><A NAME="299"></A>     * passed through to this routine.
+<FONT CLASS="LN">00</FONT><A NAME="300"></A>     *
+<FONT CLASS="LN">01</FONT><A NAME="301"></A>     * @param args the command line arguments.
+<FONT CLASS="LN">02</FONT><A NAME="302"></A>     *
+<FONT CLASS="LN">03</FONT><A NAME="303"></A>     * @since Ant 1.6
+<FONT CLASS="LN">04</FONT><A NAME="304"></A>     */</FONT>
+<FONT CLASS="LN">05</FONT><A NAME="305"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> processArgs(String[] args) {
+<FONT CLASS="LN">06</FONT><A NAME="306"></A>        String searchForThis = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">07</FONT><A NAME="307"></A>        PrintStream logTo = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">08</FONT><A NAME="308"></A>
+<FONT CLASS="LN">09</FONT><A NAME="309"></A>        <FONT CLASS="SingleLineComment">// cycle through given args
+<FONT CLASS="LN">10</FONT><A NAME="310"></A></FONT>
+<FONT CLASS="LN">11</FONT><A NAME="311"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; args.length; i++) {
+<FONT CLASS="LN">12</FONT><A NAME="312"></A>            String arg = args[i];
+<FONT CLASS="LN">13</FONT><A NAME="313"></A>
+<FONT CLASS="LN">14</FONT><A NAME="314"></A>            <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-help"</FONT>) || arg.equals(<FONT CLASS="StringLiteral">"-h"</FONT>)) {
+<FONT CLASS="LN">15</FONT><A NAME="315"></A>                printUsage();
+<FONT CLASS="LN">16</FONT><A NAME="316"></A>                <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">17</FONT><A NAME="317"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-version"</FONT>)) {
+<FONT CLASS="LN">18</FONT><A NAME="318"></A>                printVersion();
+<FONT CLASS="LN">19</FONT><A NAME="319"></A>                <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">20</FONT><A NAME="320"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-diagnostics"</FONT>)) {
+<FONT CLASS="LN">21</FONT><A NAME="321"></A>                Diagnostics.doReport(System.out);
+<FONT CLASS="LN">22</FONT><A NAME="322"></A>                <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">23</FONT><A NAME="323"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-quiet"</FONT>) || arg.equals(<FONT CLASS="StringLiteral">"-q"</FONT>)) {
+<FONT CLASS="LN">24</FONT><A NAME="324"></A>                msgOutputLevel = Project.MSG_WARN;
+<FONT CLASS="LN">25</FONT><A NAME="325"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-verbose"</FONT>) || arg.equals(<FONT CLASS="StringLiteral">"-v"</FONT>)) {
+<FONT CLASS="LN">26</FONT><A NAME="326"></A>                printVersion();
+<FONT CLASS="LN">27</FONT><A NAME="327"></A>                msgOutputLevel = Project.MSG_VERBOSE;
+<FONT CLASS="LN">28</FONT><A NAME="328"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-debug"</FONT>) || arg.equals(<FONT CLASS="StringLiteral">"-d"</FONT>)) {
+<FONT CLASS="LN">29</FONT><A NAME="329"></A>                printVersion();
+<FONT CLASS="LN">30</FONT><A NAME="330"></A>                msgOutputLevel = Project.MSG_DEBUG;
+<FONT CLASS="LN">31</FONT><A NAME="331"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-noinput"</FONT>)) {
+<FONT CLASS="LN">32</FONT><A NAME="332"></A>                allowInput = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">33</FONT><A NAME="333"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-logfile"</FONT>) || arg.equals(<FONT CLASS="StringLiteral">"-l"</FONT>)) {
+<FONT CLASS="LN">34</FONT><A NAME="334"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">35</FONT><A NAME="335"></A>                    File logFile = <FONT CLASS="New">new</FONT> File(args[i + <FONT CLASS="IntegerLiteral">1</FONT>]);
+<FONT CLASS="LN">36</FONT><A NAME="336"></A>                    i++;
+<FONT CLASS="LN">37</FONT><A NAME="337"></A>                    logTo = <FONT CLASS="New">new</FONT> PrintStream(<FONT CLASS="New">new</FONT> FileOutputStream(logFile));
+<FONT CLASS="LN">38</FONT><A NAME="338"></A>                    isLogFileUsed = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">39</FONT><A NAME="339"></A>                } <FONT CLASS="Catch">catch</FONT> (IOException ioe) {
+<FONT CLASS="LN">40</FONT><A NAME="340"></A>                    String msg = <FONT CLASS="StringLiteral">"Cannot write on the specified log file. "</FONT>
+<FONT CLASS="LN">41</FONT><A NAME="341"></A>                        + <FONT CLASS="StringLiteral">"Make sure the path exists and you have write "</FONT>
+<FONT CLASS="LN">42</FONT><A NAME="342"></A>                        + <FONT CLASS="StringLiteral">"permissions."</FONT>;
+<FONT CLASS="LN">43</FONT><A NAME="343"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(msg);
+<FONT CLASS="LN">44</FONT><A NAME="344"></A>                } <FONT CLASS="Catch">catch</FONT> (ArrayIndexOutOfBoundsException aioobe) {
+<FONT CLASS="LN">45</FONT><A NAME="345"></A>                    String msg = <FONT CLASS="StringLiteral">"You must specify a log file when "</FONT>
+<FONT CLASS="LN">46</FONT><A NAME="346"></A>                        + <FONT CLASS="StringLiteral">"using the -log argument"</FONT>;
+<FONT CLASS="LN">47</FONT><A NAME="347"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(msg);
+<FONT CLASS="LN">48</FONT><A NAME="348"></A>                }
+<FONT CLASS="LN">49</FONT><A NAME="349"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-buildfile"</FONT>) || arg.equals(<FONT CLASS="StringLiteral">"-file"</FONT>)
+<FONT CLASS="LN">50</FONT><A NAME="350"></A>                       || arg.equals(<FONT CLASS="StringLiteral">"-f"</FONT>)) {
+<FONT CLASS="LN">51</FONT><A NAME="351"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">52</FONT><A NAME="352"></A>                    buildFile = <FONT CLASS="New">new</FONT> File(args[i + <FONT CLASS="IntegerLiteral">1</FONT>].replace(<FONT CLASS="CharacerLiteral">'/'</FONT>, File.separatorChar));
+<FONT CLASS="LN">53</FONT><A NAME="353"></A>                    i++;
+<FONT CLASS="LN">54</FONT><A NAME="354"></A>                } <FONT CLASS="Catch">catch</FONT> (ArrayIndexOutOfBoundsException aioobe) {
+<FONT CLASS="LN">55</FONT><A NAME="355"></A>                    String msg = <FONT CLASS="StringLiteral">"You must specify a buildfile when "</FONT>
+<FONT CLASS="LN">56</FONT><A NAME="356"></A>                        + <FONT CLASS="StringLiteral">"using the -buildfile argument"</FONT>;
+<FONT CLASS="LN">57</FONT><A NAME="357"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(msg);
+<FONT CLASS="LN">58</FONT><A NAME="358"></A>                }
+<FONT CLASS="LN">59</FONT><A NAME="359"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-listener"</FONT>)) {
+<FONT CLASS="LN">60</FONT><A NAME="360"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">61</FONT><A NAME="361"></A>                    listeners.addElement(args[i + <FONT CLASS="IntegerLiteral">1</FONT>]);
+<FONT CLASS="LN">62</FONT><A NAME="362"></A>                    i++;
+<FONT CLASS="LN">63</FONT><A NAME="363"></A>                } <FONT CLASS="Catch">catch</FONT> (ArrayIndexOutOfBoundsException aioobe) {
+<FONT CLASS="LN">64</FONT><A NAME="364"></A>                    String msg = <FONT CLASS="StringLiteral">"You must specify a classname when "</FONT>
+<FONT CLASS="LN">65</FONT><A NAME="365"></A>                        + <FONT CLASS="StringLiteral">"using the -listener argument"</FONT>;
+<FONT CLASS="LN">66</FONT><A NAME="366"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(msg);
+<FONT CLASS="LN">67</FONT><A NAME="367"></A>                }
+<FONT CLASS="LN">68</FONT><A NAME="368"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.startsWith(<FONT CLASS="StringLiteral">"-D"</FONT>)) {
+<FONT CLASS="LN">69</FONT><A NAME="369"></A>
+<FONT CLASS="LN">70</FONT><A NAME="370"></A>                <FONT CLASS="MultiLineComment">/* Interestingly enough, we get to here when a user
+<FONT CLASS="LN">71</FONT><A NAME="371"></A>                 * uses -Dname=value. However, in some cases, the OS
+<FONT CLASS="LN">72</FONT><A NAME="372"></A>                 * goes ahead and parses this out to args
+<FONT CLASS="LN">73</FONT><A NAME="373"></A>                 *   {"-Dname", "value"}
+<FONT CLASS="LN">74</FONT><A NAME="374"></A>                 * so instead of parsing on "=", we just make the "-D"
+<FONT CLASS="LN">75</FONT><A NAME="375"></A>                 * characters go away and skip one argument forward.
+<FONT CLASS="LN">76</FONT><A NAME="376"></A>                 *
+<FONT CLASS="LN">77</FONT><A NAME="377"></A>                 * I don't know how to predict when the JDK is going
+<FONT CLASS="LN">78</FONT><A NAME="378"></A>                 * to help or not, so we simply look for the equals sign.
+<FONT CLASS="LN">79</FONT><A NAME="379"></A>                 */</FONT>
+<FONT CLASS="LN">80</FONT><A NAME="380"></A>
+<FONT CLASS="LN">81</FONT><A NAME="381"></A>                String name = arg.substring(<FONT CLASS="IntegerLiteral">2</FONT>, arg.length());
+<FONT CLASS="LN">82</FONT><A NAME="382"></A>                String value = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">83</FONT><A NAME="383"></A>                <FONT CLASS="Int">int</FONT> posEq = name.indexOf(<FONT CLASS="StringLiteral">"="</FONT>);
+<FONT CLASS="LN">84</FONT><A NAME="384"></A>                <FONT CLASS="If">if</FONT> (posEq &gt; <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">85</FONT><A NAME="385"></A>                    value = name.substring(posEq + <FONT CLASS="IntegerLiteral">1</FONT>);
+<FONT CLASS="LN">86</FONT><A NAME="386"></A>                    name = name.substring(<FONT CLASS="IntegerLiteral">0</FONT>, posEq);
+<FONT CLASS="LN">87</FONT><A NAME="387"></A>                } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (i &lt; args.length - <FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">88</FONT><A NAME="388"></A>                    value = args[++i];
+<FONT CLASS="LN">89</FONT><A NAME="389"></A>                } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">90</FONT><A NAME="390"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Missing value for property "</FONT>
+<FONT CLASS="LN">91</FONT><A NAME="391"></A>                                             + name);
+<FONT CLASS="LN">92</FONT><A NAME="392"></A>                }
+<FONT CLASS="LN">93</FONT><A NAME="393"></A>
+<FONT CLASS="LN">94</FONT><A NAME="394"></A>                definedProps.put(name, value);
+<FONT CLASS="LN">95</FONT><A NAME="395"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-logger"</FONT>)) {
+<FONT CLASS="LN">96</FONT><A NAME="396"></A>                <FONT CLASS="If">if</FONT> (loggerClassname != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">97</FONT><A NAME="397"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Only one logger class may "</FONT>
+<FONT CLASS="LN">98</FONT><A NAME="398"></A>                        + <FONT CLASS="StringLiteral">" be specified."</FONT>);
+<FONT CLASS="LN">99</FONT><A NAME="399"></A>                }
+<FONT CLASS="LN">00</FONT><A NAME="400"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">01</FONT><A NAME="401"></A>                    loggerClassname = args[++i];
+<FONT CLASS="LN">02</FONT><A NAME="402"></A>                } <FONT CLASS="Catch">catch</FONT> (ArrayIndexOutOfBoundsException aioobe) {
+<FONT CLASS="LN">03</FONT><A NAME="403"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"You must specify a classname when"</FONT>
+<FONT CLASS="LN">04</FONT><A NAME="404"></A>                                             + <FONT CLASS="StringLiteral">" using the -logger argument"</FONT>);
+<FONT CLASS="LN">05</FONT><A NAME="405"></A>                }
+<FONT CLASS="LN">06</FONT><A NAME="406"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-inputhandler"</FONT>)) {
+<FONT CLASS="LN">07</FONT><A NAME="407"></A>                <FONT CLASS="If">if</FONT> (inputHandlerClassname != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">08</FONT><A NAME="408"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Only one input handler class may "</FONT>
+<FONT CLASS="LN">09</FONT><A NAME="409"></A>                                             + <FONT CLASS="StringLiteral">"be specified."</FONT>);
+<FONT CLASS="LN">10</FONT><A NAME="410"></A>                }
+<FONT CLASS="LN">11</FONT><A NAME="411"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">12</FONT><A NAME="412"></A>                    inputHandlerClassname = args[++i];
+<FONT CLASS="LN">13</FONT><A NAME="413"></A>                } <FONT CLASS="Catch">catch</FONT> (ArrayIndexOutOfBoundsException aioobe) {
+<FONT CLASS="LN">14</FONT><A NAME="414"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"You must specify a classname when"</FONT>
+<FONT CLASS="LN">15</FONT><A NAME="415"></A>                                             + <FONT CLASS="StringLiteral">" using the -inputhandler"</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="416"></A>                                             + <FONT CLASS="StringLiteral">" argument"</FONT>);
+<FONT CLASS="LN">17</FONT><A NAME="417"></A>                }
+<FONT CLASS="LN">18</FONT><A NAME="418"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-emacs"</FONT>) || arg.equals(<FONT CLASS="StringLiteral">"-e"</FONT>)) {
+<FONT CLASS="LN">19</FONT><A NAME="419"></A>                emacsMode = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">20</FONT><A NAME="420"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-projecthelp"</FONT>) || arg.equals(<FONT CLASS="StringLiteral">"-p"</FONT>)) {
+<FONT CLASS="LN">21</FONT><A NAME="421"></A>                <FONT CLASS="SingleLineComment">// set the flag to display the targets and quit
+<FONT CLASS="LN">22</FONT><A NAME="422"></A></FONT>                projectHelp = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">23</FONT><A NAME="423"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-find"</FONT>) || arg.equals(<FONT CLASS="StringLiteral">"-s"</FONT>)) {
+<FONT CLASS="LN">24</FONT><A NAME="424"></A>                <FONT CLASS="SingleLineComment">// eat up next arg if present, default to build.xml
+<FONT CLASS="LN">25</FONT><A NAME="425"></A></FONT>                <FONT CLASS="If">if</FONT> (i &lt; args.length - <FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">26</FONT><A NAME="426"></A>                    searchForThis = args[++i];
+<FONT CLASS="LN">27</FONT><A NAME="427"></A>                } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">28</FONT><A NAME="428"></A>                    searchForThis = DEFAULT_BUILD_FILENAME;
+<FONT CLASS="LN">29</FONT><A NAME="429"></A>                }
+<FONT CLASS="LN">30</FONT><A NAME="430"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.startsWith(<FONT CLASS="StringLiteral">"-propertyfile"</FONT>)) {
+<FONT CLASS="LN">31</FONT><A NAME="431"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">32</FONT><A NAME="432"></A>                    propertyFiles.addElement(args[i + <FONT CLASS="IntegerLiteral">1</FONT>]);
+<FONT CLASS="LN">33</FONT><A NAME="433"></A>                    i++;
+<FONT CLASS="LN">34</FONT><A NAME="434"></A>                } <FONT CLASS="Catch">catch</FONT> (ArrayIndexOutOfBoundsException aioobe) {
+<FONT CLASS="LN">35</FONT><A NAME="435"></A>                    String msg = <FONT CLASS="StringLiteral">"You must specify a property filename when "</FONT>
+<FONT CLASS="LN">36</FONT><A NAME="436"></A>                        + <FONT CLASS="StringLiteral">"using the -propertyfile argument"</FONT>;
+<FONT CLASS="LN">37</FONT><A NAME="437"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(msg);
+<FONT CLASS="LN">38</FONT><A NAME="438"></A>                }
+<FONT CLASS="LN">39</FONT><A NAME="439"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-k"</FONT>) || arg.equals(<FONT CLASS="StringLiteral">"-keep-going"</FONT>)) {
+<FONT CLASS="LN">40</FONT><A NAME="440"></A>                keepGoingMode = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">41</FONT><A NAME="441"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.equals(<FONT CLASS="StringLiteral">"-nice"</FONT>)) {
+<FONT CLASS="LN">42</FONT><A NAME="442"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">43</FONT><A NAME="443"></A>                    threadPriority=Integer.decode(args[i + <FONT CLASS="IntegerLiteral">1</FONT>]);
+<FONT CLASS="LN">44</FONT><A NAME="444"></A>                } <FONT CLASS="Catch">catch</FONT> (ArrayIndexOutOfBoundsException aioobe) {
+<FONT CLASS="LN">45</FONT><A NAME="445"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(
+<FONT CLASS="LN">46</FONT><A NAME="446"></A>                            <FONT CLASS="StringLiteral">"You must supply a niceness value (1-10)"</FONT>+
+<FONT CLASS="LN">47</FONT><A NAME="447"></A>                            <FONT CLASS="StringLiteral">" after the -nice option"</FONT>);
+<FONT CLASS="LN">48</FONT><A NAME="448"></A>                } <FONT CLASS="Catch">catch</FONT> (NumberFormatException e) {
+<FONT CLASS="LN">49</FONT><A NAME="449"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Unrecognized niceness value: "</FONT> +
+<FONT CLASS="LN">50</FONT><A NAME="450"></A>                            args[i + <FONT CLASS="IntegerLiteral">1</FONT>]);
+<FONT CLASS="LN">51</FONT><A NAME="451"></A>                }
+<FONT CLASS="LN">52</FONT><A NAME="452"></A>                i++;
+<FONT CLASS="LN">53</FONT><A NAME="453"></A>                <FONT CLASS="If">if</FONT>(threadPriority.intValue()&lt;Thread.MIN_PRIORITY ||
+<FONT CLASS="LN">54</FONT><A NAME="454"></A>                        threadPriority.intValue()&gt;Thread.MAX_PRIORITY) {
+<FONT CLASS="LN">55</FONT><A NAME="455"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(
+<FONT CLASS="LN">56</FONT><A NAME="456"></A>                            <FONT CLASS="StringLiteral">"Niceness value is out of the range 1-10"</FONT>);
+<FONT CLASS="LN">57</FONT><A NAME="457"></A>                }
+<FONT CLASS="LN">58</FONT><A NAME="458"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (arg.startsWith(<FONT CLASS="StringLiteral">"-"</FONT>)) {
+<FONT CLASS="LN">59</FONT><A NAME="459"></A>                <FONT CLASS="SingleLineComment">// we don't have any more args to recognize!
+<FONT CLASS="LN">60</FONT><A NAME="460"></A></FONT>                String msg = <FONT CLASS="StringLiteral">"Unknown argument: "</FONT> + arg;
+<FONT CLASS="LN">61</FONT><A NAME="461"></A>                System.out.println(msg);
+<FONT CLASS="LN">62</FONT><A NAME="462"></A>                printUsage();
+<FONT CLASS="LN">63</FONT><A NAME="463"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">""</FONT>);
+<FONT CLASS="LN">64</FONT><A NAME="464"></A>            } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">65</FONT><A NAME="465"></A>                <FONT CLASS="SingleLineComment">// if it's no other arg, it may be the target
+<FONT CLASS="LN">66</FONT><A NAME="466"></A></FONT>                targets.addElement(arg);
+<FONT CLASS="LN">67</FONT><A NAME="467"></A>            }
+<FONT CLASS="LN">68</FONT><A NAME="468"></A>        }
+<FONT CLASS="LN">69</FONT><A NAME="469"></A>
+<FONT CLASS="LN">70</FONT><A NAME="470"></A>        <FONT CLASS="SingleLineComment">// if buildFile was not specified on the command line,
+<FONT CLASS="LN">71</FONT><A NAME="471"></A></FONT>        <FONT CLASS="If">if</FONT> (buildFile == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">72</FONT><A NAME="472"></A>            <FONT CLASS="SingleLineComment">// but -find then search for it
+<FONT CLASS="LN">73</FONT><A NAME="473"></A></FONT>            <FONT CLASS="If">if</FONT> (searchForThis != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">74</FONT><A NAME="474"></A>                buildFile = findBuildFile(System.getProperty(<FONT CLASS="StringLiteral">"user.dir"</FONT>),
+<FONT CLASS="LN">75</FONT><A NAME="475"></A>                                          searchForThis);
+<FONT CLASS="LN">76</FONT><A NAME="476"></A>            } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">77</FONT><A NAME="477"></A>                buildFile = <FONT CLASS="New">new</FONT> File(DEFAULT_BUILD_FILENAME);
+<FONT CLASS="LN">78</FONT><A NAME="478"></A>            }
+<FONT CLASS="LN">79</FONT><A NAME="479"></A>        }
+<FONT CLASS="LN">80</FONT><A NAME="480"></A>
+<FONT CLASS="LN">81</FONT><A NAME="481"></A>        <FONT CLASS="SingleLineComment">// make sure buildfile exists
+<FONT CLASS="LN">82</FONT><A NAME="482"></A></FONT>        <FONT CLASS="If">if</FONT> (!buildFile.exists()) {
+<FONT CLASS="LN">83</FONT><A NAME="483"></A>            System.out.println(<FONT CLASS="StringLiteral">"Buildfile: "</FONT> + buildFile + <FONT CLASS="StringLiteral">" does not exist!"</FONT>);
+<FONT CLASS="LN">84</FONT><A NAME="484"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Build failed"</FONT>);
+<FONT CLASS="LN">85</FONT><A NAME="485"></A>        }
+<FONT CLASS="LN">86</FONT><A NAME="486"></A>
+<FONT CLASS="LN">87</FONT><A NAME="487"></A>        <FONT CLASS="SingleLineComment">// make sure it's not a directory (this falls into the ultra
+<FONT CLASS="LN">88</FONT><A NAME="488"></A></FONT>        <FONT CLASS="SingleLineComment">// paranoid lets check everything category
+<FONT CLASS="LN">89</FONT><A NAME="489"></A></FONT>
+<FONT CLASS="LN">90</FONT><A NAME="490"></A>        <FONT CLASS="If">if</FONT> (buildFile.isDirectory()) {
+<FONT CLASS="LN">91</FONT><A NAME="491"></A>            System.out.println(<FONT CLASS="StringLiteral">"What? Buildfile: "</FONT> + buildFile + <FONT CLASS="StringLiteral">" is a dir!"</FONT>);
+<FONT CLASS="LN">92</FONT><A NAME="492"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Build failed"</FONT>);
+<FONT CLASS="LN">93</FONT><A NAME="493"></A>        }
+<FONT CLASS="LN">94</FONT><A NAME="494"></A>
+<FONT CLASS="LN">95</FONT><A NAME="495"></A>        <FONT CLASS="SingleLineComment">// Load the property files specified by -propertyfile
+<FONT CLASS="LN">96</FONT><A NAME="496"></A></FONT>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> propertyFileIndex = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">97</FONT><A NAME="497"></A>             propertyFileIndex &lt; propertyFiles.size();
+<FONT CLASS="LN">98</FONT><A NAME="498"></A>             propertyFileIndex++) {
+<FONT CLASS="LN">99</FONT><A NAME="499"></A>            String filename
+<FONT CLASS="LN">00</FONT><A NAME="500"></A>                = (String) propertyFiles.elementAt(propertyFileIndex);
+<FONT CLASS="LN">01</FONT><A NAME="501"></A>            Properties props = <FONT CLASS="New">new</FONT> Properties();
+<FONT CLASS="LN">02</FONT><A NAME="502"></A>            FileInputStream fis = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">03</FONT><A NAME="503"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">04</FONT><A NAME="504"></A>                fis = <FONT CLASS="New">new</FONT> FileInputStream(filename);
+<FONT CLASS="LN">05</FONT><A NAME="505"></A>                props.load(fis);
+<FONT CLASS="LN">06</FONT><A NAME="506"></A>            } <FONT CLASS="Catch">catch</FONT> (IOException e) {
+<FONT CLASS="LN">07</FONT><A NAME="507"></A>                System.out.println(<FONT CLASS="StringLiteral">"Could not load property file "</FONT>
+<FONT CLASS="LN">08</FONT><A NAME="508"></A>                   + filename + <FONT CLASS="StringLiteral">": "</FONT> + e.getMessage());
+<FONT CLASS="LN">09</FONT><A NAME="509"></A>            } <FONT CLASS="Finally">finally</FONT> {
+<FONT CLASS="LN">10</FONT><A NAME="510"></A>                <FONT CLASS="If">if</FONT> (fis != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">11</FONT><A NAME="511"></A>                    <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">12</FONT><A NAME="512"></A>                        fis.close();
+<FONT CLASS="LN">13</FONT><A NAME="513"></A>                    } <FONT CLASS="Catch">catch</FONT> (IOException e) {
+<FONT CLASS="LN">14</FONT><A NAME="514"></A>                        <FONT CLASS="SingleLineComment">// ignore
+<FONT CLASS="LN">15</FONT><A NAME="515"></A></FONT>                    }
+<FONT CLASS="LN">16</FONT><A NAME="516"></A>                }
+<FONT CLASS="LN">17</FONT><A NAME="517"></A>            }
+<FONT CLASS="LN">18</FONT><A NAME="518"></A>
+<FONT CLASS="LN">19</FONT><A NAME="519"></A>            <FONT CLASS="SingleLineComment">// ensure that -D properties take precedence
+<FONT CLASS="LN">20</FONT><A NAME="520"></A></FONT>            Enumeration propertyNames = props.propertyNames();
+<FONT CLASS="LN">21</FONT><A NAME="521"></A>            <FONT CLASS="While">while</FONT> (propertyNames.hasMoreElements()) {
+<FONT CLASS="LN">22</FONT><A NAME="522"></A>                String name = (String) propertyNames.nextElement();
+<FONT CLASS="LN">23</FONT><A NAME="523"></A>                <FONT CLASS="If">if</FONT> (definedProps.getProperty(name) == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">24</FONT><A NAME="524"></A>                    definedProps.put(name, props.getProperty(name));
+<FONT CLASS="LN">25</FONT><A NAME="525"></A>                }
+<FONT CLASS="LN">26</FONT><A NAME="526"></A>            }
+<FONT CLASS="LN">27</FONT><A NAME="527"></A>        }
+<FONT CLASS="LN">28</FONT><A NAME="528"></A>
+<FONT CLASS="LN">29</FONT><A NAME="529"></A>        <FONT CLASS="If">if</FONT> (msgOutputLevel &gt;= Project.MSG_INFO) {
+<FONT CLASS="LN">30</FONT><A NAME="530"></A>            System.out.println(<FONT CLASS="StringLiteral">"Buildfile: "</FONT> + buildFile);
+<FONT CLASS="LN">31</FONT><A NAME="531"></A>        }
+<FONT CLASS="LN">32</FONT><A NAME="532"></A>
+<FONT CLASS="LN">33</FONT><A NAME="533"></A>        <FONT CLASS="If">if</FONT> (logTo != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">34</FONT><A NAME="534"></A>            out = logTo;
+<FONT CLASS="LN">35</FONT><A NAME="535"></A>            err = logTo;
+<FONT CLASS="LN">36</FONT><A NAME="536"></A>            System.setOut(out);
+<FONT CLASS="LN">37</FONT><A NAME="537"></A>            System.setErr(err);
+<FONT CLASS="LN">38</FONT><A NAME="538"></A>        }
+<FONT CLASS="LN">39</FONT><A NAME="539"></A>        readyToRun = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">40</FONT><A NAME="540"></A>    }
+<FONT CLASS="LN">41</FONT><A NAME="541"></A>
+<FONT CLASS="LN">42</FONT><A NAME="542"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">43</FONT><A NAME="543"></A>     * Helper to get the parent file for a given file.
+<FONT CLASS="LN">44</FONT><A NAME="544"></A>     * &lt;p&gt;
+<FONT CLASS="LN">45</FONT><A NAME="545"></A>     * Added to simulate File.getParentFile() from JDK 1.2.
+<FONT CLASS="LN">46</FONT><A NAME="546"></A>     * @deprecated
+<FONT CLASS="LN">47</FONT><A NAME="547"></A>     *
+<FONT CLASS="LN">48</FONT><A NAME="548"></A>     * @param file   File to find parent of. Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">49</FONT><A NAME="549"></A>     * @return       Parent file or null if none
+<FONT CLASS="LN">50</FONT><A NAME="550"></A>     */</FONT>
+<FONT CLASS="LN">51</FONT><A NAME="551"></A>    <FONT CLASS="Private">private</FONT> File getParentFile(File file) {
+<FONT CLASS="LN">52</FONT><A NAME="552"></A>        File parent = file.getParentFile();
+<FONT CLASS="LN">53</FONT><A NAME="553"></A>
+<FONT CLASS="LN">54</FONT><A NAME="554"></A>        <FONT CLASS="If">if</FONT> (parent != <FONT CLASS="Null">null</FONT> &amp;&amp; msgOutputLevel &gt;= Project.MSG_VERBOSE) {
+<FONT CLASS="LN">55</FONT><A NAME="555"></A>            System.out.println(<FONT CLASS="StringLiteral">"Searching in "</FONT> + parent.getAbsolutePath());
+<FONT CLASS="LN">56</FONT><A NAME="556"></A>        }
+<FONT CLASS="LN">57</FONT><A NAME="557"></A>
+<FONT CLASS="LN">58</FONT><A NAME="558"></A>        <FONT CLASS="Return">return</FONT> parent;
+<FONT CLASS="LN">59</FONT><A NAME="559"></A>    }
+<FONT CLASS="LN">60</FONT><A NAME="560"></A>
+<FONT CLASS="LN">61</FONT><A NAME="561"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">62</FONT><A NAME="562"></A>     * Search parent directories for the build file.
+<FONT CLASS="LN">63</FONT><A NAME="563"></A>     * &lt;p&gt;
+<FONT CLASS="LN">64</FONT><A NAME="564"></A>     * Takes the given target as a suffix to append to each
+<FONT CLASS="LN">65</FONT><A NAME="565"></A>     * parent directory in search of a build file.  Once the
+<FONT CLASS="LN">66</FONT><A NAME="566"></A>     * root of the file-system has been reached an exception
+<FONT CLASS="LN">67</FONT><A NAME="567"></A>     * is thrown.
+<FONT CLASS="LN">68</FONT><A NAME="568"></A>     *
+<FONT CLASS="LN">69</FONT><A NAME="569"></A>     * @param start  Leaf directory of search.
+<FONT CLASS="LN">70</FONT><A NAME="570"></A>     *               Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">71</FONT><A NAME="571"></A>     * @param suffix  Suffix filename to look for in parents.
+<FONT CLASS="LN">72</FONT><A NAME="572"></A>     *                Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">73</FONT><A NAME="573"></A>     *
+<FONT CLASS="LN">74</FONT><A NAME="574"></A>     * @return A handle to the build file if one is found
+<FONT CLASS="LN">75</FONT><A NAME="575"></A>     *
+<FONT CLASS="LN">76</FONT><A NAME="576"></A>     * @exception BuildException if no build file is found
+<FONT CLASS="LN">77</FONT><A NAME="577"></A>     */</FONT>
+<FONT CLASS="LN">78</FONT><A NAME="578"></A>    <FONT CLASS="Private">private</FONT> File findBuildFile(String start, String suffix)
+<FONT CLASS="LN">79</FONT><A NAME="579"></A>         <FONT CLASS="Throws">throws</FONT> BuildException {
+<FONT CLASS="LN">80</FONT><A NAME="580"></A>        <FONT CLASS="If">if</FONT> (msgOutputLevel &gt;= Project.MSG_INFO) {
+<FONT CLASS="LN">81</FONT><A NAME="581"></A>            System.out.println(<FONT CLASS="StringLiteral">"Searching for "</FONT> + suffix + <FONT CLASS="StringLiteral">" ..."</FONT>);
+<FONT CLASS="LN">82</FONT><A NAME="582"></A>        }
+<FONT CLASS="LN">83</FONT><A NAME="583"></A>
+<FONT CLASS="LN">84</FONT><A NAME="584"></A>        File parent = <FONT CLASS="New">new</FONT> File(<FONT CLASS="New">new</FONT> File(start).getAbsolutePath());
+<FONT CLASS="LN">85</FONT><A NAME="585"></A>        File file = <FONT CLASS="New">new</FONT> File(parent, suffix);
+<FONT CLASS="LN">86</FONT><A NAME="586"></A>
+<FONT CLASS="LN">87</FONT><A NAME="587"></A>        <FONT CLASS="SingleLineComment">// check if the target file exists in the current directory
+<FONT CLASS="LN">88</FONT><A NAME="588"></A></FONT>        <FONT CLASS="While">while</FONT> (!file.exists()) {
+<FONT CLASS="LN">89</FONT><A NAME="589"></A>            <FONT CLASS="SingleLineComment">// change to parent directory
+<FONT CLASS="LN">90</FONT><A NAME="590"></A></FONT>            parent = getParentFile(parent);
+<FONT CLASS="LN">91</FONT><A NAME="591"></A>
+<FONT CLASS="LN">92</FONT><A NAME="592"></A>            <FONT CLASS="SingleLineComment">// if parent is null, then we are at the root of the fs,
+<FONT CLASS="LN">93</FONT><A NAME="593"></A></FONT>            <FONT CLASS="SingleLineComment">// complain that we can't find the build file.
+<FONT CLASS="LN">94</FONT><A NAME="594"></A></FONT>            <FONT CLASS="If">if</FONT> (parent == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">95</FONT><A NAME="595"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Could not locate a build file!"</FONT>);
+<FONT CLASS="LN">96</FONT><A NAME="596"></A>            }
+<FONT CLASS="LN">97</FONT><A NAME="597"></A>
+<FONT CLASS="LN">98</FONT><A NAME="598"></A>            <FONT CLASS="SingleLineComment">// refresh our file handle
+<FONT CLASS="LN">99</FONT><A NAME="599"></A></FONT>            file = <FONT CLASS="New">new</FONT> File(parent, suffix);
+<FONT CLASS="LN">00</FONT><A NAME="600"></A>        }
+<FONT CLASS="LN">01</FONT><A NAME="601"></A>
+<FONT CLASS="LN">02</FONT><A NAME="602"></A>        <FONT CLASS="Return">return</FONT> file;
+<FONT CLASS="LN">03</FONT><A NAME="603"></A>    }
+<FONT CLASS="LN">04</FONT><A NAME="604"></A>
+<FONT CLASS="LN">05</FONT><A NAME="605"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">06</FONT><A NAME="606"></A>     * Executes the build. If the constructor for this instance failed
+<FONT CLASS="LN">07</FONT><A NAME="607"></A>     * (e.g. returned after issuing a warning), this method returns
+<FONT CLASS="LN">08</FONT><A NAME="608"></A>     * immediately.
+<FONT CLASS="LN">09</FONT><A NAME="609"></A>     *
+<FONT CLASS="LN">10</FONT><A NAME="610"></A>     * @param coreLoader The classloader to use to find core classes.
+<FONT CLASS="LN">11</FONT><A NAME="611"></A>     *                   May be &lt;code&gt;null&lt;/code&gt;, in which case the
+<FONT CLASS="LN">12</FONT><A NAME="612"></A>     *                   system classloader is used.
+<FONT CLASS="LN">13</FONT><A NAME="613"></A>     *
+<FONT CLASS="LN">14</FONT><A NAME="614"></A>     * @exception BuildException if the build fails
+<FONT CLASS="LN">15</FONT><A NAME="615"></A>     */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="616"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> runBuild(ClassLoader coreLoader) <FONT CLASS="Throws">throws</FONT> BuildException {
+<FONT CLASS="LN">17</FONT><A NAME="617"></A>
+<FONT CLASS="LN">18</FONT><A NAME="618"></A>        <FONT CLASS="If">if</FONT> (!readyToRun) {
+<FONT CLASS="LN">19</FONT><A NAME="619"></A>            <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">20</FONT><A NAME="620"></A>        }
+<FONT CLASS="LN">21</FONT><A NAME="621"></A>
+<FONT CLASS="LN">22</FONT><A NAME="622"></A>        <FONT CLASS="Final">final</FONT> Project project = <FONT CLASS="New">new</FONT> Project();
+<FONT CLASS="LN">23</FONT><A NAME="623"></A>        project.setCoreLoader(coreLoader);
+<FONT CLASS="LN">24</FONT><A NAME="624"></A>
+<FONT CLASS="LN">25</FONT><A NAME="625"></A>        Throwable error = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">26</FONT><A NAME="626"></A>
+<FONT CLASS="LN">27</FONT><A NAME="627"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">28</FONT><A NAME="628"></A>            addBuildListeners(project);
+<FONT CLASS="LN">29</FONT><A NAME="629"></A>            addInputHandler(project);
+<FONT CLASS="LN">30</FONT><A NAME="630"></A>
+<FONT CLASS="LN">31</FONT><A NAME="631"></A>            PrintStream err = System.err;
+<FONT CLASS="LN">32</FONT><A NAME="632"></A>            PrintStream out = System.out;
+<FONT CLASS="LN">33</FONT><A NAME="633"></A>            InputStream in = System.in;
+<FONT CLASS="LN">34</FONT><A NAME="634"></A>
+<FONT CLASS="LN">35</FONT><A NAME="635"></A>            <FONT CLASS="SingleLineComment">// use a system manager that prevents from System.exit()
+<FONT CLASS="LN">36</FONT><A NAME="636"></A></FONT>            <FONT CLASS="SingleLineComment">// only in JDK &gt; 1.1
+<FONT CLASS="LN">37</FONT><A NAME="637"></A></FONT>            SecurityManager oldsm = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">38</FONT><A NAME="638"></A>            <FONT CLASS="If">if</FONT> (!JavaEnvUtils.isJavaVersion(JavaEnvUtils.JAVA_1_0)
+<FONT CLASS="LN">39</FONT><A NAME="639"></A>                &amp;&amp; !JavaEnvUtils.isJavaVersion(JavaEnvUtils.JAVA_1_1)) {
+<FONT CLASS="LN">40</FONT><A NAME="640"></A>                oldsm = System.getSecurityManager();
+<FONT CLASS="LN">41</FONT><A NAME="641"></A>
+<FONT CLASS="LN">42</FONT><A NAME="642"></A>                <FONT CLASS="SingleLineComment">//SecurityManager can not be installed here for backwards
+<FONT CLASS="LN">43</FONT><A NAME="643"></A></FONT>                <FONT CLASS="SingleLineComment">//compatibility reasons (PD). Needs to be loaded prior to
+<FONT CLASS="LN">44</FONT><A NAME="644"></A></FONT>                <FONT CLASS="SingleLineComment">//ant class if we are going to implement it.
+<FONT CLASS="LN">45</FONT><A NAME="645"></A></FONT>                <FONT CLASS="SingleLineComment">//System.setSecurityManager(new NoExitSecurityManager());
+<FONT CLASS="LN">46</FONT><A NAME="646"></A></FONT>            }
+<FONT CLASS="LN">47</FONT><A NAME="647"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">48</FONT><A NAME="648"></A>                <FONT CLASS="If">if</FONT> (allowInput) {
+<FONT CLASS="LN">49</FONT><A NAME="649"></A>                    project.setDefaultInputStream(System.in);
+<FONT CLASS="LN">50</FONT><A NAME="650"></A>                }
+<FONT CLASS="LN">51</FONT><A NAME="651"></A>                <FONT CLASS="SingleLineComment">//System.setIn(new DemuxInputStream(project));
+<FONT CLASS="LN">52</FONT><A NAME="652"></A></FONT>                <FONT CLASS="SingleLineComment">//System.setOut(new PrintStream(new DemuxOutputStream(project, false)));
+<FONT CLASS="LN">53</FONT><A NAME="653"></A></FONT>                <FONT CLASS="SingleLineComment">//System.setErr(new PrintStream(new DemuxOutputStream(project, true)));
+<FONT CLASS="LN">54</FONT><A NAME="654"></A></FONT>
+<FONT CLASS="LN">55</FONT><A NAME="655"></A>
+<FONT CLASS="LN">56</FONT><A NAME="656"></A>                <FONT CLASS="If">if</FONT> (!projectHelp) {
+<FONT CLASS="LN">57</FONT><A NAME="657"></A>                    project.fireBuildStarted();
+<FONT CLASS="LN">58</FONT><A NAME="658"></A>                }
+<FONT CLASS="LN">59</FONT><A NAME="659"></A>
+<FONT CLASS="LN">60</FONT><A NAME="660"></A>                <FONT CLASS="SingleLineComment">// set the thread priorities
+<FONT CLASS="LN">61</FONT><A NAME="661"></A></FONT>                <FONT CLASS="If">if</FONT> (threadPriority != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">62</FONT><A NAME="662"></A>                    <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">63</FONT><A NAME="663"></A>                        project.log(<FONT CLASS="StringLiteral">"Setting Ant's thread priority to "</FONT>
+<FONT CLASS="LN">64</FONT><A NAME="664"></A>                                + threadPriority,Project.MSG_VERBOSE);
+<FONT CLASS="LN">65</FONT><A NAME="665"></A>                        Thread.currentThread().setPriority(threadPriority.intValue());
+<FONT CLASS="LN">66</FONT><A NAME="666"></A>                    } <FONT CLASS="Catch">catch</FONT> (SecurityException swallowed) {
+<FONT CLASS="LN">67</FONT><A NAME="667"></A>                        <FONT CLASS="SingleLineComment">//we cannot set the priority here.
+<FONT CLASS="LN">68</FONT><A NAME="668"></A></FONT>                        project.log(<FONT CLASS="StringLiteral">"A security manager refused to set the -nice value"</FONT>);
+<FONT CLASS="LN">69</FONT><A NAME="669"></A>                    }
+<FONT CLASS="LN">70</FONT><A NAME="670"></A>                }
+<FONT CLASS="LN">71</FONT><A NAME="671"></A>
+<FONT CLASS="LN">72</FONT><A NAME="672"></A>                project.init();
+<FONT CLASS="LN">73</FONT><A NAME="673"></A>                project.setUserProperty(<FONT CLASS="StringLiteral">"ant.version"</FONT>, getAntVersion());
+<FONT CLASS="LN">74</FONT><A NAME="674"></A>
+<FONT CLASS="LN">75</FONT><A NAME="675"></A>                <FONT CLASS="SingleLineComment">// set user-define properties
+<FONT CLASS="LN">76</FONT><A NAME="676"></A></FONT>                Enumeration e = definedProps.keys();
+<FONT CLASS="LN">77</FONT><A NAME="677"></A>                <FONT CLASS="While">while</FONT> (e.hasMoreElements()) {
+<FONT CLASS="LN">78</FONT><A NAME="678"></A>                    String arg = (String) e.nextElement();
+<FONT CLASS="LN">79</FONT><A NAME="679"></A>                    String value = (String) definedProps.get(arg);
+<FONT CLASS="LN">80</FONT><A NAME="680"></A>                    project.setUserProperty(arg, value);
+<FONT CLASS="LN">81</FONT><A NAME="681"></A>                }
+<FONT CLASS="LN">82</FONT><A NAME="682"></A>
+<FONT CLASS="LN">83</FONT><A NAME="683"></A>                project.setUserProperty(<FONT CLASS="StringLiteral">"ant.file"</FONT>,
+<FONT CLASS="LN">84</FONT><A NAME="684"></A>                                        buildFile.getAbsolutePath());
+<FONT CLASS="LN">85</FONT><A NAME="685"></A>                project.setKeepGoingMode(keepGoingMode);
+<FONT CLASS="LN">86</FONT><A NAME="686"></A>
+<FONT CLASS="LN">87</FONT><A NAME="687"></A>                ProjectHelper.configureProject(project, buildFile);
+<FONT CLASS="LN">88</FONT><A NAME="688"></A>
+<FONT CLASS="LN">89</FONT><A NAME="689"></A>                project.setBasedir(definedProps.getProperty(PropertiesFileRenderer.FILE_ROOT_PROPERTY));
+<FONT CLASS="LN">90</FONT><A NAME="690"></A>
+<FONT CLASS="LN">91</FONT><A NAME="691"></A>
+<FONT CLASS="LN">92</FONT><A NAME="692"></A>                <FONT CLASS="If">if</FONT> (projectHelp) {
+<FONT CLASS="LN">93</FONT><A NAME="693"></A>                    printDescription(project);
+<FONT CLASS="LN">94</FONT><A NAME="694"></A>                    printTargets(project, msgOutputLevel &gt; Project.MSG_INFO);
+<FONT CLASS="LN">95</FONT><A NAME="695"></A>                    <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">96</FONT><A NAME="696"></A>                }
+<FONT CLASS="LN">97</FONT><A NAME="697"></A>
+<FONT CLASS="LN">98</FONT><A NAME="698"></A>                <FONT CLASS="SingleLineComment">// make sure that we have a target to execute
+<FONT CLASS="LN">99</FONT><A NAME="699"></A></FONT>                <FONT CLASS="If">if</FONT> (targets.size() == <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">00</FONT><A NAME="700"></A>                    <FONT CLASS="If">if</FONT> (project.getDefaultTarget() != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">01</FONT><A NAME="701"></A>                        targets.addElement(project.getDefaultTarget());
+<FONT CLASS="LN">02</FONT><A NAME="702"></A>                    }
+<FONT CLASS="LN">03</FONT><A NAME="703"></A>                }
+<FONT CLASS="LN">04</FONT><A NAME="704"></A>                project.executeTargets(targets);
+<FONT CLASS="LN">05</FONT><A NAME="705"></A>            } <FONT CLASS="Finally">finally</FONT> {
+<FONT CLASS="LN">06</FONT><A NAME="706"></A>                <FONT CLASS="SingleLineComment">// put back the original security manager
+<FONT CLASS="LN">07</FONT><A NAME="707"></A></FONT>                <FONT CLASS="SingleLineComment">//The following will never eval to true. (PD)
+<FONT CLASS="LN">08</FONT><A NAME="708"></A></FONT>                <FONT CLASS="If">if</FONT> (oldsm != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">09</FONT><A NAME="709"></A>                    System.setSecurityManager(oldsm);
+<FONT CLASS="LN">10</FONT><A NAME="710"></A>                }
+<FONT CLASS="LN">11</FONT><A NAME="711"></A>
+<FONT CLASS="LN">12</FONT><A NAME="712"></A>                System.setOut(out);
+<FONT CLASS="LN">13</FONT><A NAME="713"></A>                System.setErr(err);
+<FONT CLASS="LN">14</FONT><A NAME="714"></A>                System.setIn(in);
+<FONT CLASS="LN">15</FONT><A NAME="715"></A>            }
+<FONT CLASS="LN">16</FONT><A NAME="716"></A>        } <FONT CLASS="Catch">catch</FONT> (RuntimeException exc) {
+<FONT CLASS="LN">17</FONT><A NAME="717"></A>            error = exc;
+<FONT CLASS="LN">18</FONT><A NAME="718"></A>            <FONT CLASS="Throw">throw</FONT> exc;
+<FONT CLASS="LN">19</FONT><A NAME="719"></A>        } <FONT CLASS="Catch">catch</FONT> (Error err) {
+<FONT CLASS="LN">20</FONT><A NAME="720"></A>            error = err;
+<FONT CLASS="LN">21</FONT><A NAME="721"></A>            <FONT CLASS="Throw">throw</FONT> err;
+<FONT CLASS="LN">22</FONT><A NAME="722"></A>        } <FONT CLASS="Finally">finally</FONT> {
+<FONT CLASS="LN">23</FONT><A NAME="723"></A>            <FONT CLASS="If">if</FONT> (!projectHelp) {
+<FONT CLASS="LN">24</FONT><A NAME="724"></A>                project.fireBuildFinished(error);
+<FONT CLASS="LN">25</FONT><A NAME="725"></A>            } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (error != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">26</FONT><A NAME="726"></A>                project.log(error.toString(), Project.MSG_ERR);
+<FONT CLASS="LN">27</FONT><A NAME="727"></A>            }
+<FONT CLASS="LN">28</FONT><A NAME="728"></A>        }
+<FONT CLASS="LN">29</FONT><A NAME="729"></A>    }
+<FONT CLASS="LN">30</FONT><A NAME="730"></A>
+<FONT CLASS="LN">31</FONT><A NAME="731"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">32</FONT><A NAME="732"></A>     * Adds the listeners specified in the command line arguments,
+<FONT CLASS="LN">33</FONT><A NAME="733"></A>     * along with the default listener, to the specified project.
+<FONT CLASS="LN">34</FONT><A NAME="734"></A>     *
+<FONT CLASS="LN">35</FONT><A NAME="735"></A>     * @param project The project to add listeners to.
+<FONT CLASS="LN">36</FONT><A NAME="736"></A>     *                Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">37</FONT><A NAME="737"></A>     */</FONT>
+<FONT CLASS="LN">38</FONT><A NAME="738"></A>    <FONT CLASS="Protected">protected</FONT> <FONT CLASS="Void">void</FONT> addBuildListeners(Project project) {
+<FONT CLASS="LN">39</FONT><A NAME="739"></A>
+<FONT CLASS="LN">40</FONT><A NAME="740"></A>        <FONT CLASS="SingleLineComment">// Add the default listener
+<FONT CLASS="LN">41</FONT><A NAME="741"></A></FONT>        project.addBuildListener(createLogger());
+<FONT CLASS="LN">42</FONT><A NAME="742"></A>
+<FONT CLASS="LN">43</FONT><A NAME="743"></A>        <FONT CLASS="SingleLineComment">//Add the AntInstaller Listener
+<FONT CLASS="LN">44</FONT><A NAME="744"></A></FONT>        <FONT CLASS="If">if</FONT>(ctx.getBuildListener()!=<FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">45</FONT><A NAME="745"></A>            project.addBuildListener(ctx.getBuildListener());
+<FONT CLASS="LN">46</FONT><A NAME="746"></A>        }
+<FONT CLASS="LN">47</FONT><A NAME="747"></A>
+<FONT CLASS="LN">48</FONT><A NAME="748"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; listeners.size(); i++) {
+<FONT CLASS="LN">49</FONT><A NAME="749"></A>            String className = (String) listeners.elementAt(i);
+<FONT CLASS="LN">50</FONT><A NAME="750"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">51</FONT><A NAME="751"></A>                BuildListener listener =
+<FONT CLASS="LN">52</FONT><A NAME="752"></A>                    (BuildListener) Class.forName(className).newInstance();
+<FONT CLASS="LN">53</FONT><A NAME="753"></A>                <FONT CLASS="If">if</FONT> (project != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">54</FONT><A NAME="754"></A>                    project.setProjectReference(listener);
+<FONT CLASS="LN">55</FONT><A NAME="755"></A>                }
+<FONT CLASS="LN">56</FONT><A NAME="756"></A>                project.addBuildListener(listener);
+<FONT CLASS="LN">57</FONT><A NAME="757"></A>            } <FONT CLASS="Catch">catch</FONT> (Throwable exc) {
+<FONT CLASS="LN">58</FONT><A NAME="758"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Unable to instantiate listener "</FONT>
+<FONT CLASS="LN">59</FONT><A NAME="759"></A>                    + className, exc);
+<FONT CLASS="LN">60</FONT><A NAME="760"></A>            }
+<FONT CLASS="LN">61</FONT><A NAME="761"></A>        }
+<FONT CLASS="LN">62</FONT><A NAME="762"></A>    }
+<FONT CLASS="LN">63</FONT><A NAME="763"></A>
+<FONT CLASS="LN">64</FONT><A NAME="764"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">65</FONT><A NAME="765"></A>     * Creates the InputHandler and adds it to the project.
+<FONT CLASS="LN">66</FONT><A NAME="766"></A>     *
+<FONT CLASS="LN">67</FONT><A NAME="767"></A>     * @param project the project instance.
+<FONT CLASS="LN">68</FONT><A NAME="768"></A>     *
+<FONT CLASS="LN">69</FONT><A NAME="769"></A>     * @exception BuildException if a specified InputHandler
+<FONT CLASS="LN">70</FONT><A NAME="770"></A>     *                           implementation could not be loaded.
+<FONT CLASS="LN">71</FONT><A NAME="771"></A>     */</FONT>
+<FONT CLASS="LN">72</FONT><A NAME="772"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> addInputHandler(Project project) <FONT CLASS="Throws">throws</FONT> BuildException {
+<FONT CLASS="LN">73</FONT><A NAME="773"></A>        InputHandler handler = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">74</FONT><A NAME="774"></A>        <FONT CLASS="If">if</FONT> (inputHandlerClassname == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">75</FONT><A NAME="775"></A>            handler = <FONT CLASS="New">new</FONT> DefaultInputHandler();
+<FONT CLASS="LN">76</FONT><A NAME="776"></A>        } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">77</FONT><A NAME="777"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">78</FONT><A NAME="778"></A>                handler = (InputHandler)
+<FONT CLASS="LN">79</FONT><A NAME="779"></A>                    (Class.forName(inputHandlerClassname).newInstance());
+<FONT CLASS="LN">80</FONT><A NAME="780"></A>                <FONT CLASS="If">if</FONT> (project != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">81</FONT><A NAME="781"></A>                    project.setProjectReference(handler);
+<FONT CLASS="LN">82</FONT><A NAME="782"></A>                }
+<FONT CLASS="LN">83</FONT><A NAME="783"></A>            } <FONT CLASS="Catch">catch</FONT> (ClassCastException e) {
+<FONT CLASS="LN">84</FONT><A NAME="784"></A>                String msg = <FONT CLASS="StringLiteral">"The specified input handler class "</FONT>
+<FONT CLASS="LN">85</FONT><A NAME="785"></A>                    + inputHandlerClassname
+<FONT CLASS="LN">86</FONT><A NAME="786"></A>                    + <FONT CLASS="StringLiteral">" does not implement the InputHandler interface"</FONT>;
+<FONT CLASS="LN">87</FONT><A NAME="787"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(msg);
+<FONT CLASS="LN">88</FONT><A NAME="788"></A>            } <FONT CLASS="Catch">catch</FONT> (Exception e) {
+<FONT CLASS="LN">89</FONT><A NAME="789"></A>                String msg = <FONT CLASS="StringLiteral">"Unable to instantiate specified input handler "</FONT>
+<FONT CLASS="LN">90</FONT><A NAME="790"></A>                    + <FONT CLASS="StringLiteral">"class "</FONT> + inputHandlerClassname + <FONT CLASS="StringLiteral">" : "</FONT>
+<FONT CLASS="LN">91</FONT><A NAME="791"></A>                    + e.getClass().getName();
+<FONT CLASS="LN">92</FONT><A NAME="792"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(msg);
+<FONT CLASS="LN">93</FONT><A NAME="793"></A>            }
+<FONT CLASS="LN">94</FONT><A NAME="794"></A>        }
+<FONT CLASS="LN">95</FONT><A NAME="795"></A>        project.setInputHandler(handler);
+<FONT CLASS="LN">96</FONT><A NAME="796"></A>    }
+<FONT CLASS="LN">97</FONT><A NAME="797"></A>
+<FONT CLASS="LN">98</FONT><A NAME="798"></A>    <FONT CLASS="SingleLineComment">// XXX: (Jon Skeet) Any reason for writing a message and then using a bare
+<FONT CLASS="LN">99</FONT><A NAME="799"></A></FONT>    <FONT CLASS="SingleLineComment">// RuntimeException rather than just using a BuildException here? Is it
+<FONT CLASS="LN">00</FONT><A NAME="800"></A></FONT>    <FONT CLASS="SingleLineComment">// in case the message could end up being written to no loggers (as the
+<FONT CLASS="LN">01</FONT><A NAME="801"></A></FONT>    <FONT CLASS="SingleLineComment">// loggers could have failed to be created due to this failure)?
+<FONT CLASS="LN">02</FONT><A NAME="802"></A></FONT>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">03</FONT><A NAME="803"></A>     * Creates the default build logger for sending build events to the ant
+<FONT CLASS="LN">04</FONT><A NAME="804"></A>     * log.
+<FONT CLASS="LN">05</FONT><A NAME="805"></A>     *
+<FONT CLASS="LN">06</FONT><A NAME="806"></A>     * @return the logger instance for this build.
+<FONT CLASS="LN">07</FONT><A NAME="807"></A>     */</FONT>
+<FONT CLASS="LN">08</FONT><A NAME="808"></A>    <FONT CLASS="Private">private</FONT> BuildLogger createLogger() {
+<FONT CLASS="LN">09</FONT><A NAME="809"></A>        BuildLogger logger = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">10</FONT><A NAME="810"></A>        <FONT CLASS="If">if</FONT> (loggerClassname != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">11</FONT><A NAME="811"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">12</FONT><A NAME="812"></A>                Class loggerClass = Class.forName(loggerClassname);
+<FONT CLASS="LN">13</FONT><A NAME="813"></A>                logger = (BuildLogger) (loggerClass.newInstance());
+<FONT CLASS="LN">14</FONT><A NAME="814"></A>            } <FONT CLASS="Catch">catch</FONT> (ClassCastException e) {
+<FONT CLASS="LN">15</FONT><A NAME="815"></A>                System.err.println(<FONT CLASS="StringLiteral">"The specified logger class "</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="816"></A>                    + loggerClassname
+<FONT CLASS="LN">17</FONT><A NAME="817"></A>                    + <FONT CLASS="StringLiteral">" does not implement the BuildLogger interface"</FONT>);
+<FONT CLASS="LN">18</FONT><A NAME="818"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> RuntimeException();
+<FONT CLASS="LN">19</FONT><A NAME="819"></A>            } <FONT CLASS="Catch">catch</FONT> (Exception e) {
+<FONT CLASS="LN">20</FONT><A NAME="820"></A>                System.err.println(<FONT CLASS="StringLiteral">"Unable to instantiate specified logger "</FONT>
+<FONT CLASS="LN">21</FONT><A NAME="821"></A>                    + <FONT CLASS="StringLiteral">"class "</FONT> + loggerClassname + <FONT CLASS="StringLiteral">" : "</FONT>
+<FONT CLASS="LN">22</FONT><A NAME="822"></A>                    + e.getClass().getName());
+<FONT CLASS="LN">23</FONT><A NAME="823"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> RuntimeException();
+<FONT CLASS="LN">24</FONT><A NAME="824"></A>            }
+<FONT CLASS="LN">25</FONT><A NAME="825"></A>        } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">26</FONT><A NAME="826"></A>            logger = <FONT CLASS="New">new</FONT> DefaultLogger();
+<FONT CLASS="LN">27</FONT><A NAME="827"></A>        }
+<FONT CLASS="LN">28</FONT><A NAME="828"></A>
+<FONT CLASS="LN">29</FONT><A NAME="829"></A>        logger.setMessageOutputLevel(msgOutputLevel);
+<FONT CLASS="LN">30</FONT><A NAME="830"></A>        logger.setOutputPrintStream(out);
+<FONT CLASS="LN">31</FONT><A NAME="831"></A>        logger.setErrorPrintStream(err);
+<FONT CLASS="LN">32</FONT><A NAME="832"></A>        logger.setEmacsMode(emacsMode);
+<FONT CLASS="LN">33</FONT><A NAME="833"></A>
+<FONT CLASS="LN">34</FONT><A NAME="834"></A>        <FONT CLASS="Return">return</FONT> logger;
+<FONT CLASS="LN">35</FONT><A NAME="835"></A>    }
+<FONT CLASS="LN">36</FONT><A NAME="836"></A>
+<FONT CLASS="LN">37</FONT><A NAME="837"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">38</FONT><A NAME="838"></A>     * Prints the usage information for this class to &lt;code&gt;System.out&lt;/code&gt;.
+<FONT CLASS="LN">39</FONT><A NAME="839"></A>     */</FONT>
+<FONT CLASS="LN">40</FONT><A NAME="840"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> printUsage() {
+<FONT CLASS="LN">41</FONT><A NAME="841"></A>        String lSep = System.getProperty(<FONT CLASS="StringLiteral">"line.separator"</FONT>);
+<FONT CLASS="LN">42</FONT><A NAME="842"></A>        StringBuffer msg = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">43</FONT><A NAME="843"></A>        msg.append(<FONT CLASS="StringLiteral">"ant [options] [target [target2 [target3] ...]]"</FONT> + lSep);
+<FONT CLASS="LN">44</FONT><A NAME="844"></A>        msg.append(<FONT CLASS="StringLiteral">"Options: "</FONT> + lSep);
+<FONT CLASS="LN">45</FONT><A NAME="845"></A>        msg.append(<FONT CLASS="StringLiteral">"  -help, -h              print this message"</FONT> + lSep);
+<FONT CLASS="LN">46</FONT><A NAME="846"></A>        msg.append(<FONT CLASS="StringLiteral">"  -projecthelp, -p       print project help information"</FONT> + lSep);
+<FONT CLASS="LN">47</FONT><A NAME="847"></A>        msg.append(<FONT CLASS="StringLiteral">"  -version               print the version information and exit"</FONT> + lSep);
+<FONT CLASS="LN">48</FONT><A NAME="848"></A>        msg.append(<FONT CLASS="StringLiteral">"  -diagnostics           print information that might be helpful to"</FONT> + lSep);
+<FONT CLASS="LN">49</FONT><A NAME="849"></A>        msg.append(<FONT CLASS="StringLiteral">"                         diagnose or report problems."</FONT> + lSep);
+<FONT CLASS="LN">50</FONT><A NAME="850"></A>        msg.append(<FONT CLASS="StringLiteral">"  -quiet, -q             be extra quiet"</FONT> + lSep);
+<FONT CLASS="LN">51</FONT><A NAME="851"></A>        msg.append(<FONT CLASS="StringLiteral">"  -verbose, -v           be extra verbose"</FONT> + lSep);
+<FONT CLASS="LN">52</FONT><A NAME="852"></A>        msg.append(<FONT CLASS="StringLiteral">"  -debug, -d             print debugging information"</FONT> + lSep);
+<FONT CLASS="LN">53</FONT><A NAME="853"></A>        msg.append(<FONT CLASS="StringLiteral">"  -emacs, -e             produce logging information without adornments"</FONT> + lSep);
+<FONT CLASS="LN">54</FONT><A NAME="854"></A>        msg.append(<FONT CLASS="StringLiteral">"  -lib &lt;path&gt;            specifies a path to search for jars and classes"</FONT> + lSep);
+<FONT CLASS="LN">55</FONT><A NAME="855"></A>        msg.append(<FONT CLASS="StringLiteral">"  -logfile &lt;file&gt;        use given file for log"</FONT> + lSep);
+<FONT CLASS="LN">56</FONT><A NAME="856"></A>        msg.append(<FONT CLASS="StringLiteral">"    -l     &lt;file&gt;                ''"</FONT> + lSep);
+<FONT CLASS="LN">57</FONT><A NAME="857"></A>        msg.append(<FONT CLASS="StringLiteral">"  -logger &lt;classname&gt;    the class which is to perform logging"</FONT> + lSep);
+<FONT CLASS="LN">58</FONT><A NAME="858"></A>        msg.append(<FONT CLASS="StringLiteral">"  -listener &lt;classname&gt;  add an instance of class as a project listener"</FONT> + lSep);
+<FONT CLASS="LN">59</FONT><A NAME="859"></A>        msg.append(<FONT CLASS="StringLiteral">"  -noinput               do not allow interactive input"</FONT> + lSep);
+<FONT CLASS="LN">60</FONT><A NAME="860"></A>        msg.append(<FONT CLASS="StringLiteral">"  -buildfile &lt;file&gt;      use given buildfile"</FONT> + lSep);
+<FONT CLASS="LN">61</FONT><A NAME="861"></A>        msg.append(<FONT CLASS="StringLiteral">"    -file    &lt;file&gt;              ''"</FONT> + lSep);
+<FONT CLASS="LN">62</FONT><A NAME="862"></A>        msg.append(<FONT CLASS="StringLiteral">"    -f       &lt;file&gt;              ''"</FONT> + lSep);
+<FONT CLASS="LN">63</FONT><A NAME="863"></A>        msg.append(<FONT CLASS="StringLiteral">"  -D&lt;property&gt;=&lt;value&gt;   use value for given property"</FONT> + lSep);
+<FONT CLASS="LN">64</FONT><A NAME="864"></A>        msg.append(<FONT CLASS="StringLiteral">"  -keep-going, -k        execute all targets that do not depend"</FONT> + lSep);
+<FONT CLASS="LN">65</FONT><A NAME="865"></A>        msg.append(<FONT CLASS="StringLiteral">"                         on failed target(s)"</FONT> + lSep);
+<FONT CLASS="LN">66</FONT><A NAME="866"></A>        msg.append(<FONT CLASS="StringLiteral">"  -propertyfile &lt;name&gt;   load all properties from file with -D"</FONT> + lSep);
+<FONT CLASS="LN">67</FONT><A NAME="867"></A>        msg.append(<FONT CLASS="StringLiteral">"                         properties taking precedence"</FONT> + lSep);
+<FONT CLASS="LN">68</FONT><A NAME="868"></A>        msg.append(<FONT CLASS="StringLiteral">"  -inputhandler &lt;class&gt;  the class which will handle input requests"</FONT> + lSep);
+<FONT CLASS="LN">69</FONT><A NAME="869"></A>        msg.append(<FONT CLASS="StringLiteral">"  -find &lt;file&gt;           (s)earch for buildfile towards the root of"</FONT> + lSep);
+<FONT CLASS="LN">70</FONT><A NAME="870"></A>        msg.append(<FONT CLASS="StringLiteral">"    -s  &lt;file&gt;           the filesystem and use it"</FONT> + lSep);
+<FONT CLASS="LN">71</FONT><A NAME="871"></A>        msg.append(<FONT CLASS="StringLiteral">"  -nice  number          A niceness value for the main thread:"</FONT> + lSep +
+<FONT CLASS="LN">72</FONT><A NAME="872"></A>                   <FONT CLASS="StringLiteral">"                         1 (lowest) to 10 (highest); 5 is the default"</FONT> + lSep);
+<FONT CLASS="LN">73</FONT><A NAME="873"></A>        System.out.println(msg.toString());
+<FONT CLASS="LN">74</FONT><A NAME="874"></A>    }
+<FONT CLASS="LN">75</FONT><A NAME="875"></A>
+<FONT CLASS="LN">76</FONT><A NAME="876"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">77</FONT><A NAME="877"></A>     * Prints the Ant version information to &lt;code&gt;System.out&lt;/code&gt;.
+<FONT CLASS="LN">78</FONT><A NAME="878"></A>     *
+<FONT CLASS="LN">79</FONT><A NAME="879"></A>     * @exception BuildException if the version information is unavailable
+<FONT CLASS="LN">80</FONT><A NAME="880"></A>     */</FONT>
+<FONT CLASS="LN">81</FONT><A NAME="881"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> printVersion() <FONT CLASS="Throws">throws</FONT> BuildException {
+<FONT CLASS="LN">82</FONT><A NAME="882"></A>        System.out.println(getAntVersion());
+<FONT CLASS="LN">83</FONT><A NAME="883"></A>    }
+<FONT CLASS="LN">84</FONT><A NAME="884"></A>
+<FONT CLASS="LN">85</FONT><A NAME="885"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">86</FONT><A NAME="886"></A>     * Cache of the Ant version information when it has been loaded.
+<FONT CLASS="LN">87</FONT><A NAME="887"></A>     */</FONT>
+<FONT CLASS="LN">88</FONT><A NAME="888"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> String antVersion = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">89</FONT><A NAME="889"></A>
+<FONT CLASS="LN">90</FONT><A NAME="890"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">91</FONT><A NAME="891"></A>     * Returns the Ant version information, if available. Once the information
+<FONT CLASS="LN">92</FONT><A NAME="892"></A>     * has been loaded once, it's cached and returned from the cache on future
+<FONT CLASS="LN">93</FONT><A NAME="893"></A>     * calls.
+<FONT CLASS="LN">94</FONT><A NAME="894"></A>     *
+<FONT CLASS="LN">95</FONT><A NAME="895"></A>     * @return the Ant version information as a String
+<FONT CLASS="LN">96</FONT><A NAME="896"></A>     *         (always non-&lt;code&gt;null&lt;/code&gt;)
+<FONT CLASS="LN">97</FONT><A NAME="897"></A>     *
+<FONT CLASS="LN">98</FONT><A NAME="898"></A>     * @exception BuildException if the version information is unavailable
+<FONT CLASS="LN">99</FONT><A NAME="899"></A>     */</FONT>
+<FONT CLASS="LN">00</FONT><A NAME="900"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Synchronized">synchronized</FONT> String getAntVersion() <FONT CLASS="Throws">throws</FONT> BuildException {
+<FONT CLASS="LN">01</FONT><A NAME="901"></A>        <FONT CLASS="If">if</FONT> (antVersion == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">02</FONT><A NAME="902"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">03</FONT><A NAME="903"></A>                Properties props = <FONT CLASS="New">new</FONT> Properties();
+<FONT CLASS="LN">04</FONT><A NAME="904"></A>                InputStream in =
+<FONT CLASS="LN">05</FONT><A NAME="905"></A>                    <A HREF="../../../../org/tp23/antinstaller/antmod/Main.java.html">Main</A>.<FONT CLASS="Class">class</FONT>.getResourceAsStream(<FONT CLASS="StringLiteral">"/org/apache/tools/ant/version.txt"</FONT>);
+<FONT CLASS="LN">06</FONT><A NAME="906"></A>                props.load(in);
+<FONT CLASS="LN">07</FONT><A NAME="907"></A>                in.close();
+<FONT CLASS="LN">08</FONT><A NAME="908"></A>
+<FONT CLASS="LN">09</FONT><A NAME="909"></A>                StringBuffer msg = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">10</FONT><A NAME="910"></A>                msg.append(<FONT CLASS="StringLiteral">"Apache Ant version "</FONT>);
+<FONT CLASS="LN">11</FONT><A NAME="911"></A>                msg.append(props.getProperty(<FONT CLASS="StringLiteral">"VERSION"</FONT>));
+<FONT CLASS="LN">12</FONT><A NAME="912"></A>                msg.append(<FONT CLASS="StringLiteral">" compiled on "</FONT>);
+<FONT CLASS="LN">13</FONT><A NAME="913"></A>                msg.append(props.getProperty(<FONT CLASS="StringLiteral">"DATE"</FONT>));
+<FONT CLASS="LN">14</FONT><A NAME="914"></A>                antVersion = msg.toString();
+<FONT CLASS="LN">15</FONT><A NAME="915"></A>            } <FONT CLASS="Catch">catch</FONT> (IOException ioe) {
+<FONT CLASS="LN">16</FONT><A NAME="916"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Could not load the version information:"</FONT>
+<FONT CLASS="LN">17</FONT><A NAME="917"></A>                                         + ioe.getMessage());
+<FONT CLASS="LN">18</FONT><A NAME="918"></A>            } <FONT CLASS="Catch">catch</FONT> (NullPointerException npe) {
+<FONT CLASS="LN">19</FONT><A NAME="919"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Could not load the version information."</FONT>);
+<FONT CLASS="LN">20</FONT><A NAME="920"></A>            }
+<FONT CLASS="LN">21</FONT><A NAME="921"></A>        }
+<FONT CLASS="LN">22</FONT><A NAME="922"></A>        <FONT CLASS="Return">return</FONT> antVersion;
+<FONT CLASS="LN">23</FONT><A NAME="923"></A>    }
+<FONT CLASS="LN">24</FONT><A NAME="924"></A>
+<FONT CLASS="LN">25</FONT><A NAME="925"></A>     <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">26</FONT><A NAME="926"></A>      * Prints the description of a project (if there is one) to
+<FONT CLASS="LN">27</FONT><A NAME="927"></A>      * &lt;code&gt;System.out&lt;/code&gt;.
+<FONT CLASS="LN">28</FONT><A NAME="928"></A>      *
+<FONT CLASS="LN">29</FONT><A NAME="929"></A>      * @param project The project to display a description of.
+<FONT CLASS="LN">30</FONT><A NAME="930"></A>      *                Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">31</FONT><A NAME="931"></A>      */</FONT>
+<FONT CLASS="LN">32</FONT><A NAME="932"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> printDescription(Project project) {
+<FONT CLASS="LN">33</FONT><A NAME="933"></A>       <FONT CLASS="If">if</FONT> (project.getDescription() != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">34</FONT><A NAME="934"></A>          project.log(project.getDescription());
+<FONT CLASS="LN">35</FONT><A NAME="935"></A>       }
+<FONT CLASS="LN">36</FONT><A NAME="936"></A>    }
+<FONT CLASS="LN">37</FONT><A NAME="937"></A>
+<FONT CLASS="LN">38</FONT><A NAME="938"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">39</FONT><A NAME="939"></A>     * Prints a list of all targets in the specified project to
+<FONT CLASS="LN">40</FONT><A NAME="940"></A>     * &lt;code&gt;System.out&lt;/code&gt;, optionally including subtargets.
+<FONT CLASS="LN">41</FONT><A NAME="941"></A>     *
+<FONT CLASS="LN">42</FONT><A NAME="942"></A>     * @param project The project to display a description of.
+<FONT CLASS="LN">43</FONT><A NAME="943"></A>     *                Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">44</FONT><A NAME="944"></A>     * @param printSubTargets Whether or not subtarget names should also be
+<FONT CLASS="LN">45</FONT><A NAME="945"></A>     *                        printed.
+<FONT CLASS="LN">46</FONT><A NAME="946"></A>     */</FONT>
+<FONT CLASS="LN">47</FONT><A NAME="947"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> printTargets(Project project, <FONT CLASS="Boolean">boolean</FONT> printSubTargets) {
+<FONT CLASS="LN">48</FONT><A NAME="948"></A>        <FONT CLASS="SingleLineComment">// find the target with the longest name
+<FONT CLASS="LN">49</FONT><A NAME="949"></A></FONT>        <FONT CLASS="Int">int</FONT> maxLength = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">50</FONT><A NAME="950"></A>        Enumeration ptargets = project.getTargets().elements();
+<FONT CLASS="LN">51</FONT><A NAME="951"></A>        String targetName;
+<FONT CLASS="LN">52</FONT><A NAME="952"></A>        String targetDescription;
+<FONT CLASS="LN">53</FONT><A NAME="953"></A>        Target currentTarget;
+<FONT CLASS="LN">54</FONT><A NAME="954"></A>        <FONT CLASS="SingleLineComment">// split the targets in top-level and sub-targets depending
+<FONT CLASS="LN">55</FONT><A NAME="955"></A></FONT>        <FONT CLASS="SingleLineComment">// on the presence of a description
+<FONT CLASS="LN">56</FONT><A NAME="956"></A></FONT>        Vector topNames = <FONT CLASS="New">new</FONT> Vector();
+<FONT CLASS="LN">57</FONT><A NAME="957"></A>        Vector topDescriptions = <FONT CLASS="New">new</FONT> Vector();
+<FONT CLASS="LN">58</FONT><A NAME="958"></A>        Vector subNames = <FONT CLASS="New">new</FONT> Vector();
+<FONT CLASS="LN">59</FONT><A NAME="959"></A>
+<FONT CLASS="LN">60</FONT><A NAME="960"></A>        <FONT CLASS="While">while</FONT> (ptargets.hasMoreElements()) {
+<FONT CLASS="LN">61</FONT><A NAME="961"></A>            currentTarget = (Target) ptargets.nextElement();
+<FONT CLASS="LN">62</FONT><A NAME="962"></A>            targetName = currentTarget.getName();
+<FONT CLASS="LN">63</FONT><A NAME="963"></A>            <FONT CLASS="If">if</FONT> (targetName.equals(<FONT CLASS="StringLiteral">""</FONT>)) {
+<FONT CLASS="LN">64</FONT><A NAME="964"></A>                <FONT CLASS="Continue">continue</FONT>;
+<FONT CLASS="LN">65</FONT><A NAME="965"></A>            }
+<FONT CLASS="LN">66</FONT><A NAME="966"></A>            targetDescription = currentTarget.getDescription();
+<FONT CLASS="LN">67</FONT><A NAME="967"></A>            <FONT CLASS="SingleLineComment">// maintain a sorted list of targets
+<FONT CLASS="LN">68</FONT><A NAME="968"></A></FONT>            <FONT CLASS="If">if</FONT> (targetDescription == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">69</FONT><A NAME="969"></A>                <FONT CLASS="Int">int</FONT> pos = findTargetPosition(subNames, targetName);
+<FONT CLASS="LN">70</FONT><A NAME="970"></A>                subNames.insertElementAt(targetName, pos);
+<FONT CLASS="LN">71</FONT><A NAME="971"></A>            } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">72</FONT><A NAME="972"></A>                <FONT CLASS="Int">int</FONT> pos = findTargetPosition(topNames, targetName);
+<FONT CLASS="LN">73</FONT><A NAME="973"></A>                topNames.insertElementAt(targetName, pos);
+<FONT CLASS="LN">74</FONT><A NAME="974"></A>                topDescriptions.insertElementAt(targetDescription, pos);
+<FONT CLASS="LN">75</FONT><A NAME="975"></A>                <FONT CLASS="If">if</FONT> (targetName.length() &gt; maxLength) {
+<FONT CLASS="LN">76</FONT><A NAME="976"></A>                    maxLength = targetName.length();
+<FONT CLASS="LN">77</FONT><A NAME="977"></A>                }
+<FONT CLASS="LN">78</FONT><A NAME="978"></A>            }
+<FONT CLASS="LN">79</FONT><A NAME="979"></A>        }
+<FONT CLASS="LN">80</FONT><A NAME="980"></A>
+<FONT CLASS="LN">81</FONT><A NAME="981"></A>        printTargets(project, topNames, topDescriptions, <FONT CLASS="StringLiteral">"Main targets:"</FONT>,
+<FONT CLASS="LN">82</FONT><A NAME="982"></A>                     maxLength);
+<FONT CLASS="LN">83</FONT><A NAME="983"></A>        <FONT CLASS="SingleLineComment">//if there were no main targets, we list all subtargets
+<FONT CLASS="LN">84</FONT><A NAME="984"></A></FONT>        <FONT CLASS="SingleLineComment">//as it means nothing has a description
+<FONT CLASS="LN">85</FONT><A NAME="985"></A></FONT>        <FONT CLASS="If">if</FONT> (topNames.size() == <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">86</FONT><A NAME="986"></A>            printSubTargets = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">87</FONT><A NAME="987"></A>        }
+<FONT CLASS="LN">88</FONT><A NAME="988"></A>        <FONT CLASS="If">if</FONT> (printSubTargets) {
+<FONT CLASS="LN">89</FONT><A NAME="989"></A>            printTargets(project, subNames, <FONT CLASS="Null">null</FONT>, <FONT CLASS="StringLiteral">"Other targets:"</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>);
+<FONT CLASS="LN">90</FONT><A NAME="990"></A>        }
+<FONT CLASS="LN">91</FONT><A NAME="991"></A>
+<FONT CLASS="LN">92</FONT><A NAME="992"></A>        String defaultTarget = project.getDefaultTarget();
+<FONT CLASS="LN">93</FONT><A NAME="993"></A>        <FONT CLASS="If">if</FONT> (defaultTarget != <FONT CLASS="Null">null</FONT> &amp;&amp; !<FONT CLASS="StringLiteral">""</FONT>.equals(defaultTarget)) {
+<FONT CLASS="LN">94</FONT><A NAME="994"></A>            <FONT CLASS="SingleLineComment">// shouldn't need to check but...
+<FONT CLASS="LN">95</FONT><A NAME="995"></A></FONT>            project.log(<FONT CLASS="StringLiteral">"Default target: "</FONT> + defaultTarget);
+<FONT CLASS="LN">96</FONT><A NAME="996"></A>        }
+<FONT CLASS="LN">97</FONT><A NAME="997"></A>    }
+<FONT CLASS="LN">98</FONT><A NAME="998"></A>
+<FONT CLASS="LN">99</FONT><A NAME="999"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">00</FONT><A NAME="1000"></A>     * Searches for the correct place to insert a name into a list so as
+<FONT CLASS="LN">01</FONT><A NAME="1001"></A>     * to keep the list sorted alphabetically.
+<FONT CLASS="LN">02</FONT><A NAME="1002"></A>     *
+<FONT CLASS="LN">03</FONT><A NAME="1003"></A>     * @param names The current list of names. Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">04</FONT><A NAME="1004"></A>     * @param name  The name to find a place for.
+<FONT CLASS="LN">05</FONT><A NAME="1005"></A>     *              Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">06</FONT><A NAME="1006"></A>     *
+<FONT CLASS="LN">07</FONT><A NAME="1007"></A>     * @return the correct place in the list for the given name
+<FONT CLASS="LN">08</FONT><A NAME="1008"></A>     */</FONT>
+<FONT CLASS="LN">09</FONT><A NAME="1009"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Int">int</FONT> findTargetPosition(Vector names, String name) {
+<FONT CLASS="LN">10</FONT><A NAME="1010"></A>        <FONT CLASS="Int">int</FONT> res = names.size();
+<FONT CLASS="LN">11</FONT><A NAME="1011"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; names.size() &amp;&amp; res == names.size(); i++) {
+<FONT CLASS="LN">12</FONT><A NAME="1012"></A>            <FONT CLASS="If">if</FONT> (name.compareTo((String) names.elementAt(i)) &lt; <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">13</FONT><A NAME="1013"></A>                res = i;
+<FONT CLASS="LN">14</FONT><A NAME="1014"></A>            }
+<FONT CLASS="LN">15</FONT><A NAME="1015"></A>        }
+<FONT CLASS="LN">16</FONT><A NAME="1016"></A>        <FONT CLASS="Return">return</FONT> res;
+<FONT CLASS="LN">17</FONT><A NAME="1017"></A>    }
+<FONT CLASS="LN">18</FONT><A NAME="1018"></A>
+<FONT CLASS="LN">19</FONT><A NAME="1019"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">20</FONT><A NAME="1020"></A>     * Writes a formatted list of target names to &lt;code&gt;System.out&lt;/code&gt;
+<FONT CLASS="LN">21</FONT><A NAME="1021"></A>     * with an optional description.
+<FONT CLASS="LN">22</FONT><A NAME="1022"></A>     *
+<FONT CLASS="LN">23</FONT><A NAME="1023"></A>     *
+<FONT CLASS="LN">24</FONT><A NAME="1024"></A>     * @param project the project instance.
+<FONT CLASS="LN">25</FONT><A NAME="1025"></A>     * @param names The names to be printed.
+<FONT CLASS="LN">26</FONT><A NAME="1026"></A>     *              Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">27</FONT><A NAME="1027"></A>     * @param descriptions The associated target descriptions.
+<FONT CLASS="LN">28</FONT><A NAME="1028"></A>     *                     May be &lt;code&gt;null&lt;/code&gt;, in which case
+<FONT CLASS="LN">29</FONT><A NAME="1029"></A>     *                     no descriptions are displayed.
+<FONT CLASS="LN">30</FONT><A NAME="1030"></A>     *                     If non-&lt;code&gt;null&lt;/code&gt;, this should have
+<FONT CLASS="LN">31</FONT><A NAME="1031"></A>     *                     as many elements as &lt;code&gt;names&lt;/code&gt;.
+<FONT CLASS="LN">32</FONT><A NAME="1032"></A>     * @param heading The heading to display.
+<FONT CLASS="LN">33</FONT><A NAME="1033"></A>     *                Should not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">34</FONT><A NAME="1034"></A>     * @param maxlen The maximum length of the names of the targets.
+<FONT CLASS="LN">35</FONT><A NAME="1035"></A>     *               If descriptions are given, they are padded to this
+<FONT CLASS="LN">36</FONT><A NAME="1036"></A>     *               position so they line up (so long as the names really
+<FONT CLASS="LN">37</FONT><A NAME="1037"></A>     *               &lt;i&gt;are&lt;/i&gt; shorter than this).
+<FONT CLASS="LN">38</FONT><A NAME="1038"></A>     */</FONT>
+<FONT CLASS="LN">39</FONT><A NAME="1039"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> printTargets(Project project, Vector names,
+<FONT CLASS="LN">40</FONT><A NAME="1040"></A>                                     Vector descriptions, String heading,
+<FONT CLASS="LN">41</FONT><A NAME="1041"></A>                                     <FONT CLASS="Int">int</FONT> maxlen) {
+<FONT CLASS="LN">42</FONT><A NAME="1042"></A>        <FONT CLASS="SingleLineComment">// now, start printing the targets and their descriptions
+<FONT CLASS="LN">43</FONT><A NAME="1043"></A></FONT>        String lSep = System.getProperty(<FONT CLASS="StringLiteral">"line.separator"</FONT>);
+<FONT CLASS="LN">44</FONT><A NAME="1044"></A>        <FONT CLASS="SingleLineComment">// got a bit annoyed that I couldn't find a pad function
+<FONT CLASS="LN">45</FONT><A NAME="1045"></A></FONT>        String spaces = <FONT CLASS="StringLiteral">"    "</FONT>;
+<FONT CLASS="LN">46</FONT><A NAME="1046"></A>        <FONT CLASS="While">while</FONT> (spaces.length() &lt;= maxlen) {
+<FONT CLASS="LN">47</FONT><A NAME="1047"></A>            spaces += spaces;
+<FONT CLASS="LN">48</FONT><A NAME="1048"></A>        }
+<FONT CLASS="LN">49</FONT><A NAME="1049"></A>        StringBuffer msg = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">50</FONT><A NAME="1050"></A>        msg.append(heading);
+<FONT CLASS="LN">51</FONT><A NAME="1051"></A>        msg.append(lSep);
+<FONT CLASS="LN">52</FONT><A NAME="1052"></A>        msg.append(lSep);
+<FONT CLASS="LN">53</FONT><A NAME="1053"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; names.size(); i++) {
+<FONT CLASS="LN">54</FONT><A NAME="1054"></A>            msg.append(<FONT CLASS="StringLiteral">" "</FONT>);
+<FONT CLASS="LN">55</FONT><A NAME="1055"></A>            msg.append(names.elementAt(i));
+<FONT CLASS="LN">56</FONT><A NAME="1056"></A>            <FONT CLASS="If">if</FONT> (descriptions != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">57</FONT><A NAME="1057"></A>                msg.append(spaces.substring(<FONT CLASS="IntegerLiteral">0</FONT>, maxlen - ((String) names.elementAt(i)).length() + <FONT CLASS="IntegerLiteral">2</FONT>));
+<FONT CLASS="LN">58</FONT><A NAME="1058"></A>                msg.append(descriptions.elementAt(i));
+<FONT CLASS="LN">59</FONT><A NAME="1059"></A>            }
+<FONT CLASS="LN">60</FONT><A NAME="1060"></A>            msg.append(lSep);
+<FONT CLASS="LN">61</FONT><A NAME="1061"></A>        }
+<FONT CLASS="LN">62</FONT><A NAME="1062"></A>        project.log(msg.toString());
+<FONT CLASS="LN">63</FONT><A NAME="1063"></A>    }
+<FONT CLASS="LN">64</FONT><A NAME="1064"></A>}
+<FONT CLASS="LN">65</FONT><A NAME="1065"></A></pre>
+</BODY>
+</HTML>

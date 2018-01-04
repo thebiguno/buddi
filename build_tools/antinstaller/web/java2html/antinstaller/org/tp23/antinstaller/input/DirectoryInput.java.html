@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.input.DirectoryInput (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">DirectoryInput.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.input.index.html" target="packageFrame">org.tp23.antinstaller.input</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.io.File;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.util.ResourceBundle;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A>
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">org.tp23.antinstaller.InstallerContext</A>;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/ValidationException.java.html">org.tp23.antinstaller.ValidationException</A>;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/MessageRenderer.java.html">org.tp23.antinstaller.renderer.MessageRenderer</A>;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A>
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">26</FONT><A NAME="26"></A> * &lt;p&gt;Input type to select a directory &lt;/p&gt;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A> * &lt;p&gt; &lt;/p&gt;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A> * &lt;p&gt;Copyright: Copyright (c) 2004&lt;/p&gt;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A> * &lt;p&gt;Company: tp23&lt;/p&gt;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A> * @author Paul Hinds
+<FONT CLASS="LN">31</FONT><A NAME="31"></A> * @version $Id: DirectoryInput.java,v 1.5 2007/01/28 10:25:48 teknopaul Exp $
+<FONT CLASS="LN">32</FONT><A NAME="32"></A> */</FONT>
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> DirectoryInput
+<FONT CLASS="LN">34</FONT><A NAME="34"></A>    <FONT CLASS="Extends">extends</FONT> <A HREF="../../../../org/tp23/antinstaller/input/OSSpecific.java.html">OSSpecific</A> {
+<FONT CLASS="LN">35</FONT><A NAME="35"></A>
+<FONT CLASS="LN">36</FONT><A NAME="36"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> ResourceBundle res = ResourceBundle.getBundle(<FONT CLASS="StringLiteral">"org.tp23.antinstaller.renderer.Res"</FONT>);
+<FONT CLASS="LN">37</FONT><A NAME="37"></A>
+<FONT CLASS="LN">38</FONT><A NAME="38"></A>
+<FONT CLASS="LN">39</FONT><A NAME="39"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> abort = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">40</FONT><A NAME="40"></A>    <FONT CLASS="Private">private</FONT> String create;
+<FONT CLASS="LN">41</FONT><A NAME="41"></A>    <FONT CLASS="Private">private</FONT> String checkExists;
+<FONT CLASS="LN">42</FONT><A NAME="42"></A>
+<FONT CLASS="LN">43</FONT><A NAME="43"></A>    <FONT CLASS="Public">public</FONT> DirectoryInput() {
+<FONT CLASS="LN">44</FONT><A NAME="44"></A>    }
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>     * Called to validate the user input
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>     */</FONT>
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> validate(<A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> cxt) <FONT CLASS="Throws">throws</FONT> <A HREF="../../../../org/tp23/antinstaller/ValidationException.java.html">ValidationException</A>{
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>        <FONT CLASS="If">if</FONT> (getInputResult() == <FONT CLASS="Null">null</FONT>)<FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>        <A HREF="../../../../org/tp23/antinstaller/renderer/MessageRenderer.java.html">MessageRenderer</A> mr = cxt.getMessageRenderer();
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>        String selectedName = getInputResult();
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>        <FONT CLASS="SingleLineComment">// handle no directory option
+<FONT CLASS="LN">54</FONT><A NAME="54"></A></FONT>        <FONT CLASS="If">if</FONT>( <FONT CLASS="StringLiteral">""</FONT>.equals(selectedName) ){
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>            <FONT CLASS="If">if</FONT>( InputField.isTrue(create) || InputField.isTrue(checkExists) ){
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>                mr.printMessage(res.getString(<FONT CLASS="StringLiteral">"dirNotExist"</FONT>));
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>            }
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>            <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>            }
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>        } 
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>        File file = <FONT CLASS="New">new</FONT> File(selectedName);
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>        <FONT CLASS="If">if</FONT>(InputField.isTrue(create)){
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>            <FONT CLASS="If">if</FONT>(!file.exists()){
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>                    <FONT CLASS="If">if</FONT>(mr.prompt(res.getString(<FONT CLASS="StringLiteral">"dirNotExistCreate"</FONT>) + <FONT CLASS="StringLiteral">"\n"</FONT> + file.getAbsolutePath())){
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>                        <FONT CLASS="Boolean">boolean</FONT> ok = file.mkdirs();
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>                        <FONT CLASS="If">if</FONT>(!ok){
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>                            mr.printMessage(res.getString(<FONT CLASS="StringLiteral">"dirNotCreated"</FONT>));
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>                        }
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>                    }
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>                }
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>                <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/ValidationException.java.html">Exception</A> ex) {
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>                    mr.printMessage(res.getString(<FONT CLASS="StringLiteral">"canNotCreateFile"</FONT>) + <FONT CLASS="StringLiteral">"\n"</FONT> + file.getAbsolutePath());
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>                    <FONT CLASS="SingleLineComment">//FIXME should not throw here, should do something better so users on linux can chmod where necessary
+<FONT CLASS="LN">77</FONT><A NAME="77"></A></FONT>                    <FONT CLASS="SingleLineComment">// then try again
+<FONT CLASS="LN">78</FONT><A NAME="78"></A></FONT>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/ValidationException.java.html">ValidationException</A>(res.getString(<FONT CLASS="StringLiteral">"canNotCreateFile"</FONT>),ex);
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>                    
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>                }
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>            }
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>        }
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>        <FONT CLASS="If">if</FONT>(InputField.isTrue(checkExists)){
+<FONT CLASS="LN">84</FONT><A NAME="84"></A><FONT CLASS="SingleLineComment">//          if( ( !file.exists() || !file.isDirectory() ) &amp;&amp; triedToCreate){
+<FONT CLASS="LN">85</FONT><A NAME="85"></A></FONT><FONT CLASS="SingleLineComment">//              //TODO add some usefull text here to explain that we can not continue
+<FONT CLASS="LN">86</FONT><A NAME="86"></A></FONT><FONT CLASS="SingleLineComment">//          }
+<FONT CLASS="LN">87</FONT><A NAME="87"></A></FONT>            <FONT CLASS="If">if</FONT>(!file.exists() || !file.isDirectory()){
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>                mr.printMessage(res.getString(<FONT CLASS="StringLiteral">"dirNotExist"</FONT>) + <FONT CLASS="StringLiteral">"\n"</FONT> + file.getAbsolutePath());
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>            }
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>        }
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>    }
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> isAbort() {
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>        <FONT CLASS="Return">return</FONT> abort;
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>    }
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setAbort(<FONT CLASS="Boolean">boolean</FONT> abort) {
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>        <FONT CLASS="This">this</FONT>.abort = abort;
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>    }
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>    <FONT CLASS="Public">public</FONT> String getCreate() {
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>        <FONT CLASS="Return">return</FONT> create;
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>    }
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setCreate(String create) {
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>        <FONT CLASS="This">this</FONT>.create = create;
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>    }
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setValue(String dir){
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>        setInputResult(dir);
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>    }
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>    <FONT CLASS="Public">public</FONT> String getCheckExists() {
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>        <FONT CLASS="Return">return</FONT> checkExists;
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>    }
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setCheckExists(String checkExists) {
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>        <FONT CLASS="This">this</FONT>.checkExists = checkExists;
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>    }
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>     * Used by checkConfig to validate the configuration file.
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>     * Not used at runtime.
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>     * @return boolean
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>     */</FONT>
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> validateObject() {
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>        <FONT CLASS="If">if</FONT>(getDisplayText() == <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>            System.out.println(<FONT CLASS="StringLiteral">"Directory:displayText must be set"</FONT>);
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>        }
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>        <FONT CLASS="If">if</FONT>(getProperty() == <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>            System.out.println(<FONT CLASS="StringLiteral">"Directory:property must be set"</FONT>);
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>        }
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>        <FONT CLASS="If">if</FONT>(getDefaultValue() == <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>            System.out.println(<FONT CLASS="StringLiteral">"Directory:defaultValue must be set"</FONT>);
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>        }
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>        <FONT CLASS="If">if</FONT>(getDefaultValue().equals(<FONT CLASS="StringLiteral">""</FONT>)){
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>            <FONT CLASS="If">if</FONT>( isTrue(getCreate()) || isTrue(getCheckExists()) ) {
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>                System.out.println(<FONT CLASS="StringLiteral">"Directory:defaultValue must be set if checkExists or create are true"</FONT>);
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>            }
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>        }
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>        <FONT CLASS="If">if</FONT>(!InputField.optionalBoolean(getCreate())){
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>            System.out.println(<FONT CLASS="StringLiteral">"Directory:create must be true or false or null"</FONT>);
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>        }
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>        <FONT CLASS="If">if</FONT>(!InputField.optionalBoolean(getCheckExists())){
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>            System.out.println(<FONT CLASS="StringLiteral">"Directory:checkExists must be true or false or null"</FONT>);
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>        }
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>    }
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>}
+<FONT CLASS="LN">57</FONT><A NAME="157"></A></pre>
+</BODY>
+</HTML>

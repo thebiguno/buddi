@@ -1,0 +1,248 @@
+<?xml version="1.0"?>
+<!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.7.dtd">
+
+<installer
+			ui="swing,text"
+			verbose="true"
+			debug="false"
+			lookAndFeel="org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel"
+			antialiased="true"
+			name="Test Installer"
+			windowIcon="/resources/gkmain_inv.png"
+			defaultImageResource="/resources/antbar.png"
+			minJavaVersion="1.4"
+			finishButtonText="Build">
+
+	<page
+			type="input"
+			name="intro"
+			displayText="Welcome to the new installer program"
+			imageResource="/resources/antbar.png">
+		<comment
+				displayText="This is a title comment"
+				title="true"/>
+		<comment
+				displayText="This is just a bold comment"
+				bold="true"/>
+		<comment
+				displayText="This is just a comment"/>
+	</page>
+	<page
+			type="splash"
+			name="splash"
+			displayText="Example Splash Page"
+			imageResource="/resources/antbar.png"
+			splashResource="/resources/example-splash.png"
+			altText="example text splash"/>
+
+	<page
+			type="license"
+			name="license"
+			displayText="License conditions"
+			resource="/LICENSE-ant-install.txt"
+			usePaging="true"
+			imageResource="/resources/antbar.png">
+	</page>
+	<page
+			type="input"
+			name="properties.1"
+			displayText="Required install options">
+		<text property="myProperty" defaultValue="blah blah" displayText="Enter a value"/>
+		<checkbox
+				property="isvalue"
+				displayText="Do you want to do this"
+				defaultValue="true"
+				force="false"/>
+		<select
+				property="colour"
+				defaultValue="#FF0000"
+				displayText="Select your favorite colour">
+			<option text="Red" value="#FF0000"/>
+			<option text="Green" value="#00FF00"/>
+			<option text="Blue" value="#0000FF"/>
+		</select>
+		<directory
+				property="installDir"
+				defaultValue="/usr/local/demoapp"
+				defaultValueWin="${env.ProgramFiles}\demoapp"
+				displayText="Select an installation directory"
+				create="true"
+				checkExists="true"/>
+		<file
+				property="webxml"
+				defaultValue="/usr/tomcat/webapps/default/WEB-INF/web.xml"
+				defaultValueWin="C:\tomcat\webapps\default\WEB-INF\web.xml"
+				displayText="Select the web.xml file"
+				checkExists="false"/>
+	</page>
+	<page
+			type="input"
+			name="selector"
+			displayText="Select components to install"
+			imageResource="/resources/antbar.png">
+		<comment
+				displayText="Choose the components you want to install"
+				bold="true"/>
+		<target
+			displayText="Core components"
+			target="default"
+			defaultValue="true"
+			force="true"/>
+		<target
+			displayText="Source code"
+			target="tgsrc"
+			defaultValue="true"
+			force="false"/>
+		<validated
+			property="validatedtext"
+			displayText="Validated Text Input"
+			defaultValue="23/10/2004"
+			regex="^[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]$"/>
+		<text
+			property="unvalidatedtext"
+			displayText="Unvalidated User Name"
+			defaultValue="${java.user.name}"/>
+		<password
+			property="unsafepassword"
+			displayText="Enter a password"
+			defaultValue="pa55word"
+			regex="[0-9a-zA-Z_]{8}"/>
+		<large-select
+				property="lang"
+				defaultValue="uk"
+				displayText="Select your favorite language">
+			<option text="Spanish" value="es"/>
+			<option text="Catalan" value="ca"/>
+			<option text="English" value="uk"/>
+			<option text="French" value="fr"/>
+			<option text="Japanese" value="jp"/>
+			<option text="Persian" value="pe"/>
+			<option text="Urdu" value="ur"/>
+			<option text="Flemish" value="fl"/>
+			<option text="German" value="de"/>
+			<option text="Greek" value="gk"/>
+			<option text="Turkish" value="tk"/>
+			<option text="Slav" value="sv"/>
+			<option text="Euskera" value="ek"/>
+			<option text="Welsh" value="we"/>
+			<option text="Jamaican patoi" value="ra"/>
+			<option text="Mockney" value="??"/>
+			<option text="Giberish" value="¿¿"/>
+			<option text="Love" value="lv"/>
+			<option text="Sign" value=":)"/>
+			<option text="Java" value="jv"/>
+			<option text="C++" value="++"/>
+			<option text="American" value="us"/>
+		</large-select>
+		<target
+			displayText="OS Specific target"
+			osSpecific="true"
+			target="myOsSpecific"
+			defaultValue="true"
+			force="false"/>
+	</page>
+	<page
+			ifProperty="${lang}=lv"
+			type="input"
+			name="Language of Love"
+			displayText="Language of Love">
+		<comment
+				displayText="Aaaarrr, how sweet"
+				bold="true"/>
+	</page>
+	<page
+			ifProperty="${lang}=us"
+			type="input"
+			name="American"
+			displayText="Hey Yankiee">
+		<comment
+				displayText="It totaliser and initialise, with Ss you know, but never mind"
+				bold="true"/>
+	</page>
+	<page
+			ifTarget="tgsrc"
+			type="input"
+			name="properties.2"
+			displayText="Required if Source code selected">
+		<text property="myProperty2" defaultValue="tiddly poop" displayText="Enter a value"/>
+		<select
+				property="colour2"
+				defaultValue="#FF0000"
+				displayText="colour2"
+				explanatoryText="This field can be used on any input field to render further descriptive text
+				This field can be used on any input field to render further descriptive text">
+			<option text="Red" value="#FF0000"/>
+			<option text="Green" value="#00FF00"/>
+			<option text="Blue" value="#0000FF"/>
+		</select>
+		<text property="myProperty3" defaultValue="blah blah" displayText="Enter a value"/>
+		<date property="date.property" dateFormat="dd-MM-yy mm:ss" defaultValue="TODAY" displayText="Enter a date"/>
+		<!-- example disabled since you might not have tomcat installed -->
+		<!--app-root
+				property="tomcat.root"
+				defaultValue="/var"
+				displayText="Select the tomcat root"
+				checkFile1="conf/tomcat-users.xml"
+				checkFile2="conf/server.xml"
+				checkDir1="webapps"
+				checkDir2="conf">
+		</app-root-->
+	</page>
+	<page
+			type="input"
+			name="contrib"
+			displayText="Contributions">
+		<target-select
+				property="colourtarget"
+				defaultValue="tgt1"
+				displayText="Select a target"
+				explanatoryText="only one target available">
+			<option text="target-one" value="tgt1"/>
+			<option text="target-two" value="tgt2"/>
+			<option text="target-three" value="tgt3"/>
+		</target-select>
+	</page>
+	<page
+			type="input"
+			name="envcond"
+			displayText="Environment Conditional"
+			imageResource="/resources/makewavesdawn.png"
+			ifProperty="${env.DISPLAY}=:0.0">
+			<comment
+				displayText="This page only shows if DISPLAY=:0.0"
+				bold="false"/>
+	</page>
+	<page
+			type="input"
+			name="propcond.1"
+			displayText="Blue Conditional"
+			ifProperty="${colourtarget}=#0000FF">
+			<comment
+				displayText="original syntax not permitted"
+				bold="false"/>
+			<comment
+				displayText="colourtarget is Blue"
+				bold="false"/>
+	</page>
+	<page
+			type="input"
+			name="propcond.2"
+			displayText="Red Conditional"
+			ifProperty="${colourtarget}=#FF0000">
+			<comment
+				displayText="preferred syntax"
+				bold="false"/>
+			<comment
+				displayText="This page only shows if colourtarget is RED"
+				bold="false"/>
+	</page>
+	<page
+			type="progress"
+			name="progress"
+			displayText="Installation progress"
+			showTargets="false"
+			target="cleanuptarget">
+	</page>
+</installer>
+
+

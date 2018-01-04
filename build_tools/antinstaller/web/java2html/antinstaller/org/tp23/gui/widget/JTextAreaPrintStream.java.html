@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.gui.widget.JTextAreaPrintStream (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">JTextAreaPrintStream.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.gui.widget.index.html" target="packageFrame">org.tp23.gui.widget</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.io.ByteArrayOutputStream;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.io.PrintStream;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A>
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> javax.swing.JTextArea;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A>
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">24</FONT><A NAME="24"></A> * &lt;p&gt;This subclass of PrintStream is designed to be compatible with System.out and System.err but it provides
+<FONT CLASS="LN">25</FONT><A NAME="25"></A>* its own functionality and does not borrow from PrintStream. All methods are overridden.  The calls to each method
+<FONT CLASS="LN">26</FONT><A NAME="26"></A>* behave as expected with the exception of flush() which appears to insert a new line for each call. flush() sends
+<FONT CLASS="LN">27</FONT><A NAME="27"></A>* the current line to the JTextArea with a call to JTextArea.append(String) which adds a
+<FONT CLASS="LN">28</FONT><A NAME="28"></A>* line in the buffer.&lt;/p&gt;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A> * @author Paul Hinds
+<FONT CLASS="LN">30</FONT><A NAME="30"></A> * @version 1.0
+<FONT CLASS="LN">31</FONT><A NAME="31"></A> */</FONT>
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> JTextAreaPrintStream <FONT CLASS="Extends">extends</FONT> PrintStream{
+<FONT CLASS="LN">33</FONT><A NAME="33"></A>
+<FONT CLASS="LN">34</FONT><A NAME="34"></A>    <FONT CLASS="Private">private</FONT> JTextArea textArea;
+<FONT CLASS="LN">35</FONT><A NAME="35"></A>    <FONT CLASS="Private">private</FONT> StringBuffer line;
+<FONT CLASS="LN">36</FONT><A NAME="36"></A>
+<FONT CLASS="LN">37</FONT><A NAME="37"></A>    <FONT CLASS="Public">public</FONT> JTextAreaPrintStream(JTextArea textArea) {
+<FONT CLASS="LN">38</FONT><A NAME="38"></A>        <FONT CLASS="Super">super</FONT>(<FONT CLASS="New">new</FONT> ByteArrayOutputStream(<FONT CLASS="IntegerLiteral">0</FONT>));<FONT CLASS="SingleLineComment">// wasted all methods are overridden
+<FONT CLASS="LN">39</FONT><A NAME="39"></A></FONT>        <FONT CLASS="This">this</FONT>.textArea = textArea;
+<FONT CLASS="LN">40</FONT><A NAME="40"></A>        line = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">41</FONT><A NAME="41"></A>    }
+<FONT CLASS="LN">42</FONT><A NAME="42"></A>
+<FONT CLASS="LN">43</FONT><A NAME="43"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">44</FONT><A NAME="44"></A>     * The stream can not be closed
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>     */</FONT>
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> close(){
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>    }
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> flush(){
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>        <FONT CLASS="If">if</FONT>(line.length()&gt;<FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>            textArea.append(line.toString());
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>            line = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>        }
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>    }
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> write(<FONT CLASS="Byte">byte</FONT>[] b){
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>        line.append(<FONT CLASS="New">new</FONT> String(b));
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>    }
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> write(<FONT CLASS="Byte">byte</FONT>[] b, <FONT CLASS="Int">int</FONT> off, <FONT CLASS="Int">int</FONT> len){
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>        line.append(<FONT CLASS="New">new</FONT> String(b,off,len));
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>    }
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> write(<FONT CLASS="Int">int</FONT> c){
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>        line.append(c);
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>    }
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Boolean">boolean</FONT> checkError() {
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>    }
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> print(Object obj) {
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>        line.append(obj);
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>    }
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> print(String s) {
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>        line.append(s);
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>    }
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> print(<FONT CLASS="Boolean">boolean</FONT> b) {
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>        line.append(b);
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>    }
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> print(<FONT CLASS="Char">char</FONT> c) {
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>        line.append(c);
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>    }
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> print(<FONT CLASS="Char">char</FONT>[] s) {
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>        line.append(s);
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>    }
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> print(<FONT CLASS="Double">double</FONT> d) {
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>        line.append(d);
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>    }
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> print(<FONT CLASS="Float">float</FONT> f) {
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>        line.append(f);
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>    }
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> print(<FONT CLASS="Int">int</FONT> i) {
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>        line.append(i);
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>    }
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> print(<FONT CLASS="Long">long</FONT> l) {
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>        line.append(l);
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>    }
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> println() {
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>        line.append(<FONT CLASS="CharacerLiteral">'\n'</FONT>);
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>        flush();
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>    }
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> println(Object x) {
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>        <FONT CLASS="If">if</FONT>(line.length()&gt;<FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>            textArea.append(line.append(String.valueOf(x)).toString());
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>            line = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>        }
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>            textArea.append(String.valueOf(x));
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>        }
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>    }
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> println(String x) {
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>        <FONT CLASS="If">if</FONT>(line.length()&gt;<FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>            textArea.append(line.append(x).toString());
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>            line = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>        }
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>            textArea.append(x);
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>        }
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>    }
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> println(<FONT CLASS="Boolean">boolean</FONT> x) {
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>        <FONT CLASS="If">if</FONT>(line.length()&gt;<FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>            textArea.append(line.append(String.valueOf(x)).toString());
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>            line = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>        }
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>            textArea.append(String.valueOf(x));
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>        }
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>    }
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> println(<FONT CLASS="Char">char</FONT> x) {
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>        <FONT CLASS="If">if</FONT>(line.length()&gt;<FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>            textArea.append(line.append(String.valueOf(x)).toString());
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>            line = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>        }
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>            textArea.append(String.valueOf(x));
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>        }
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>    }
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> println(<FONT CLASS="Char">char</FONT>[] x) {
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>        <FONT CLASS="If">if</FONT>(line.length()&gt;<FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>            textArea.append(line.append(String.valueOf(x)).toString());
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>            line = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>        }
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>            textArea.append(String.valueOf(x));
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>        }
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>    }
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> println(<FONT CLASS="Double">double</FONT> x) {
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>        <FONT CLASS="If">if</FONT>(line.length()&gt;<FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>            textArea.append(line.append(String.valueOf(x)).toString());
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>            line = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>        }
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>            textArea.append(String.valueOf(x));
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>        }
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>    }
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> println(<FONT CLASS="Float">float</FONT> x) {
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>        <FONT CLASS="If">if</FONT>(line.length()&gt;<FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>            textArea.append(line.append(String.valueOf(x)).toString());
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>            line = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>        }
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>            textArea.append(String.valueOf(x));
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>        }
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>    }
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>
+<FONT CLASS="LN">13</FONT><A NAME="213"></A>
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> println(<FONT CLASS="Int">int</FONT> x) {
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>        <FONT CLASS="If">if</FONT>(line.length()&gt;<FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>            textArea.append(line.append(String.valueOf(x)).toString());
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">18</FONT><A NAME="218"></A>            line = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>        }
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>            textArea.append(String.valueOf(x));
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">23</FONT><A NAME="223"></A>        }
+<FONT CLASS="LN">24</FONT><A NAME="224"></A>    }
+<FONT CLASS="LN">25</FONT><A NAME="225"></A>
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>
+<FONT CLASS="LN">27</FONT><A NAME="227"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> println(<FONT CLASS="Long">long</FONT> x) {
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>        <FONT CLASS="If">if</FONT>(line.length()&gt;<FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">29</FONT><A NAME="229"></A>            textArea.append(line.append(String.valueOf(x)).toString());
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">31</FONT><A NAME="231"></A>            line = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">32</FONT><A NAME="232"></A>        }
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">34</FONT><A NAME="234"></A>            textArea.append(String.valueOf(x));
+<FONT CLASS="LN">35</FONT><A NAME="235"></A>            textArea.append(<FONT CLASS="StringLiteral">"\n"</FONT>);
+<FONT CLASS="LN">36</FONT><A NAME="236"></A>        }
+<FONT CLASS="LN">37</FONT><A NAME="237"></A>    }
+<FONT CLASS="LN">38</FONT><A NAME="238"></A>
+<FONT CLASS="LN">39</FONT><A NAME="239"></A>
+<FONT CLASS="LN">40</FONT><A NAME="240"></A>    <FONT CLASS="Protected">protected</FONT> <FONT CLASS="Void">void</FONT> setError() {
+<FONT CLASS="LN">41</FONT><A NAME="241"></A>    }
+<FONT CLASS="LN">42</FONT><A NAME="242"></A>
+<FONT CLASS="LN">43</FONT><A NAME="243"></A>
+<FONT CLASS="LN">44</FONT><A NAME="244"></A>}
+<FONT CLASS="LN">45</FONT><A NAME="245"></A></pre>
+</BODY>
+</HTML>

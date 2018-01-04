@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<configuration>
+	<static-property value="Made by AntInstaller, by TP23"/> 
+	<dynamic-colour-property value="@Colour@"/> 
+	<dynamic-selectedfile-property value="@SelectedFile@"/> 
+	<dynamic-boolean-property value="@BooleanProperty@"/> 
+	<dynamic-text-property value="@TextProperty@"/> 
+</configuration>

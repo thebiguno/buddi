@@ -1,0 +1,439 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.runtime.exe.PropertyLoaderFilter (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">PropertyLoaderFilter.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/*
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> *
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * limiations under the License.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> */</FONT>
+<FONT CLASS="LN">14</FONT><A NAME="14"></A>
+<FONT CLASS="LN">15</FONT><A NAME="15"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../../org.tp23.antinstaller.runtime.exe.index.html" target="packageFrame">org.tp23.antinstaller.runtime.exe</A>;
+<FONT CLASS="LN">16</FONT><A NAME="16"></A>
+<FONT CLASS="LN">17</FONT><A NAME="17"></A><FONT CLASS="Import">import</FONT> java.io.File;
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.io.FileInputStream;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.io.FileNotFoundException;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.io.IOException;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.util.ArrayList;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.util.Collections;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> java.util.Iterator;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> java.util.List;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> java.util.Properties;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="Import">import</FONT> java.util.ResourceBundle;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> java.util.StringTokenizer;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A>
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallException.java.html">org.tp23.antinstaller.InstallException</A>;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/Installer.java.html">org.tp23.antinstaller.Installer</A>;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">org.tp23.antinstaller.InstallerContext</A>;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/PropertiesFileRenderer.java.html">org.tp23.antinstaller.PropertiesFileRenderer</A>;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/ConditionalField.java.html">org.tp23.antinstaller.input.ConditionalField</A>;
+<FONT CLASS="LN">34</FONT><A NAME="34"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/InputField.java.html">org.tp23.antinstaller.input.InputField</A>;
+<FONT CLASS="LN">35</FONT><A NAME="35"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/OutputField.java.html">org.tp23.antinstaller.input.OutputField</A>;
+<FONT CLASS="LN">36</FONT><A NAME="36"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/PasswordTextInput.java.html">org.tp23.antinstaller.input.PasswordTextInput</A>;
+<FONT CLASS="LN">37</FONT><A NAME="37"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/TargetInput.java.html">org.tp23.antinstaller.input.TargetInput</A>;
+<FONT CLASS="LN">38</FONT><A NAME="38"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/TargetSelectInput.java.html">org.tp23.antinstaller.input.TargetSelectInput</A>;
+<FONT CLASS="LN">39</FONT><A NAME="39"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/page/Page.java.html">org.tp23.antinstaller.page.Page</A>;
+<FONT CLASS="LN">40</FONT><A NAME="40"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/VersionHelper.java.html">org.tp23.antinstaller.runtime.VersionHelper</A>;
+<FONT CLASS="LN">41</FONT><A NAME="41"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/exe/ExecuteRunnerFilter.java.html">org.tp23.antinstaller.runtime.exe.ExecuteRunnerFilter.AbortException</A>;
+<FONT CLASS="LN">42</FONT><A NAME="42"></A>
+<FONT CLASS="LN">43</FONT><A NAME="43"></A>
+<FONT CLASS="LN">44</FONT><A NAME="44"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">45</FONT><A NAME="45"></A> * Loads properties from a file of default properties if found.
+<FONT CLASS="LN">46</FONT><A NAME="46"></A> * the Installer element should define an attribute
+<FONT CLASS="LN">47</FONT><A NAME="47"></A> * loadDefaults with one of the following values.
+<FONT CLASS="LN">48</FONT><A NAME="48"></A> * &lt;li&gt;false - do not look for defaults&lt;/li&gt;
+<FONT CLASS="LN">49</FONT><A NAME="49"></A> * &lt;li&gt;prompt - look for properties and ask if they should be used if found&lt;/li&gt;
+<FONT CLASS="LN">50</FONT><A NAME="50"></A> * &lt;li&gt;load - look for defaults if found load them&lt;/li&gt;
+<FONT CLASS="LN">51</FONT><A NAME="51"></A> * &lt;li&gt;prompt-auto - wierd case where installer permits zero user interaction running only from antinstaller-config.xml defaults&lt;/li&gt;
+<FONT CLASS="LN">52</FONT><A NAME="52"></A> * 
+<FONT CLASS="LN">53</FONT><A NAME="53"></A> * N.B. this is not a generic property loader but one specifically for properties files
+<FONT CLASS="LN">54</FONT><A NAME="54"></A> * generated by a previous run of an identical installer or one that according to the version
+<FONT CLASS="LN">55</FONT><A NAME="55"></A> * number is compatible, see PropertyTask for loading other property sets
+<FONT CLASS="LN">56</FONT><A NAME="56"></A> * FIXME i18n for AbortExceptoins
+<FONT CLASS="LN">57</FONT><A NAME="57"></A> * @author teknopaul
+<FONT CLASS="LN">58</FONT><A NAME="58"></A> *
+<FONT CLASS="LN">59</FONT><A NAME="59"></A> */</FONT>
+<FONT CLASS="LN">60</FONT><A NAME="60"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> PropertyLoaderFilter <FONT CLASS="Implements">implements</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/exe/ExecuteFilter.java.html">ExecuteFilter</A> {
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>    
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> ResourceBundle res = ResourceBundle.getBundle(<FONT CLASS="StringLiteral">"org.tp23.antinstaller.renderer.Res"</FONT>);
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>    
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String LOAD = <FONT CLASS="StringLiteral">"true"</FONT>;
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String PROMPT = <FONT CLASS="StringLiteral">"prompt"</FONT>;
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String PROMPT_AUTO = <FONT CLASS="StringLiteral">"prompt-auto"</FONT>;
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String FALSE = <FONT CLASS="StringLiteral">"false"</FONT>;
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String DEFAULT_PROPERTIES_FILE_PROPERTY = <FONT CLASS="StringLiteral">"antinstaller.properties"</FONT>;
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Final">final</FONT> String fileNameProperty;
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Int">int</FONT> definedPropertiesCount;
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>     * Default constructor required for an ExecuteFilter implementation.
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>     * The default property name given by @see{DEFAULT_PROPERTIES_FILE_PROPERTY}
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>     * is used with this constructor
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>     */</FONT>
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>    <FONT CLASS="Public">public</FONT> PropertyLoaderFilter() {
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>        <FONT CLASS="This">this</FONT>( DEFAULT_PROPERTIES_FILE_PROPERTY );
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>    }
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>     * Constructor that allows the name of the property containg the properties file
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>     * to be specified
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>     *
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>     * @param fileNameProperty property containing the name of file
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>     */</FONT>
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>    <FONT CLASS="Public">public</FONT> PropertyLoaderFilter( <FONT CLASS="Final">final</FONT> String fileNameProperty ) {
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>        <FONT CLASS="This">this</FONT>.fileNameProperty = fileNameProperty;
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>    }
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>     * Execute the filter action - in this case pre-setting InputField values
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>     * with values loaded from a properties file (if present)
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>     *
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>     * @see org.tp23.antinstaller.runtime.exe.ExecuteFilter
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>     * @param ctx context data
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>     * @throws InstallException if an error occurred loading pre-defined properties
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>     */</FONT>
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> exec(<A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx) <FONT CLASS="Throws">throws</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> {
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>        <A HREF="../../../../../org/tp23/antinstaller/Installer.java.html">Installer</A> installer = ctx.getInstaller();
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>        String loadDefaults = installer.getLoadDefaults();
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>        <FONT CLASS="If">if</FONT>(installer.isVerbose()) {
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>            ctx.log(<FONT CLASS="StringLiteral">"loadDefaults attribute:"</FONT> + loadDefaults);
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>        }
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>        <FONT CLASS="Boolean">boolean</FONT> load = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>        <FONT CLASS="If">if</FONT>(loadDefaults == <FONT CLASS="Null">null</FONT> || FALSE.equals(loadDefaults)) {
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>            <FONT CLASS="If">if</FONT>(installer.isVerbose()) {
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>                ctx.log(<FONT CLASS="StringLiteral">"Not loading defaults"</FONT>);
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>            }
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>            <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>        }
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>        
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>        ctx.log( <FONT CLASS="StringLiteral">"Checking for predefined properties"</FONT>);
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>        Properties predefinedProps = loadPredefinedProperties( ctx, fileNameProperty );
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>        definedPropertiesCount = predefinedProps.size();
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>        <FONT CLASS="Boolean">boolean</FONT> foundProps = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>        <FONT CLASS="If">if</FONT>( definedPropertiesCount == <FONT CLASS="IntegerLiteral">0</FONT> ) {
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>            ctx.log( <FONT CLASS="StringLiteral">"No predefined properties"</FONT>);
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>        }
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>        <FONT CLASS="Else">else</FONT>{
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>            foundProps = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>        }
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>        <FONT CLASS="If">if</FONT>( foundProps &amp;&amp; PROMPT.equals(loadDefaults) ) {
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>            load = ctx.getMessageRenderer().prompt(res.getString(<FONT CLASS="StringLiteral">"promptLoadDefaults"</FONT>));
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>        }
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>        <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT>( foundProps &amp;&amp; PROMPT_AUTO.equals(loadDefaults)) {
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>            load = ctx.getMessageRenderer().prompt(res.getString(<FONT CLASS="StringLiteral">"promptLoadDefaults"</FONT>));
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>        }
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>        <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT>( foundProps &amp;&amp; LOAD.equals(loadDefaults) ) {
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>            load = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>        }
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>        
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>        <FONT CLASS="If">if</FONT>( (!foundProps || !load) &amp;&amp; 
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>                ctx.isAutoBuild() &amp;&amp; 
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>                PROMPT.equals(loadDefaults) ) {
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>            ctx.log( <FONT CLASS="StringLiteral">"Cant run -auto install without properties"</FONT>);
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> AbortException(<FONT CLASS="StringLiteral">"Install Aborted: cant load ant.install.properties"</FONT>);
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>        }
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>        <FONT CLASS="If">if</FONT>(load) {
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>            <FONT CLASS="If">if</FONT>(installer.isVerbose()) {
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>                ctx.log(<FONT CLASS="StringLiteral">"Loading defaults"</FONT>);
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>            }
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>            
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>            <FONT CLASS="SingleLineComment">// version control
+<FONT CLASS="LN">52</FONT><A NAME="152"></A></FONT>            String propertiesVersion = predefinedProps.getProperty(PropertiesFileRenderer.INSTALLER_VERSION_PROPERTY);
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>            String configVersion = ctx.getInstaller().getVersion();
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>            <FONT CLASS="If">if</FONT>(propertiesVersion != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>                <A HREF="../../../../../org/tp23/antinstaller/runtime/VersionHelper.java.html">VersionHelper</A> helper = <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/VersionHelper.java.html">VersionHelper</A>();
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>                <FONT CLASS="If">if</FONT>( ( ! propertiesVersion.equals(configVersion)) &amp;&amp; 
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>                        helper.equalOrHigher(configVersion , propertiesVersion) ) {
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>                    
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>                    <FONT CLASS="SingleLineComment">// let major versions pass but prompt for differences
+<FONT CLASS="LN">60</FONT><A NAME="160"></A></FONT>                    <FONT CLASS="If">if</FONT>( (! ctx.isAutoBuild()) &amp;&amp; helper.majorVersionCompatible(configVersion , propertiesVersion) ){
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>                        <FONT CLASS="If">if</FONT>( ! ctx.getMessageRenderer().prompt(res.getString(<FONT CLASS="StringLiteral">"propertiesVersionMismatch"</FONT>)) ){
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>                            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> AbortException(<FONT CLASS="StringLiteral">"Install Aborted: existing configuration is not compatible, config version: "</FONT> + configVersion);
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>                        }
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>                    }
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>                    <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>                        <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> AbortException(<FONT CLASS="StringLiteral">"Install Aborted: existing configuration is not compatible, config version: "</FONT> + configVersion);
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>                    }
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>                }
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>                
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>            }
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>            <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> AbortException(<FONT CLASS="StringLiteral">"Install Aborted: local ant.install.properties missing config version, must be equal or lower than: "</FONT> + configVersion);
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>            }
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>            <FONT CLASS="SingleLineComment">// end version control
+<FONT CLASS="LN">75</FONT><A NAME="175"></A></FONT>
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>            <A HREF="../../../../../org/tp23/antinstaller/page/Page.java.html">Page</A>[] allPages = installer.getPages();
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>            handleDefaults( ctx, allPages, predefinedProps );
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>        }
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>    }
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>    <FONT CLASS="MultiLineComment">/*
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>     * Use the supplied properties to pre-populate the page fields
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>     */</FONT>
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> handleDefaults( <A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx, <A HREF="../../../../../org/tp23/antinstaller/page/Page.java.html">Page</A>[] allPages, Properties props ) <FONT CLASS="Throws">throws</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> {
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>        <FONT CLASS="For">for</FONT>( <FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; allPages.length; i++ ) {
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>            <A HREF="../../../../../org/tp23/antinstaller/input/OutputField.java.html">OutputField</A>[] fields = allPages[i].getOutputField();
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>            setInputValues( ctx, allPages[i], fields, props );
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>        }
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>    }
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> setInputValues( <A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx, <A HREF="../../../../../org/tp23/antinstaller/page/Page.java.html">Page</A> page, <A HREF="../../../../../org/tp23/antinstaller/input/OutputField.java.html">OutputField</A>[] outputFields, Properties props )
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>            <FONT CLASS="Throws">throws</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> {
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>        <FONT CLASS="SingleLineComment">//Should never happen, but guard against it
+<FONT CLASS="LN">95</FONT><A NAME="195"></A></FONT>        <FONT CLASS="If">if</FONT>( outputFields == <FONT CLASS="Null">null</FONT> ) {
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>            <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>        }
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>        <FONT CLASS="SingleLineComment">// find relevant targets
+<FONT CLASS="LN">00</FONT><A NAME="200"></A></FONT>        String targets = props.getProperty(page.getName() + PropertiesFileRenderer.TARGETS_SUFFIX);
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>        List targetsList = splitTargets(targets);
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> j = <FONT CLASS="IntegerLiteral">0</FONT>; j &lt; outputFields.length; j++) {
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>            <A HREF="../../../../../org/tp23/antinstaller/input/OutputField.java.html">OutputField</A> field = outputFields[j];
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>            <FONT CLASS="If">if</FONT>( field <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/ConditionalField.java.html">ConditionalField</A> )  {
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>                <A HREF="../../../../../org/tp23/antinstaller/input/ConditionalField.java.html">ConditionalField</A> condField = (<A HREF="../../../../../org/tp23/antinstaller/input/ConditionalField.java.html">ConditionalField</A>) field;
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>                setInputValues( ctx, page, condField.getFields(), props );
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>            }
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>            <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT>( field <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/InputField.java.html">InputField</A> ) {
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>                <A HREF="../../../../../org/tp23/antinstaller/input/InputField.java.html">InputField</A> input = (<A HREF="../../../../../org/tp23/antinstaller/input/InputField.java.html">InputField</A>)field;
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>                String propName = input.getProperty();
+<FONT CLASS="LN">13</FONT><A NAME="213"></A>                <FONT CLASS="If">if</FONT>( props.containsKey( propName ) ) {
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>                    String value = props.getProperty(propName);
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>                    <FONT CLASS="If">if</FONT>( ctx.getInstaller().isDebug() ) {
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>                           ctx.log( <FONT CLASS="StringLiteral">"Setting "</FONT> + propName + <FONT CLASS="StringLiteral">"="</FONT> + value );
+<FONT CLASS="LN">18</FONT><A NAME="218"></A>                    }
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>                    input.setDefaultValue(value); <FONT CLASS="SingleLineComment">// does not evaluate references
+<FONT CLASS="LN">21</FONT><A NAME="221"></A></FONT>                    input.setInputResult(value);
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>                    input.setEditted( <FONT CLASS="True">true</FONT> );
+<FONT CLASS="LN">23</FONT><A NAME="223"></A>
+<FONT CLASS="LN">24</FONT><A NAME="224"></A>                    <FONT CLASS="If">if</FONT>(field <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/PasswordTextInput.java.html">PasswordTextInput</A>) {
+<FONT CLASS="LN">25</FONT><A NAME="225"></A>                        <FONT CLASS="If">if</FONT>(value == <FONT CLASS="Null">null</FONT> ){
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>                            ctx.getMessageRenderer().printMessage(res.getString(<FONT CLASS="StringLiteral">"promptMissingDefaultPassword"</FONT>));
+<FONT CLASS="LN">27</FONT><A NAME="227"></A>
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>                        }
+<FONT CLASS="LN">29</FONT><A NAME="229"></A>                    }
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>
+<FONT CLASS="LN">31</FONT><A NAME="231"></A>                    <FONT CLASS="SingleLineComment">// TARGET TYPES
+<FONT CLASS="LN">32</FONT><A NAME="232"></A></FONT>                    <FONT CLASS="If">if</FONT>(field <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/TargetInput.java.html">TargetInput</A>) {
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>                        <FONT CLASS="SingleLineComment">// Target and SelectTarget
+<FONT CLASS="LN">34</FONT><A NAME="234"></A></FONT>                        <A HREF="../../../../../org/tp23/antinstaller/input/TargetInput.java.html">TargetInput</A> tgtInput = (<A HREF="../../../../../org/tp23/antinstaller/input/TargetInput.java.html">TargetInput</A>)field;
+<FONT CLASS="LN">35</FONT><A NAME="235"></A>                        page.removeTarget(tgtInput.getIdx());
+<FONT CLASS="LN">36</FONT><A NAME="236"></A>                        <FONT CLASS="SingleLineComment">// if target was selected
+<FONT CLASS="LN">37</FONT><A NAME="237"></A></FONT>                        <FONT CLASS="If">if</FONT>( ! InputField.isFalse(value)) {
+<FONT CLASS="LN">38</FONT><A NAME="238"></A>                            page.addTarget(tgtInput.getIdx(), tgtInput.getTarget()); <FONT CLASS="SingleLineComment">// returns the OS specific suffix if relevant
+<FONT CLASS="LN">39</FONT><A NAME="239"></A></FONT>                            <FONT CLASS="SingleLineComment">// DEBUG
+<FONT CLASS="LN">40</FONT><A NAME="240"></A></FONT>                            <FONT CLASS="If">if</FONT>( ! targetsList.contains(tgtInput.getTarget()) ){ 
+<FONT CLASS="LN">41</FONT><A NAME="241"></A>                                <FONT CLASS="SingleLineComment">// could be caused by someone trying to copy a file across platforms (not a good idea)
+<FONT CLASS="LN">42</FONT><A NAME="242"></A></FONT>                                ctx.log(<FONT CLASS="StringLiteral">"Defaults error: targets list for page "</FONT> + page.getName()
+<FONT CLASS="LN">43</FONT><A NAME="243"></A>                                        + <FONT CLASS="StringLiteral">" should contain a TargetInput that was true"</FONT>);
+<FONT CLASS="LN">44</FONT><A NAME="244"></A>                            }
+<FONT CLASS="LN">45</FONT><A NAME="245"></A>                        }
+<FONT CLASS="LN">46</FONT><A NAME="246"></A>                        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">47</FONT><A NAME="247"></A>                            <FONT CLASS="If">if</FONT>(InputField.isTrue( tgtInput.getForce()) ) {
+<FONT CLASS="LN">48</FONT><A NAME="248"></A>                                String msg = <FONT CLASS="StringLiteral">"Defaults error: forced target for page "</FONT> + page.getName()
+<FONT CLASS="LN">49</FONT><A NAME="249"></A>                                + <FONT CLASS="StringLiteral">" has been removed"</FONT>;
+<FONT CLASS="LN">50</FONT><A NAME="250"></A>                                ctx.log(msg);
+<FONT CLASS="LN">51</FONT><A NAME="251"></A>                                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A>(msg);
+<FONT CLASS="LN">52</FONT><A NAME="252"></A>                            }
+<FONT CLASS="LN">53</FONT><A NAME="253"></A>                        }
+<FONT CLASS="LN">54</FONT><A NAME="254"></A>                    }
+<FONT CLASS="LN">55</FONT><A NAME="255"></A>                    <FONT CLASS="If">if</FONT>(field <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/TargetSelectInput.java.html">TargetSelectInput</A>) {
+<FONT CLASS="LN">56</FONT><A NAME="256"></A>                        <A HREF="../../../../../org/tp23/antinstaller/input/TargetSelectInput.java.html">TargetSelectInput</A> tgtInput = (<A HREF="../../../../../org/tp23/antinstaller/input/TargetSelectInput.java.html">TargetSelectInput</A>)field;
+<FONT CLASS="LN">57</FONT><A NAME="257"></A>                        page.removeTarget(tgtInput.getIdx());
+<FONT CLASS="LN">58</FONT><A NAME="258"></A>                        <FONT CLASS="SingleLineComment">// one target must be selected (what if the page was not shown??)
+<FONT CLASS="LN">59</FONT><A NAME="259"></A></FONT>                        page.addTarget(tgtInput.getIdx(), value);
+<FONT CLASS="LN">60</FONT><A NAME="260"></A>                    }
+<FONT CLASS="LN">61</FONT><A NAME="261"></A>                }
+<FONT CLASS="LN">62</FONT><A NAME="262"></A>            }
+<FONT CLASS="LN">63</FONT><A NAME="263"></A>            <FONT CLASS="SingleLineComment">//TODO: Should properties that are present in properties file but which do not appear
+<FONT CLASS="LN">64</FONT><A NAME="264"></A></FONT>            <FONT CLASS="SingleLineComment">//      as an InputField be set in the ResultContainer so that they can be used by later
+<FONT CLASS="LN">65</FONT><A NAME="265"></A></FONT>            <FONT CLASS="SingleLineComment">//      "if" conditions? - no other properties should be loaded separately from additional
+<FONT CLASS="LN">66</FONT><A NAME="266"></A></FONT>            <FONT CLASS="SingleLineComment">//      resource files if there is a requirement for that using an postDisplayTarget - PH
+<FONT CLASS="LN">67</FONT><A NAME="267"></A></FONT>        }
+<FONT CLASS="LN">68</FONT><A NAME="268"></A>
+<FONT CLASS="LN">69</FONT><A NAME="269"></A>        <FONT CLASS="SingleLineComment">//Page targets should be handled by the config loader process and indexed correctly
+<FONT CLASS="LN">70</FONT><A NAME="270"></A></FONT>        List pageTargets = page.getTargets(ctx);
+<FONT CLASS="LN">71</FONT><A NAME="271"></A>        Iterator iter = targetsList.iterator();
+<FONT CLASS="LN">72</FONT><A NAME="272"></A>        <FONT CLASS="While">while</FONT> (iter.hasNext()) {
+<FONT CLASS="LN">73</FONT><A NAME="273"></A>            String targetPerProps = (String) iter.next();
+<FONT CLASS="LN">74</FONT><A NAME="274"></A>            <FONT CLASS="If">if</FONT>( ! pageTargets.contains(targetPerProps)) {
+<FONT CLASS="LN">75</FONT><A NAME="275"></A>                ctx.log(<FONT CLASS="StringLiteral">"Defaults warning: targets list for page "</FONT> + page.getName()
+<FONT CLASS="LN">76</FONT><A NAME="276"></A>                        + <FONT CLASS="StringLiteral">" should contain "</FONT> + targetPerProps);
+<FONT CLASS="LN">77</FONT><A NAME="277"></A>            }
+<FONT CLASS="LN">78</FONT><A NAME="278"></A>        }
+<FONT CLASS="LN">79</FONT><A NAME="279"></A>
+<FONT CLASS="LN">80</FONT><A NAME="280"></A>    }
+<FONT CLASS="LN">81</FONT><A NAME="281"></A>
+<FONT CLASS="LN">82</FONT><A NAME="282"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">83</FONT><A NAME="283"></A>     * Check if external properties have been loaded
+<FONT CLASS="LN">84</FONT><A NAME="284"></A>     *
+<FONT CLASS="LN">85</FONT><A NAME="285"></A>     * @return &lt;code&gt;true&lt;/code&gt; if an external properties file was configured and contained
+<FONT CLASS="LN">86</FONT><A NAME="286"></A>     *       at least one property
+<FONT CLASS="LN">87</FONT><A NAME="287"></A>     */</FONT>
+<FONT CLASS="LN">88</FONT><A NAME="288"></A>    <FONT CLASS="Protected">protected</FONT> <FONT CLASS="Boolean">boolean</FONT> isPropertiesLoaded() {
+<FONT CLASS="LN">89</FONT><A NAME="289"></A>        <FONT CLASS="Return">return</FONT> (definedPropertiesCount &gt; <FONT CLASS="IntegerLiteral">0</FONT>);
+<FONT CLASS="LN">90</FONT><A NAME="290"></A>    }
+<FONT CLASS="LN">91</FONT><A NAME="291"></A>
+<FONT CLASS="LN">92</FONT><A NAME="292"></A>    <FONT CLASS="MultiLineComment">/*
+<FONT CLASS="LN">93</FONT><A NAME="293"></A>     * Primarily for unit testing
+<FONT CLASS="LN">94</FONT><A NAME="294"></A>     */</FONT>
+<FONT CLASS="LN">95</FONT><A NAME="295"></A>    <FONT CLASS="Int">int</FONT> getPropertiesFoundCount() {
+<FONT CLASS="LN">96</FONT><A NAME="296"></A>        <FONT CLASS="Return">return</FONT> definedPropertiesCount;
+<FONT CLASS="LN">97</FONT><A NAME="297"></A>    }
+<FONT CLASS="LN">98</FONT><A NAME="298"></A>
+<FONT CLASS="LN">99</FONT><A NAME="299"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">00</FONT><A NAME="300"></A>     * Load properties from a properties file if present.
+<FONT CLASS="LN">01</FONT><A NAME="301"></A>     * The name of the properties file is checked for in the following order.
+<FONT CLASS="LN">02</FONT><A NAME="302"></A>     * &lt;p&gt;
+<FONT CLASS="LN">03</FONT><A NAME="303"></A>     * If the parameter fileNamePropertyName is not null:
+<FONT CLASS="LN">04</FONT><A NAME="304"></A>     * &lt;ul&gt;
+<FONT CLASS="LN">05</FONT><A NAME="305"></A>     * &lt;li&gt;the environment is checked for an environmentvariable with that name&lt;/li&gt;
+<FONT CLASS="LN">06</FONT><A NAME="306"></A>     * &lt;li&gt;java system properties are checked for a property with that name&lt;/li&gt;
+<FONT CLASS="LN">07</FONT><A NAME="307"></A>     * &lt;/ul&gt;
+<FONT CLASS="LN">08</FONT><A NAME="308"></A>     * If the file name has not been found, or if &lt;code&gt;fileNamePropertyName == null&lt;/code&gt;
+<FONT CLASS="LN">09</FONT><A NAME="309"></A>     * then the default file name is used - @see{org.tp23.antinstaller.PropertiesFileRenderer#PROPERTIES_FILE_NAME}
+<FONT CLASS="LN">10</FONT><A NAME="310"></A>     *
+<FONT CLASS="LN">11</FONT><A NAME="311"></A>     * @param context installer context
+<FONT CLASS="LN">12</FONT><A NAME="312"></A>     * @param fileNamePropertyName name of environment variable or java system property containing the
+<FONT CLASS="LN">13</FONT><A NAME="313"></A>     *                             name of the properties file to be loaded or &lt;code&gt;null&lt;/code&gt;
+<FONT CLASS="LN">14</FONT><A NAME="314"></A>     * @return properties
+<FONT CLASS="LN">15</FONT><A NAME="315"></A>     * @throws InstallException if the properties file is missing or an error occurs loading it
+<FONT CLASS="LN">16</FONT><A NAME="316"></A>     */</FONT>
+<FONT CLASS="LN">17</FONT><A NAME="317"></A>    <FONT CLASS="Private">private</FONT> Properties loadPredefinedProperties( <FONT CLASS="Final">final</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> context,
+<FONT CLASS="LN">18</FONT><A NAME="318"></A>                                                 <FONT CLASS="Final">final</FONT> String           fileNamePropertyName )
+<FONT CLASS="LN">19</FONT><A NAME="319"></A>            <FONT CLASS="Throws">throws</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> {
+<FONT CLASS="LN">20</FONT><A NAME="320"></A>
+<FONT CLASS="LN">21</FONT><A NAME="321"></A>        Properties contextProps = InstallerContext.getEnvironment();
+<FONT CLASS="LN">22</FONT><A NAME="322"></A>        String propertiesFileName = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">23</FONT><A NAME="323"></A>        <FONT CLASS="Boolean">boolean</FONT> failSilently = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">24</FONT><A NAME="324"></A>
+<FONT CLASS="LN">25</FONT><A NAME="325"></A>        <FONT CLASS="If">if</FONT>( fileNamePropertyName != <FONT CLASS="Null">null</FONT> ) {
+<FONT CLASS="LN">26</FONT><A NAME="326"></A>            propertiesFileName = contextProps.getProperty( InstallerContext.ENV_PREFIX + fileNamePropertyName );
+<FONT CLASS="LN">27</FONT><A NAME="327"></A>
+<FONT CLASS="LN">28</FONT><A NAME="328"></A>            <FONT CLASS="If">if</FONT>( propertiesFileName == <FONT CLASS="Null">null</FONT> ) {
+<FONT CLASS="LN">29</FONT><A NAME="329"></A>                propertiesFileName =
+<FONT CLASS="LN">30</FONT><A NAME="330"></A>                        contextProps.getProperty( InstallerContext.JAVA_PREFIX + fileNamePropertyName );
+<FONT CLASS="LN">31</FONT><A NAME="331"></A>            }
+<FONT CLASS="LN">32</FONT><A NAME="332"></A>
+<FONT CLASS="LN">33</FONT><A NAME="333"></A>            <FONT CLASS="If">if</FONT>( propertiesFileName != <FONT CLASS="Null">null</FONT> ) {
+<FONT CLASS="LN">34</FONT><A NAME="334"></A>                <FONT CLASS="SingleLineComment">//Properties have been passed explicitly to installer so must load them
+<FONT CLASS="LN">35</FONT><A NAME="335"></A></FONT>                failSilently = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">36</FONT><A NAME="336"></A>            }
+<FONT CLASS="LN">37</FONT><A NAME="337"></A>        }
+<FONT CLASS="LN">38</FONT><A NAME="338"></A>
+<FONT CLASS="LN">39</FONT><A NAME="339"></A>        <FONT CLASS="If">if</FONT>( propertiesFileName == <FONT CLASS="Null">null</FONT> ) {
+<FONT CLASS="LN">40</FONT><A NAME="340"></A>            propertiesFileName = PropertiesFileRenderer.PROPERTIES_FILE_NAME;
+<FONT CLASS="LN">41</FONT><A NAME="341"></A>        }
+<FONT CLASS="LN">42</FONT><A NAME="342"></A>
+<FONT CLASS="LN">43</FONT><A NAME="343"></A>        Properties definedProperties = <FONT CLASS="New">new</FONT> Properties( );
+<FONT CLASS="LN">44</FONT><A NAME="344"></A>
+<FONT CLASS="LN">45</FONT><A NAME="345"></A>        <FONT CLASS="If">if</FONT>( propertiesFileName != <FONT CLASS="Null">null</FONT> ) {
+<FONT CLASS="LN">46</FONT><A NAME="346"></A>            File definedPropertiesFile = <FONT CLASS="New">new</FONT> File( propertiesFileName );
+<FONT CLASS="LN">47</FONT><A NAME="347"></A>            context.log( <FONT CLASS="StringLiteral">"Loading pre-defined properties from file "</FONT>
+<FONT CLASS="LN">48</FONT><A NAME="348"></A>                           + definedPropertiesFile.getAbsolutePath());
+<FONT CLASS="LN">49</FONT><A NAME="349"></A>
+<FONT CLASS="LN">50</FONT><A NAME="350"></A>            <FONT CLASS="SingleLineComment">//TODO: Support loading properties file from via classloader as a resource
+<FONT CLASS="LN">51</FONT><A NAME="351"></A></FONT>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">52</FONT><A NAME="352"></A>                FileInputStream istream = <FONT CLASS="New">new</FONT> FileInputStream( definedPropertiesFile );
+<FONT CLASS="LN">53</FONT><A NAME="353"></A>                definedProperties.load( istream );
+<FONT CLASS="LN">54</FONT><A NAME="354"></A>                istream.close();
+<FONT CLASS="LN">55</FONT><A NAME="355"></A>            }
+<FONT CLASS="LN">56</FONT><A NAME="356"></A>            <FONT CLASS="Catch">catch</FONT>( FileNotFoundException fnfExc ) {
+<FONT CLASS="LN">57</FONT><A NAME="357"></A>                <FONT CLASS="If">if</FONT>( !failSilently ) {
+<FONT CLASS="LN">58</FONT><A NAME="358"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A>( <FONT CLASS="StringLiteral">"Defined properties file "</FONT>
+<FONT CLASS="LN">59</FONT><A NAME="359"></A>                                                + definedPropertiesFile.getAbsolutePath()
+<FONT CLASS="LN">60</FONT><A NAME="360"></A>                                                + <FONT CLASS="StringLiteral">" doesn't exist"</FONT> );
+<FONT CLASS="LN">61</FONT><A NAME="361"></A>                }
+<FONT CLASS="LN">62</FONT><A NAME="362"></A>            }
+<FONT CLASS="LN">63</FONT><A NAME="363"></A>            <FONT CLASS="Catch">catch</FONT>( IOException ioExc ) {
+<FONT CLASS="LN">64</FONT><A NAME="364"></A>                <FONT CLASS="If">if</FONT>( !failSilently ) {
+<FONT CLASS="LN">65</FONT><A NAME="365"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A>( <FONT CLASS="StringLiteral">"Unable to read contents of defined properties file "</FONT>
+<FONT CLASS="LN">66</FONT><A NAME="366"></A>                                                 + definedPropertiesFile.getAbsolutePath(),
+<FONT CLASS="LN">67</FONT><A NAME="367"></A>                                                ioExc );
+<FONT CLASS="LN">68</FONT><A NAME="368"></A>                }
+<FONT CLASS="LN">69</FONT><A NAME="369"></A>            }
+<FONT CLASS="LN">70</FONT><A NAME="370"></A>
+<FONT CLASS="LN">71</FONT><A NAME="371"></A>            <FONT CLASS="If">if</FONT>( context.getInstaller().isDebug() ) {
+<FONT CLASS="LN">72</FONT><A NAME="372"></A>                logPropertiesLoaded( context, definedProperties, definedPropertiesFile );
+<FONT CLASS="LN">73</FONT><A NAME="373"></A>            }
+<FONT CLASS="LN">74</FONT><A NAME="374"></A>
+<FONT CLASS="LN">75</FONT><A NAME="375"></A>        }
+<FONT CLASS="LN">76</FONT><A NAME="376"></A>
+<FONT CLASS="LN">77</FONT><A NAME="377"></A>        <FONT CLASS="Return">return</FONT> definedProperties;
+<FONT CLASS="LN">78</FONT><A NAME="378"></A>    }
+<FONT CLASS="LN">79</FONT><A NAME="379"></A>
+<FONT CLASS="LN">80</FONT><A NAME="380"></A>
+<FONT CLASS="LN">81</FONT><A NAME="381"></A>    <FONT CLASS="SingleLineComment">// Debug - log properties loaded
+<FONT CLASS="LN">82</FONT><A NAME="382"></A></FONT>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> logPropertiesLoaded( <FONT CLASS="Final">final</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> context,
+<FONT CLASS="LN">83</FONT><A NAME="383"></A>                                      <FONT CLASS="Final">final</FONT> Properties properties,
+<FONT CLASS="LN">84</FONT><A NAME="384"></A>                                      <FONT CLASS="Final">final</FONT> File propertiesFile ) {
+<FONT CLASS="LN">85</FONT><A NAME="385"></A>        Iterator iterator = properties.keySet().iterator();
+<FONT CLASS="LN">86</FONT><A NAME="386"></A>        context.log( <FONT CLASS="StringLiteral">"Predefined properties ("</FONT>
+<FONT CLASS="LN">87</FONT><A NAME="387"></A>                        + definedPropertiesCount
+<FONT CLASS="LN">88</FONT><A NAME="388"></A>                        + <FONT CLASS="StringLiteral">") loaded from "</FONT>
+<FONT CLASS="LN">89</FONT><A NAME="389"></A>                        + propertiesFile.getAbsolutePath()
+<FONT CLASS="LN">90</FONT><A NAME="390"></A>                        + <FONT CLASS="StringLiteral">"..."</FONT> );
+<FONT CLASS="LN">91</FONT><A NAME="391"></A>        <FONT CLASS="While">while</FONT>( iterator.hasNext() ) {
+<FONT CLASS="LN">92</FONT><A NAME="392"></A>            String key = (String) iterator.next();
+<FONT CLASS="LN">93</FONT><A NAME="393"></A>            context.log( key + <FONT CLASS="StringLiteral">"="</FONT> + properties.getProperty( key ) );
+<FONT CLASS="LN">94</FONT><A NAME="394"></A>        }
+<FONT CLASS="LN">95</FONT><A NAME="395"></A>    }
+<FONT CLASS="LN">96</FONT><A NAME="396"></A>
+<FONT CLASS="LN">97</FONT><A NAME="397"></A>    <FONT CLASS="MultiLineComment">/*
+<FONT CLASS="LN">98</FONT><A NAME="398"></A>     * Could do a String.split(",") but want to avoid 1.4 specific stuff generally
+<FONT CLASS="LN">99</FONT><A NAME="399"></A>     * @param commaSeparated
+<FONT CLASS="LN">00</FONT><A NAME="400"></A>     * @return
+<FONT CLASS="LN">01</FONT><A NAME="401"></A>     */</FONT>
+<FONT CLASS="LN">02</FONT><A NAME="402"></A>    <FONT CLASS="Private">private</FONT> List splitTargets(String commaSeparated) {
+<FONT CLASS="LN">03</FONT><A NAME="403"></A>        <FONT CLASS="If">if</FONT>(commaSeparated == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">04</FONT><A NAME="404"></A>            <FONT CLASS="Return">return</FONT> Collections.EMPTY_LIST;
+<FONT CLASS="LN">05</FONT><A NAME="405"></A>        }
+<FONT CLASS="LN">06</FONT><A NAME="406"></A>        StringTokenizer st = <FONT CLASS="New">new</FONT> StringTokenizer(commaSeparated, <FONT CLASS="StringLiteral">","</FONT>);
+<FONT CLASS="LN">07</FONT><A NAME="407"></A>        List targets = <FONT CLASS="New">new</FONT> ArrayList();
+<FONT CLASS="LN">08</FONT><A NAME="408"></A>        <FONT CLASS="While">while</FONT> (st.hasMoreElements()) {
+<FONT CLASS="LN">09</FONT><A NAME="409"></A>            String element = st.nextToken();
+<FONT CLASS="LN">10</FONT><A NAME="410"></A>            <FONT CLASS="If">if</FONT>(element != <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">11</FONT><A NAME="411"></A>                element = element.trim();
+<FONT CLASS="LN">12</FONT><A NAME="412"></A>                <FONT CLASS="If">if</FONT>(element.length() &gt; <FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">13</FONT><A NAME="413"></A>                    targets.add(element.trim());
+<FONT CLASS="LN">14</FONT><A NAME="414"></A>                }
+<FONT CLASS="LN">15</FONT><A NAME="415"></A>            }
+<FONT CLASS="LN">16</FONT><A NAME="416"></A>        }
+<FONT CLASS="LN">17</FONT><A NAME="417"></A>        <FONT CLASS="Return">return</FONT> targets;
+<FONT CLASS="LN">18</FONT><A NAME="418"></A>    }
+<FONT CLASS="LN">19</FONT><A NAME="419"></A>}
+<FONT CLASS="LN">20</FONT><A NAME="420"></A></pre>
+</BODY>
+</HTML>

@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.gui.widget.DefaultingDirectoryChooser (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">DefaultingDirectoryChooser.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.gui.widget.index.html" target="packageFrame">org.tp23.gui.widget</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.beans.PropertyChangeEvent;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.beans.PropertyChangeListener;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.io.File;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A>
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> javax.swing.JFileChooser;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> javax.swing.filechooser.FileFilter;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> javax.swing.filechooser.FileSystemView;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">26</FONT><A NAME="26"></A> * A file chooser that makes a beter default if the default directory is not available.
+<FONT CLASS="LN">27</FONT><A NAME="27"></A>* Basically the default looks for the suggested directory and if it does not find it moves back
+<FONT CLASS="LN">28</FONT><A NAME="28"></A>* up the directories.  If still nothing is found (for example it may get to My Computer
+<FONT CLASS="LN">29</FONT><A NAME="29"></A>* which you can not add file to) the home directory is selected, as in the default file chooser.
+<FONT CLASS="LN">30</FONT><A NAME="30"></A>*
+<FONT CLASS="LN">31</FONT><A NAME="31"></A>* To use this class call new DefaultingDirectoryChooser(boolean) and immediately call
+<FONT CLASS="LN">32</FONT><A NAME="32"></A>* setDefaultDirectory(File) to determine the default. If you don't it behaves like the default JFileChooser
+<FONT CLASS="LN">33</FONT><A NAME="33"></A>* Also if you call setCurrentDirectory(File) it will behave like JFileChooser
+<FONT CLASS="LN">34</FONT><A NAME="34"></A>*
+<FONT CLASS="LN">35</FONT><A NAME="35"></A>* This chooser has two modes CREATE_MODE and EXISTING_MODE.   &lt;br/&gt;&lt;br/&gt;
+<FONT CLASS="LN">36</FONT><A NAME="36"></A>*
+<FONT CLASS="LN">37</FONT><A NAME="37"></A>* In existing mode it is assumed the chooser is being used to identify an existing directory
+<FONT CLASS="LN">38</FONT><A NAME="38"></A>* the default directory should exist if not the directory shown will be the next existing parent.&lt;br/&gt;&lt;br/&gt;
+<FONT CLASS="LN">39</FONT><A NAME="39"></A>*
+<FONT CLASS="LN">40</FONT><A NAME="40"></A>* In create mode it is
+<FONT CLASS="LN">41</FONT><A NAME="41"></A>* assumed that the last directory in the default directory is to be created and may not
+<FONT CLASS="LN">42</FONT><A NAME="42"></A>* exist yet. Therefor the default directory displayed is the parent (with suitable defaulting)
+<FONT CLASS="LN">43</FONT><A NAME="43"></A>* and the text box will contain the name of the last directory.
+<FONT CLASS="LN">44</FONT><A NAME="44"></A>* e.g. if default is C:\Program Files\MyApp  C:\Program Files will be displayed and
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>* MyApp will be shown in the text box (even if it does not exist yet)  If C:\Program Files does not exist
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>* C:\ will be shown as with existing mode.
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>* Choosing select can lead to the creation of the file.  It will not be automatically
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>* created that is the responsibility of the client code.&lt;br/&gt;
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>*
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>* This class uses FileSystemView and will only display folders that return true to fsv.isFileSystem()
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>*
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>* This class also uses a bit of a hack by in CREATE_MODE it sets the selectables to files and directories
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>* although only shows the directories this way a non-existing Directory can be chosen.  This is the only way I can
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>* get it to work on my Java version but I would not be supprised if it did not work on
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>* other versions of the Java API.  It also means that setFileSelectionMode() should
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>* never be called by clients as it will break this hack.
+<FONT CLASS="LN">57</FONT><A NAME="57"></A> * @author Paul Hinds
+<FONT CLASS="LN">58</FONT><A NAME="58"></A> * @version 1.0
+<FONT CLASS="LN">59</FONT><A NAME="59"></A> */</FONT>
+<FONT CLASS="LN">60</FONT><A NAME="60"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> DefaultingDirectoryChooser <FONT CLASS="Extends">extends</FONT> JFileChooser{
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <FONT CLASS="Boolean">boolean</FONT> CREATE_MODE = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <FONT CLASS="Boolean">boolean</FONT> EXISTING_MODE = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>     * Determines that the default includes a directory name that is requried
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>     * e.g. C:\Program Files\MyApp where even if Program Files does not exist
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>     * MyApp should be part of the default even if it does not exist.
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>     */</FONT>
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> createMode = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>    <FONT CLASS="Private">private</FONT> File selectedFile = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>    <FONT CLASS="Private">private</FONT> String desiredName = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>    
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>    <FONT CLASS="Public">public</FONT> DefaultingDirectoryChooser(<FONT CLASS="Boolean">boolean</FONT> createMode) {
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>        <FONT CLASS="This">this</FONT>.createMode=createMode;
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>        <FONT CLASS="If">if</FONT>(createMode){
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>            setFileSelectionMode(FILES_AND_DIRECTORIES);
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>            removeChoosableFileFilter(getAcceptAllFileFilter());
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>            addChoosableFileFilter(<FONT CLASS="New">new</FONT> FileFilter(){
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>                <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> accept(File f) {
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>                    <FONT CLASS="If">if</FONT>(f.exists() &amp;&amp; f.isDirectory())<FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>                    <FONT CLASS="If">if</FONT>(!f.exists() &amp;&amp; getFileSystemView().getParentDirectory(f).isDirectory())<FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>                    <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>                }
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>                <FONT CLASS="Public">public</FONT> String getDescription() {
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>                    <FONT CLASS="Return">return</FONT> <FONT CLASS="StringLiteral">"Directories"</FONT>;
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>                }
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>            });
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>            
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>            addPropertyChangeListener(JFileChooser.DIRECTORY_CHANGED_PROPERTY, <FONT CLASS="New">new</FONT> PropertyChangeListener(){
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>                <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> propertyChange(PropertyChangeEvent evt) {
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>                    File directory = (File)evt.getNewValue();
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>                    DefaultingDirectoryChooser.<FONT CLASS="This">this</FONT>.setCurrentDirectory(<FONT CLASS="New">new</FONT> File(directory, <FONT CLASS="StringLiteral">"newfolder"</FONT>));
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>                    setSelectedFile(<FONT CLASS="New">new</FONT> File(directory, desiredName));
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>                }               
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>            });
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>        }
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>            setFileSelectionMode(DIRECTORIES_ONLY);
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>        }
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>    }
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>     * Sets the default directory.
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>     * @param dir the current directory to point to
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>     * @todo Implement this javax.swing.JFileChooser method
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>     */</FONT>
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setDefaultDirectory(File dir) {
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>        <FONT CLASS="If">if</FONT>(dir==<FONT CLASS="Null">null</FONT>)<FONT CLASS="Return">return</FONT>;<FONT CLASS="SingleLineComment">// called by the default consructor
+<FONT CLASS="LN">11</FONT><A NAME="111"></A></FONT>        <FONT CLASS="If">if</FONT>(createMode){
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>            <FONT CLASS="If">if</FONT>(desiredName == <FONT CLASS="Null">null</FONT>)desiredName = dir.getName();
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>            File selected = determineCreateDir(dir);
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>            <FONT CLASS="Super">super</FONT>.setCurrentDirectory(selected.getParentFile());
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>            setSelectedFile(selected);
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>        }<FONT CLASS="Else">else</FONT>{
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>            <FONT CLASS="Super">super</FONT>.setCurrentDirectory(determineExistingDir(dir));
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>        }
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>    }
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>    <FONT CLASS="Private">private</FONT> File determineExistingDir(File defaultDir){
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>        <FONT CLASS="If">if</FONT>(defaultDir.exists())<FONT CLASS="Return">return</FONT> defaultDir;
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>        FileSystemView fsv = <FONT CLASS="This">this</FONT>.getFileSystemView();
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>        File validParent = getFSVParent(fsv,defaultDir);
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>        <FONT CLASS="If">if</FONT>(validParent!=<FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>            <FONT CLASS="Return">return</FONT> validParent;
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>        }
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>            <FONT CLASS="Return">return</FONT> fsv.getHomeDirectory();
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>        }
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>    }
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>     * Select a base path for the default even if it does not exist.  The order of preference is as follows
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>     * if the directory exists use it
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>     * if the parent does not exist try finding the next parent
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>     * if the next parent is a root directory e.g. / or C:\ use the users home directory
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>     * @param defaultDir File
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>     * @return File
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>     */</FONT>
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>    <FONT CLASS="Private">private</FONT> File determineCreateDir(File defaultDir){
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>        <FONT CLASS="If">if</FONT>(defaultDir.exists())<FONT CLASS="Return">return</FONT> defaultDir;
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>        FileSystemView fsv = <FONT CLASS="This">this</FONT>.getFileSystemView();
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>        String dirName = defaultDir.getName();
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>        File validParent = getFSVParent(fsv,defaultDir);
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>        <FONT CLASS="If">if</FONT>(validParent!=<FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="New">new</FONT> File(validParent, dirName);
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>        }
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="New">new</FONT> File(fsv.getHomeDirectory(), dirName);
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>        }
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>    }
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>     * Step back up trying to find a parent if none if found return null.
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>     * null can be found if the path starts e:\ and e: does not exist
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>     * @param fsv FileSystemView
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>     * @param dir File
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>     * @return File
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>     */</FONT>
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>    <FONT CLASS="Private">private</FONT> File getFSVParent(FileSystemView fsv,File dir){
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>        File parent = dir.getParentFile();
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>        <FONT CLASS="If">if</FONT>(fsv.isRoot(parent) &amp;&amp; !parent.exists()){
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>        }
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>        <FONT CLASS="If">if</FONT>(!parent.exists() || !fsv.isFileSystem(parent)){
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>            parent = getFSVParent(fsv,parent);
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>        }
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>        <FONT CLASS="Return">return</FONT> parent;
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>    }
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> main(String[] args) {
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>        <A HREF="../../../../org/tp23/gui/widget/DefaultingDirectoryChooser.java.html">DefaultingDirectoryChooser</A> chooser = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/gui/widget/DefaultingDirectoryChooser.java.html">DefaultingDirectoryChooser</A>(CREATE_MODE);
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>        chooser.setDefaultDirectory(<FONT CLASS="New">new</FONT> File(<FONT CLASS="StringLiteral">"/usr/local/dibble/MyApp"</FONT>));
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>        chooser.showDialog(<FONT CLASS="Null">null</FONT>,<FONT CLASS="StringLiteral">"Select"</FONT>);
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>        System.out.println(<FONT CLASS="StringLiteral">"Selected:"</FONT>+chooser.getSelectedFile().getAbsolutePath());
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>        System.exit(<FONT CLASS="IntegerLiteral">0</FONT>);
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>    }
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>}
+<FONT CLASS="LN">81</FONT><A NAME="181"></A></pre>
+</BODY>
+</HTML>

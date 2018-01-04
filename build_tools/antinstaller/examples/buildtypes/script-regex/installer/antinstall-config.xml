@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.7.dtd">
+<!--
+RegEx test script
+-->
+<!-- defaultImageResource,windowIcon,resource and imageResource load from the classpath
+the installer script should put the locations of these resources no the classpath -->
+<installer
+			ui="swing,text"
+			verbose="true"
+			debug="true"
+			lookAndFeel="org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel"
+			antialiased="true"
+			name="Test Installer"
+			windowIcon="/resources/gkmain_inv.png"
+			defaultImageResource="/resources/antbar.png"
+			minJavaVersion="1.4"
+			finishButtonText="Build">
+	<page
+			type="input"
+			name="properties"
+			displayText="Regular expression test">
+		<text property="myProperty" defaultValue="blah blah" displayText="unvalidated"/>
+		<validated
+			property="validatedtext.1"
+			displayText="[a-z][a-z].*"
+			defaultValue="ab1"
+			regex="[a-z][a-z].*"/>
+		<validated
+				  property="validatedtext.2"
+				  displayText="[a-z][a-z]\..*"
+				  defaultValue="ab.1"
+				  regex="[a-z][a-z]\..*"/>
+		<validated
+			property="validatedtext.3"
+			displayText="Anything but not nothing"
+			defaultValue="anything"
+			regex=".+"/>
+	</page>
+	<page
+			type="progress"
+			name="progress"
+			displayText="Installation progress"
+			showTargets="false"
+			target="cleanuptarget">
+	</page>
+</installer>
+
+

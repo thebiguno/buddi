@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.runtime.ExecInstall (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">ExecInstall.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.runtime.index.html" target="packageFrame">org.tp23.antinstaller.runtime</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.io.File;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.util.ResourceBundle;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A>
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">org.tp23.antinstaller.InstallException</A>;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">org.tp23.antinstaller.InstallerContext</A>;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/MessageRenderer.java.html">org.tp23.antinstaller.renderer.MessageRenderer</A>;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/exe/ExecuteFilter.java.html">org.tp23.antinstaller.runtime.exe.ExecuteFilter</A>;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/exe/ExecuteRunnerFilter.java.html">org.tp23.antinstaller.runtime.exe.ExecuteRunnerFilter</A>;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/exe/FilterChain.java.html">org.tp23.antinstaller.runtime.exe.FilterChain</A>;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/exe/FilterFactory.java.html">org.tp23.antinstaller.runtime.exe.FilterFactory</A>;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/exe/FinalizerFilter.java.html">org.tp23.antinstaller.runtime.exe.FinalizerFilter</A>;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/selfextract/SelfExtractor.java.html">org.tp23.antinstaller.selfextract.SelfExtractor</A>;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A>
+<FONT CLASS="LN">31</FONT><A NAME="31"></A>
+<FONT CLASS="LN">32</FONT><A NAME="32"></A>
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">34</FONT><A NAME="34"></A> * This is the Applications entry point, it has a main method to run the
+<FONT CLASS="LN">35</FONT><A NAME="35"></A> * installer. The main method is only for scripted installs.
+<FONT CLASS="LN">36</FONT><A NAME="36"></A> * 
+<FONT CLASS="LN">37</FONT><A NAME="37"></A> * It is here that the command line options are parsed and it
+<FONT CLASS="LN">38</FONT><A NAME="38"></A> * is determined which type of install (swing or text) will be run.
+<FONT CLASS="LN">39</FONT><A NAME="39"></A> * &lt;p&gt;Reads the config, determines the runner, runs it and outputs the
+<FONT CLASS="LN">40</FONT><A NAME="40"></A> * properties file,  The Ant targets are then called by the AntRunner.
+<FONT CLASS="LN">41</FONT><A NAME="41"></A> * This class also builds the internal Objects from the XML config file.&lt;/p&gt;
+<FONT CLASS="LN">42</FONT><A NAME="42"></A> * &lt;p&gt;This class can also be called by external tools to launch the installer
+<FONT CLASS="LN">43</FONT><A NAME="43"></A> * currently two options are provided to lauch from Jars. &lt;/p&gt;
+<FONT CLASS="LN">44</FONT><A NAME="44"></A> * &lt;p&gt;Copyright: Copyright (c) 2004&lt;/p&gt;
+<FONT CLASS="LN">45</FONT><A NAME="45"></A> * &lt;p&gt;Company: tp23&lt;/p&gt;
+<FONT CLASS="LN">46</FONT><A NAME="46"></A> * @author Paul Hinds
+<FONT CLASS="LN">47</FONT><A NAME="47"></A> * @version $Id: ExecInstall.java,v 1.9 2007/01/19 00:24:36 teknopaul Exp $
+<FONT CLASS="LN">48</FONT><A NAME="48"></A> */</FONT>
+<FONT CLASS="LN">49</FONT><A NAME="49"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> ExecInstall {
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> ResourceBundle res = ResourceBundle.getBundle(<FONT CLASS="StringLiteral">"org.tp23.antinstaller.renderer.Res"</FONT>);
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String CONFIG_RESOURCE = <FONT CLASS="StringLiteral">"/org/tp23/antinstaller/runtime/exe/script.fconfig"</FONT>;
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>    
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Final">final</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A>();
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/exe/FilterChain.java.html">FilterChain</A> chain;
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>     * @param chain chain of filters to be executed
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>     */</FONT>
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>    <FONT CLASS="Public">public</FONT> ExecInstall(<A HREF="../../../../org/tp23/antinstaller/runtime/exe/FilterChain.java.html">FilterChain</A> chain){
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>        <FONT CLASS="This">this</FONT>.chain = chain;
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>    }
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>     * Execute the installer, this reads the config fetches a runner and runs the install.
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>     * Once the install pages have finished an AntRunner is used to run Ant
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>     */</FONT>
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> exec() {
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>    
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>        <A HREF="../../../../org/tp23/antinstaller/runtime/exe/ExecuteFilter.java.html">ExecuteFilter</A>[] filters = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>            chain.init(ctx);
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>            filters = chain.getFilters();
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>        }
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>        <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">Exception</A> e) {
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>            <FONT CLASS="SingleLineComment">// This is a developer error or the package has not been built correctly
+<FONT CLASS="LN">78</FONT><A NAME="78"></A></FONT>            <FONT CLASS="SingleLineComment">// It should never happen in a tested build
+<FONT CLASS="LN">79</FONT><A NAME="79"></A></FONT>            e.printStackTrace();
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>            System.exit(<FONT CLASS="IntegerLiteral">1</FONT>); <FONT CLASS="SingleLineComment">// called manually since in Win it was not shutting down properly
+<FONT CLASS="LN">81</FONT><A NAME="81"></A></FONT>        }
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>loop:   <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; filters.length; i++) {
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>            <FONT CLASS="Try">try</FONT>{
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>                ctx.log(<FONT CLASS="StringLiteral">"Filter: "</FONT> + filters[i].getClass().getName());
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>                filters[i].exec(ctx);
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>            }
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>            <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/runtime/exe/ExecuteRunnerFilter.java.html">ExecuteRunnerFilter.AbortException</A> abort){
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>                <A HREF="../../../../org/tp23/antinstaller/renderer/MessageRenderer.java.html">MessageRenderer</A> vLogger = ctx.getMessageRenderer();
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>                vLogger.printMessage(abort.getMessage());
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>                ctx.log(<FONT CLASS="StringLiteral">"Aborted"</FONT>);
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>                <A HREF="../../../../org/tp23/antinstaller/runtime/exe/FinalizerFilter.java.html">FinalizerFilter</A> ff = (<A HREF="../../../../org/tp23/antinstaller/runtime/exe/FinalizerFilter.java.html">FinalizerFilter</A>)filters[filters.length - <FONT CLASS="IntegerLiteral">1</FONT>];
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>                ff.exec(ctx);
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>                System.exit(<FONT CLASS="IntegerLiteral">1</FONT>);
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>            }
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>            <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">Exception</A> ex) {
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>                <FONT CLASS="SingleLineComment">// write errors to the log
+<FONT CLASS="LN">98</FONT><A NAME="98"></A></FONT>                ctx.log(<FONT CLASS="StringLiteral">"Installation error: "</FONT> + ex.getMessage() + <FONT CLASS="StringLiteral">": "</FONT> + ex.getClass().toString());
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>                <FONT CLASS="Boolean">boolean</FONT> verbose = <FONT CLASS="True">true</FONT>; <FONT CLASS="SingleLineComment">// be verbose if we cant load the config
+<FONT CLASS="LN">00</FONT><A NAME="100"></A></FONT>                <FONT CLASS="If">if</FONT>(ctx.getInstaller() != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>                    verbose =  ctx.getInstaller().isVerbose();
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>                }
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>                ctx.log(verbose, ex);
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>                <FONT CLASS="SingleLineComment">// write detailed errors to stdout for the GUI screens and text
+<FONT CLASS="LN">06</FONT><A NAME="106"></A></FONT>                <FONT CLASS="If">if</FONT> (ctx.getRunner() <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/TextRunner.java.html">TextRunner</A>) {
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>                    <FONT CLASS="If">if</FONT>(verbose){
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>                        ex.printStackTrace();
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>                    }
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>                }
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>                <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>                    <FONT CLASS="If">if</FONT>(verbose){
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>                        ex.printStackTrace(System.err);
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>                    }
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>                }
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>                
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>                <FONT CLASS="SingleLineComment">// report the error to the user
+<FONT CLASS="LN">18</FONT><A NAME="118"></A></FONT>                <A HREF="../../../../org/tp23/antinstaller/renderer/MessageRenderer.java.html">MessageRenderer</A> vLogger = ctx.getMessageRenderer();
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>                <FONT CLASS="If">if</FONT>(vLogger != <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>                    vLogger.printMessage(res.getString(<FONT CLASS="StringLiteral">"installationFailed"</FONT>) + <FONT CLASS="StringLiteral">"\n"</FONT> + ex.getMessage());
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>                    <FONT CLASS="SingleLineComment">//Fixed BUG:1295944 vLogger.printMessage("Install failed\n" + ex.getMessage());
+<FONT CLASS="LN">22</FONT><A NAME="122"></A></FONT>                } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>                    System.err.println(res.getString(<FONT CLASS="StringLiteral">"installationFailed"</FONT>) + ex.getClass().getName());
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>                    System.err.println(ex.getMessage());
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>                }
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>                <FONT CLASS="If">if</FONT>(ctx.getRunner() != <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>                    ctx.getRunner().fatalError();
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>                    <FONT CLASS="Break">break</FONT> loop;
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>                }
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>                <FONT CLASS="Else">else</FONT> {  <FONT CLASS="SingleLineComment">// the screens did not even start e.g. XML config error
+<FONT CLASS="LN">32</FONT><A NAME="132"></A></FONT>                    System.exit(<FONT CLASS="IntegerLiteral">1</FONT>);
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>                }
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>            }
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>        }
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>    }
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>     * &lt;p&gt;Runs the installer from a script.&lt;/p&gt;
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>     * 
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>     * This install can be run from a set of files for example from a CD.
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>     * @see org.tp23.antinstaller.selfextract.NonExtractor
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>     * @see org.tp23.antinstaller.selfextract.SelfExtractor
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>     * 
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>     * @param args String[]  args are "default" or "swing" or "text" followed by the root directory of the install
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>     */</FONT>
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> main(String[] args) {
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>            <A HREF="../../../../org/tp23/antinstaller/runtime/exe/FilterChain.java.html">FilterChain</A> chain = FilterFactory.factory(CONFIG_RESOURCE);     
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>            <A HREF="../../../../org/tp23/antinstaller/runtime/ExecInstall.java.html">ExecInstall</A> installExec = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/ExecInstall.java.html">ExecInstall</A>(chain);
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>            <FONT CLASS="If">if</FONT>(installExec.parseArgs(args, <FONT CLASS="True">true</FONT>)){
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>                installExec.exec();
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>            }
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>        }
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>        <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> e) {
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>            <FONT CLASS="SingleLineComment">// Installer developer error
+<FONT CLASS="LN">62</FONT><A NAME="162"></A></FONT>            System.out.println(<FONT CLASS="StringLiteral">"Cant load filter chain:/org/tp23/antinstaller/runtime/exe/script.fconfig"</FONT>);
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>            e.printStackTrace();
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>        }
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>    }
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>    
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>     * This method has been designed for backward compatibility with
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>     * existing scripts.  The root dir is passed on the command line for scripted
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>     * installs but is determined automatically for installs from self-extracting Jars
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>     * @param args
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>     * @param requiresRootDir set to true if the args must include the root directory
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>     */</FONT>
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> parseArgs(String[] args, <FONT CLASS="Boolean">boolean</FONT> requiresRootDir){
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>        String uiOverride = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>        String installType = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>        String installRoot = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>        
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>        <FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>        <FONT CLASS="If">if</FONT>(args.length &gt; i &amp;&amp; !args[i].startsWith(<FONT CLASS="StringLiteral">"-"</FONT>)) {
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>            uiOverride = args[i];
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>            i++;
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>            ctx.setUIOverride(uiOverride);
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>        }
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>        
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>        <FONT CLASS="If">if</FONT>(requiresRootDir){
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>            <FONT CLASS="If">if</FONT>(args.length &gt; i &amp;&amp; !args[i].startsWith(<FONT CLASS="StringLiteral">"-"</FONT>)) {
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>                installRoot = args[i];
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>                i++;
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>                ctx.setFileRoot(<FONT CLASS="New">new</FONT> File(installRoot));
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>            }
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>            <FONT CLASS="Else">else</FONT>{
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>                printUsage();
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>            }
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>        }
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>        <FONT CLASS="SingleLineComment">// additional params should all have a -something prefix
+<FONT CLASS="LN">98</FONT><A NAME="198"></A></FONT>        <FONT CLASS="For">for</FONT> (; i &lt; args.length; i++) {
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>            <FONT CLASS="SingleLineComment">// RFE 1569628
+<FONT CLASS="LN">00</FONT><A NAME="200"></A></FONT>            <FONT CLASS="If">if</FONT>(<FONT CLASS="StringLiteral">"-type"</FONT>.equals(args[i]) &amp;&amp; args.length &gt; i + <FONT CLASS="IntegerLiteral">1</FONT>){
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>                installType = args[i + <FONT CLASS="IntegerLiteral">1</FONT>];
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>                i++;
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>                String configFileName = <FONT CLASS="StringLiteral">"antinstall-config-"</FONT> + installType + <FONT CLASS="StringLiteral">".xml"</FONT>;
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>                String buildFileName = <FONT CLASS="StringLiteral">"build-"</FONT> + installType + <FONT CLASS="StringLiteral">".xml"</FONT>;
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>                ctx.setInstallerConfigFile(configFileName);
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>                ctx.setAntBuildFile(buildFileName);
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>            }
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>        }
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>        
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>    }
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>
+<FONT CLASS="LN">13</FONT><A NAME="213"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> printUsage(){
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>        System.out.println(<FONT CLASS="StringLiteral">"Usage java -cp $CLASSPATH org.tp23.antinstaller.ExecInstall [text|swing|default] [install root] (-type [buildtype])"</FONT>);
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>    }
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>
+<FONT CLASS="LN">18</FONT><A NAME="218"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>     * Sets the UI override from the command line
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>     * @param installRoot
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>     */</FONT>
+<FONT CLASS="LN">22</FONT><A NAME="222"></A><FONT CLASS="SingleLineComment">//  public void setUIOverride(String override) {
+<FONT CLASS="LN">23</FONT><A NAME="223"></A></FONT><FONT CLASS="SingleLineComment">//      ctx.setUIOverride(override);
+<FONT CLASS="LN">24</FONT><A NAME="224"></A></FONT><FONT CLASS="SingleLineComment">//  }
+<FONT CLASS="LN">25</FONT><A NAME="225"></A></FONT>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>     * This is generated by the Main class which knows where it has
+<FONT CLASS="LN">27</FONT><A NAME="227"></A>     * extracted or where it has run from
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>     * @param installRoot
+<FONT CLASS="LN">29</FONT><A NAME="229"></A>     */</FONT>
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setInstallRoot(File installRoot) {
+<FONT CLASS="LN">31</FONT><A NAME="231"></A>        ctx.setFileRoot(installRoot);
+<FONT CLASS="LN">32</FONT><A NAME="232"></A>    }
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>
+<FONT CLASS="LN">34</FONT><A NAME="234"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">35</FONT><A NAME="235"></A>     * This is AntInstalls temporary space which will generally be deleted
+<FONT CLASS="LN">36</FONT><A NAME="236"></A>     * except in debug mode when it is left to view the build process.
+<FONT CLASS="LN">37</FONT><A NAME="237"></A>     * installRoot and tempRoot can be the same if the directory
+<FONT CLASS="LN">38</FONT><A NAME="238"></A>     * is a new empty directory
+<FONT CLASS="LN">39</FONT><A NAME="239"></A>     * @param tempDir directory to be used for temporary storage
+<FONT CLASS="LN">40</FONT><A NAME="240"></A>     */</FONT>
+<FONT CLASS="LN">41</FONT><A NAME="241"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setTempRoot(File tempDir) {
+<FONT CLASS="LN">42</FONT><A NAME="242"></A>        addShutdownHook(tempDir);
+<FONT CLASS="LN">43</FONT><A NAME="243"></A>    }
+<FONT CLASS="LN">44</FONT><A NAME="244"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">45</FONT><A NAME="245"></A>     * This shutdown hook is to facilitate debugging the app can be left open
+<FONT CLASS="LN">46</FONT><A NAME="246"></A>     * in the GUI view and the resources will not be deleted.  Upon exit
+<FONT CLASS="LN">47</FONT><A NAME="247"></A>     * temporary files will be removed.  This is required because the 
+<FONT CLASS="LN">48</FONT><A NAME="248"></A>     * deleteOnExit() method fails if the directory is filled with files.
+<FONT CLASS="LN">49</FONT><A NAME="249"></A>     * @param tempDir
+<FONT CLASS="LN">50</FONT><A NAME="250"></A>     */</FONT>
+<FONT CLASS="LN">51</FONT><A NAME="251"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> addShutdownHook(<FONT CLASS="Final">final</FONT> File tempDir){
+<FONT CLASS="LN">52</FONT><A NAME="252"></A>        Runnable hook = <FONT CLASS="New">new</FONT> Runnable(){
+<FONT CLASS="LN">53</FONT><A NAME="253"></A>            <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> run(){
+<FONT CLASS="LN">54</FONT><A NAME="254"></A>                <FONT CLASS="If">if</FONT>(ctx.getInstaller() != <FONT CLASS="Null">null</FONT> &amp;&amp;
+<FONT CLASS="LN">55</FONT><A NAME="255"></A>                   ctx.getInstaller().isDebug()) <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">56</FONT><A NAME="256"></A>                <FONT CLASS="If">if</FONT>(tempDir != <FONT CLASS="Null">null</FONT> &amp;&amp; tempDir.exists() &amp;&amp; tempDir.isDirectory()){
+<FONT CLASS="LN">57</FONT><A NAME="257"></A>                    SelfExtractor.deleteRecursive(tempDir);
+<FONT CLASS="LN">58</FONT><A NAME="258"></A>                }
+<FONT CLASS="LN">59</FONT><A NAME="259"></A>            }
+<FONT CLASS="LN">60</FONT><A NAME="260"></A>        };
+<FONT CLASS="LN">61</FONT><A NAME="261"></A>        Thread cleanUp = <FONT CLASS="New">new</FONT> Thread(hook);
+<FONT CLASS="LN">62</FONT><A NAME="262"></A>        cleanUp.setDaemon(<FONT CLASS="True">true</FONT>);
+<FONT CLASS="LN">63</FONT><A NAME="263"></A>        Runtime.getRuntime().addShutdownHook(cleanUp);
+<FONT CLASS="LN">64</FONT><A NAME="264"></A>    }
+<FONT CLASS="LN">65</FONT><A NAME="265"></A>
+<FONT CLASS="LN">66</FONT><A NAME="266"></A>}
+<FONT CLASS="LN">67</FONT><A NAME="267"></A></pre>
+</BODY>
+</HTML>

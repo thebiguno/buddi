@@ -1,0 +1,152 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+    
+<html>
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <title>Makeurl Task</title>
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+</head>
+
+<body>
+
+<h2><a name="makeurl">Makeurl</a></h2>
+<h3>Description</h3>
+
+<p>This task takes one or more filenames and turns them into URLs, which it then assigns to a property.
+Useful when setting up RMI or JNLP codebases, for example.
+Nested filesets are supported; if present, these are turned into the URLs with the supplied separator between them (default: space).
+<p/>
+<p>Examples:</p>
+<pre>
+&lt;makeurl file="${user.home}/.m2/repository" property="m2.repository.url"/&gt;
+</pre>
+Sets the property <code>m2.repository.url</code> to the file: URL of the local Maven2 repository.
+<pre>
+&lt;makeurl property="codebase"&gt;&lt;fileset dir="lib includes="*.jar"/&gt;&lt;/makeurl&gt;
+</pre>
+Set the property <code>codebase</code> to the three URLs of the files provided as nested elements.
+      </blockquote>
+
+
+ <!-- Ignore -->
+
+
+
+    <!-- Start Attributes -->
+<a name="attributes"></a>
+          <h3>Parameters</h3>    
+        <table border="1" cellpadding="2" cellspacing="0">
+          <tr>
+        <td>
+          <b>Attribute</b>
+        </td>
+        <td>
+          <b>Description</b>
+        </td>
+        <td>
+          <b>Type</b>
+        </td>
+        <td>
+          <b>Requirement</b>
+        </td>
+          </tr>
+    <!-- Attribute Group -->    
+    
+    <!-- Attribute Group -->    
+        <!-- Attribute -->
+    <tr>
+        <td>
+          file
+        </td>
+        <td>
+          name of a file to be converted into a URL
+        </td>
+        <td>
+          File
+        </td>
+        <td>
+          optional, if a nested fileset or path is supplied
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          property
+        </td>
+        <td>
+          name of a property to set to the URL
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          required
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          separator
+        </td>
+        <td>
+          separator for the multi-URL option
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          optional
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          validate
+        </td>
+        <td>
+          validate that every named file exists
+        </td>
+        <td>
+          boolean
+        </td>
+        <td>
+          optional; default: true
+        </td>
+    </tr>
+
+
+        </table>
+    <!-- End Attributes -->
+
+    <!-- Start Elements -->
+    <a name="elements"></a>
+          <h3>Parameters as nested elements</h3>
+    <!-- Start Element -->
+          <h4>fileset</h4> (org.apache.tools.ant.types.FileSet)
+
+        <p>A fileset of JAR files to include in the URL list, each separated by the separator.</p>
+
+          <h4>path</h4> (org.apache.tools.ant.types.Path)
+
+        <p>Add a path to the URL. All elements in the path will be converted to individual URL entries.</p>
+
+    <!-- End Element -->
+
+
+</body>
+</html>

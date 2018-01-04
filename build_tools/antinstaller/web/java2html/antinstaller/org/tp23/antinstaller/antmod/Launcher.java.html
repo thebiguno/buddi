@@ -1,0 +1,270 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.antmod.Launcher (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">Launcher.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/*
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright  2003-2004 The Apache Software Foundation
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> *  Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> *  you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> *  You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> *      http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> *  Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> *  distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> *  See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> *  limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> *
+<FONT CLASS="LN">16</FONT><A NAME="16"></A> */</FONT>
+<FONT CLASS="LN">17</FONT><A NAME="17"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.antmod.index.html" target="packageFrame">org.tp23.antinstaller.antmod</A>;
+<FONT CLASS="LN">18</FONT><A NAME="18"></A>
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.io.File;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.net.MalformedURLException;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.net.URL;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.net.URLClassLoader;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> java.util.ArrayList;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> java.util.Iterator;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> java.util.List;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="Import">import</FONT> java.util.Map;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> java.util.Properties;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A><FONT CLASS="Import">import</FONT> java.util.StringTokenizer;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A>
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.launch.LaunchException;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.launch.Locator;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">org.tp23.antinstaller.InstallerContext</A>;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A>
+<FONT CLASS="LN">34</FONT><A NAME="34"></A>
+<FONT CLASS="LN">35</FONT><A NAME="35"></A>
+<FONT CLASS="LN">36</FONT><A NAME="36"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">37</FONT><A NAME="37"></A> *  This is a launcher for Ant.
+<FONT CLASS="LN">38</FONT><A NAME="38"></A> *
+<FONT CLASS="LN">39</FONT><A NAME="39"></A> * This file has been modified by Paul Hinds for Antinstaller and is not the same
+<FONT CLASS="LN">40</FONT><A NAME="40"></A> * as the one delivered with Ant 1.6
+<FONT CLASS="LN">41</FONT><A NAME="41"></A> *
+<FONT CLASS="LN">42</FONT><A NAME="42"></A> * @since Ant 1.6
+<FONT CLASS="LN">43</FONT><A NAME="43"></A> * @version $Id: Launcher.java,v 1.1.1.1 2005/10/18 18:20:54 teknopaul Exp $
+<FONT CLASS="LN">44</FONT><A NAME="44"></A> */</FONT>
+<FONT CLASS="LN">45</FONT><A NAME="45"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> Launcher {
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>    <FONT CLASS="FormalComment">/** The Ant Home property */</FONT>
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String ANTHOME_PROPERTY = <FONT CLASS="StringLiteral">"ant.home"</FONT>;
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>    <FONT CLASS="FormalComment">/** The Ant Library Directory property */</FONT>
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String ANTLIBDIR_PROPERTY = <FONT CLASS="StringLiteral">"ant.library.dir"</FONT>;
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>    <FONT CLASS="FormalComment">/** The location of a per-user library directory */</FONT>
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String USER_LIBDIR = <FONT CLASS="StringLiteral">".ant/lib"</FONT>;
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>    <FONT CLASS="FormalComment">/** The startup class that is to be run */</FONT>
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String MAIN_CLASS = <FONT CLASS="StringLiteral">"org.apache.tools.ant.Main"</FONT>;
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Final">final</FONT> Map allProperties;
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>
+<FONT CLASS="LN">65</FONT><A NAME="65"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>     * Addtional Constructor to pass password properties to Ant
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>     * without saving them to a file.
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>     * Added by Paul Hinds
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>     * @param allProperties Properties
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>     */</FONT>
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>    <FONT CLASS="Public">public</FONT> Launcher(Map allProperties) {
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>        <FONT CLASS="This">this</FONT>.allProperties = allProperties;
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>    }
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>
+<FONT CLASS="LN">77</FONT><A NAME="77"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>     * Run the launcher to launch Ant
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>     *
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>     * @param args the command line arguments
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>     *
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>     * @exception MalformedURLException if the URLs required for the classloader
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>     *            cannot be created.
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>     */</FONT>
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Int">int</FONT> run(String[] args, <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> cxt) <FONT CLASS="Throws">throws</FONT> LaunchException, MalformedURLException {
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>            String antHomeProperty = System.getProperty(ANTHOME_PROPERTY);
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>            File antHome = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>            File jarDir = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>            File sourceJar = Locator.getClassSource(getClass());
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>            jarDir = sourceJar.getParentFile();
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>            <FONT CLASS="If">if</FONT> (antHomeProperty != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>                antHome = <FONT CLASS="New">new</FONT> File(antHomeProperty);
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>            }
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>            <FONT CLASS="If">if</FONT> (antHome == <FONT CLASS="Null">null</FONT> || !antHome.exists()) {
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>                antHome = jarDir.getParentFile();
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>                System.setProperty(ANTHOME_PROPERTY, antHome.getAbsolutePath());
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>            }
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>            <FONT CLASS="If">if</FONT> (!antHome.exists()) {
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> LaunchException(<FONT CLASS="StringLiteral">"Ant home is set incorrectly or ant could not be located"</FONT>);
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>            }
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>            List libPaths = <FONT CLASS="New">new</FONT> ArrayList();
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>            List argList = <FONT CLASS="New">new</FONT> ArrayList();
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>            String[] newArgs;
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; args.length; ++i) {
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>                <FONT CLASS="If">if</FONT> (args[i].equals(<FONT CLASS="StringLiteral">"-lib"</FONT>)) {
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>                    <FONT CLASS="If">if</FONT> (i == args.length - <FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>                        <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> LaunchException(<FONT CLASS="StringLiteral">"The -lib argument must be followed by a library location"</FONT>);
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>                    }
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>                    libPaths.add(args[++i]);
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>                }
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>                <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>                    argList.add(args[i]);
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>                }
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>            }
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>            <FONT CLASS="If">if</FONT> (libPaths.size() == <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>                newArgs = args;
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>            }
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>            <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>                newArgs = (String[]) argList.toArray(<FONT CLASS="New">new</FONT> String[<FONT CLASS="IntegerLiteral">0</FONT>]);
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>            }
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>            List libPathURLs = <FONT CLASS="New">new</FONT> ArrayList();
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>            <FONT CLASS="For">for</FONT> (Iterator i = libPaths.iterator(); i.hasNext(); ) {
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>                String libPath = (String) i.next();
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>                StringTokenizer myTokenizer
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>                    = <FONT CLASS="New">new</FONT> StringTokenizer(libPath, System.getProperty(<FONT CLASS="StringLiteral">"path.separator"</FONT>));
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>                <FONT CLASS="While">while</FONT> (myTokenizer.hasMoreElements()) {
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>                    String elementName = myTokenizer.nextToken();
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>                    File element = <FONT CLASS="New">new</FONT> File(elementName);
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>                    <FONT CLASS="If">if</FONT> (elementName.indexOf(<FONT CLASS="StringLiteral">"%"</FONT>) != -<FONT CLASS="IntegerLiteral">1</FONT> &amp;&amp; !element.exists()) {
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>                        <FONT CLASS="Continue">continue</FONT>;
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>                    }
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>                    <FONT CLASS="If">if</FONT> (element.isDirectory()) {
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>                        <FONT CLASS="SingleLineComment">// add any jars in the directory
+<FONT CLASS="LN">46</FONT><A NAME="146"></A></FONT>                        URL[] dirURLs = Locator.getLocationURLs(element);
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>                        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> j = <FONT CLASS="IntegerLiteral">0</FONT>; j &lt; dirURLs.length; ++j) {
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>                            libPathURLs.add(dirURLs[j]);
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>                        }
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>                    }
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>                    libPathURLs.add(element.toURL());
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>                }
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>            }
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>            URL[] libJars = (URL[]) libPathURLs.toArray(<FONT CLASS="New">new</FONT> URL[<FONT CLASS="IntegerLiteral">0</FONT>]);
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>            <FONT CLASS="SingleLineComment">// Now try and find JAVA_HOME
+<FONT CLASS="LN">59</FONT><A NAME="159"></A></FONT>            File toolsJar = Locator.getToolsJar();
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>            <FONT CLASS="SingleLineComment">// determine ant library directory for system jars: use property
+<FONT CLASS="LN">62</FONT><A NAME="162"></A></FONT>            <FONT CLASS="SingleLineComment">// or default using location of ant-launcher.jar
+<FONT CLASS="LN">63</FONT><A NAME="163"></A></FONT>            File antLibDir = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>            String antLibDirProperty = System.getProperty(ANTLIBDIR_PROPERTY);
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>            <FONT CLASS="If">if</FONT> (antLibDirProperty != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>                antLibDir = <FONT CLASS="New">new</FONT> File(antLibDirProperty);
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>            }
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>            <FONT CLASS="If">if</FONT> ( (antLibDir == <FONT CLASS="Null">null</FONT>) || !antLibDir.exists()) {
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>                antLibDir = jarDir;
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>                System.setProperty(ANTLIBDIR_PROPERTY, antLibDir.getAbsolutePath());
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>            }
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>            URL[] systemJars = Locator.getLocationURLs(antLibDir);
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>            File userLibDir
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>                = <FONT CLASS="New">new</FONT> File(System.getProperty(<FONT CLASS="StringLiteral">"user.home"</FONT>), USER_LIBDIR);
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>            URL[] userJars = Locator.getLocationURLs(userLibDir);
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>            <FONT CLASS="Int">int</FONT> numJars = libJars.length + userJars.length + systemJars.length;
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>            <FONT CLASS="If">if</FONT> (toolsJar != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>                numJars++;
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>            }
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>            URL[] jars = <FONT CLASS="New">new</FONT> URL[numJars];
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>            System.arraycopy(libJars, <FONT CLASS="IntegerLiteral">0</FONT>, jars, <FONT CLASS="IntegerLiteral">0</FONT>, libJars.length);
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>            System.arraycopy(userJars, <FONT CLASS="IntegerLiteral">0</FONT>, jars, libJars.length, userJars.length);
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>            System.arraycopy(systemJars, <FONT CLASS="IntegerLiteral">0</FONT>, jars, userJars.length + libJars.length,
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>                             systemJars.length);
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>            <FONT CLASS="If">if</FONT> (toolsJar != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>                jars[jars.length - <FONT CLASS="IntegerLiteral">1</FONT>] = toolsJar.toURL();
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>            }
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>            <FONT CLASS="SingleLineComment">// now update the class.path property
+<FONT CLASS="LN">95</FONT><A NAME="195"></A></FONT>            StringBuffer baseClassPath
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>                = <FONT CLASS="New">new</FONT> StringBuffer(System.getProperty(<FONT CLASS="StringLiteral">"java.class.path"</FONT>));
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>            <FONT CLASS="If">if</FONT> (baseClassPath.charAt(baseClassPath.length() - <FONT CLASS="IntegerLiteral">1</FONT>)
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>                == File.pathSeparatorChar) {
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>                baseClassPath.setLength(baseClassPath.length() - <FONT CLASS="IntegerLiteral">1</FONT>);
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>            }
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; jars.length; ++i) {
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>                baseClassPath.append(File.pathSeparatorChar);
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>                baseClassPath.append(Locator.fromURI(jars[i].toString()));
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>            }
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>            System.setProperty(<FONT CLASS="StringLiteral">"java.class.path"</FONT>, baseClassPath.toString());
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>            URLClassLoader loader = <FONT CLASS="New">new</FONT> URLClassLoader(jars);
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>            Thread.currentThread().setContextClassLoader(loader);
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>                <A HREF="../../../../org/tp23/antinstaller/antmod/Main.java.html">Main</A> main = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/antmod/Main.java.html">Main</A>();
+<FONT CLASS="LN">13</FONT><A NAME="213"></A>                Properties props = <FONT CLASS="New">new</FONT> Properties();
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>                props.putAll(allProperties);
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>                <FONT CLASS="Return">return</FONT> main.startAnt(newArgs, props, <FONT CLASS="Null">null</FONT>, cxt);
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>            }
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>            <FONT CLASS="Catch">catch</FONT> (Throwable t) {
+<FONT CLASS="LN">18</FONT><A NAME="218"></A>                t.printStackTrace();
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>            }
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>        }
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>        <FONT CLASS="Catch">catch</FONT> (Throwable ex) {
+<FONT CLASS="LN">23</FONT><A NAME="223"></A>            <FONT CLASS="SingleLineComment">// Essentially all of the above is nice to have as far as AntInstaller is concerned
+<FONT CLASS="LN">24</FONT><A NAME="224"></A></FONT>            <FONT CLASS="SingleLineComment">// ant.home may not be available when installing and application on a client that does not
+<FONT CLASS="LN">25</FONT><A NAME="225"></A></FONT>            <FONT CLASS="SingleLineComment">// have and never will have Ant.  However the code is left since sometimes AntInstaller can be used
+<FONT CLASS="LN">26</FONT><A NAME="226"></A></FONT>            <FONT CLASS="SingleLineComment">// for a general gui for Ant builds and features such and ANT_HOME/lib are useful
+<FONT CLASS="LN">27</FONT><A NAME="227"></A></FONT>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>                System.setProperty(ANTHOME_PROPERTY, <FONT CLASS="New">new</FONT> File(<FONT CLASS="StringLiteral">"."</FONT>).getAbsolutePath());
+<FONT CLASS="LN">29</FONT><A NAME="229"></A>                <A HREF="../../../../org/tp23/antinstaller/antmod/Main.java.html">Main</A> main = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/antmod/Main.java.html">Main</A>();
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>                <FONT CLASS="SingleLineComment">// fix for bug:1177191
+<FONT CLASS="LN">31</FONT><A NAME="231"></A></FONT>                <FONT CLASS="SingleLineComment">// remove the -lib as discovered by Mark Anderson
+<FONT CLASS="LN">32</FONT><A NAME="232"></A></FONT>                String[] newArgs = <FONT CLASS="New">new</FONT> String[args.length-<FONT CLASS="IntegerLiteral">2</FONT>];
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>                <FONT CLASS="For">for</FONT>(<FONT CLASS="Int">int</FONT> i=<FONT CLASS="IntegerLiteral">0</FONT>,n=<FONT CLASS="IntegerLiteral">0</FONT>;i&lt;args.length;i++){
+<FONT CLASS="LN">34</FONT><A NAME="234"></A>                    <FONT CLASS="If">if</FONT>(args[i].equals(<FONT CLASS="StringLiteral">"-lib"</FONT>)){
+<FONT CLASS="LN">35</FONT><A NAME="235"></A>                        i++;
+<FONT CLASS="LN">36</FONT><A NAME="236"></A>                        <FONT CLASS="Continue">continue</FONT>;
+<FONT CLASS="LN">37</FONT><A NAME="237"></A>                    }
+<FONT CLASS="LN">38</FONT><A NAME="238"></A>                    newArgs[n++]=args[i];
+<FONT CLASS="LN">39</FONT><A NAME="239"></A>                }
+<FONT CLASS="LN">40</FONT><A NAME="240"></A>                Properties props = <FONT CLASS="New">new</FONT> Properties();
+<FONT CLASS="LN">41</FONT><A NAME="241"></A>                props.putAll(allProperties);
+<FONT CLASS="LN">42</FONT><A NAME="242"></A>                <FONT CLASS="Return">return</FONT> main.startAnt(newArgs, props, <FONT CLASS="Null">null</FONT>, cxt);
+<FONT CLASS="LN">43</FONT><A NAME="243"></A>            }
+<FONT CLASS="LN">44</FONT><A NAME="244"></A>            <FONT CLASS="Catch">catch</FONT> (Throwable t) {
+<FONT CLASS="LN">45</FONT><A NAME="245"></A>                t.printStackTrace();
+<FONT CLASS="LN">46</FONT><A NAME="246"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">47</FONT><A NAME="247"></A>            }
+<FONT CLASS="LN">48</FONT><A NAME="248"></A>        }
+<FONT CLASS="LN">49</FONT><A NAME="249"></A>    }
+<FONT CLASS="LN">50</FONT><A NAME="250"></A>}
+<FONT CLASS="LN">51</FONT><A NAME="251"></A></pre>
+</BODY>
+</HTML>

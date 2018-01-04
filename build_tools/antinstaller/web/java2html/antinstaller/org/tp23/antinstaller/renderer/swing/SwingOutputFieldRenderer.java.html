@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.renderer.swing.SwingOutputFieldRenderer (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">SwingOutputFieldRenderer.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../../org.tp23.antinstaller.renderer.swing.index.html" target="packageFrame">org.tp23.antinstaller.renderer.swing</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> javax.swing.JPanel;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A>
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">org.tp23.antinstaller.InstallerContext</A>;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/OutputField.java.html">org.tp23.antinstaller.input.OutputField</A>;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/gui/GBCF.java.html">org.tp23.gui.GBCF</A>;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">24</FONT><A NAME="24"></A> *
+<FONT CLASS="LN">25</FONT><A NAME="25"></A> * &lt;p&gt;Instances of this interface should have a no args constructor.
+<FONT CLASS="LN">26</FONT><A NAME="26"></A>* They sould
+<FONT CLASS="LN">27</FONT><A NAME="27"></A>* be Swing JComponent (e.g. subclass JPanel) and render normally responding
+<FONT CLASS="LN">28</FONT><A NAME="28"></A>* to update paint and requests to change Look &amp; Feel in a normal way. &lt;/p&gt;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A> * &lt;p&gt;Instances of this class should follow the naming convention. for each OutputField
+<FONT CLASS="LN">30</FONT><A NAME="30"></A>* Xxx in the package org.tp23.antinstaller.input  there should exist a SwingOutputFieldRenderer
+<FONT CLASS="LN">31</FONT><A NAME="31"></A>* called org.tp23.antinstaller.renderer.swing.XxxRenderer&lt;/p&gt;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A> * &lt;p&gt;Copyright: Copyright (c) 2004&lt;/p&gt;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A> * &lt;p&gt;Company: tp23&lt;/p&gt;
+<FONT CLASS="LN">34</FONT><A NAME="34"></A> * @author Paul Hinds
+<FONT CLASS="LN">35</FONT><A NAME="35"></A> * @version $Id: SwingOutputFieldRenderer.java,v 1.5 2007/01/04 22:57:17 teknopaul Exp $
+<FONT CLASS="LN">36</FONT><A NAME="36"></A> */</FONT>
+<FONT CLASS="LN">37</FONT><A NAME="37"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Abstract">abstract</FONT> <FONT CLASS="Class">class</FONT> SwingOutputFieldRenderer{
+<FONT CLASS="LN">38</FONT><A NAME="38"></A>
+<FONT CLASS="LN">39</FONT><A NAME="39"></A>    <FONT CLASS="SingleLineComment">//TODO From FindBugs - sometimes this field is not used in subclasses to avoid casting
+<FONT CLASS="LN">40</FONT><A NAME="40"></A></FONT>    <FONT CLASS="SingleLineComment">// replace with for example, getInputField() that casts in InputRenderers
+<FONT CLASS="LN">41</FONT><A NAME="41"></A></FONT>    <FONT CLASS="SingleLineComment">// requires work in ConditionalFieldRenderer
+<FONT CLASS="LN">42</FONT><A NAME="42"></A></FONT>    <FONT CLASS="Protected">protected</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/OutputField.java.html">OutputField</A> outputField;
+<FONT CLASS="LN">43</FONT><A NAME="43"></A>    <FONT CLASS="Protected">protected</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx;
+<FONT CLASS="LN">44</FONT><A NAME="44"></A>    
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>     * this should hold a local reference and set the input fields default value
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>     * if one exists
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>     * @param inputField InputField
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>     */</FONT>
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setOutputField(<A HREF="../../../../../org/tp23/antinstaller/input/OutputField.java.html">OutputField</A> outputField){
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>        <FONT CLASS="This">this</FONT>.outputField = outputField;
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>    }
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>     * Init the swing components
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>     */</FONT>
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Abstract">abstract</FONT> <FONT CLASS="Void">void</FONT> initComponent(JPanel parent);
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>     * Called by the Page prior to firing pagecompletion events
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>     */</FONT>
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Abstract">abstract</FONT> <FONT CLASS="Void">void</FONT> updateInputField();
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>     * Called to update the defaults from the ResultContainer
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>     */</FONT>
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Abstract">abstract</FONT> <FONT CLASS="Void">void</FONT> updateDefaultValue();
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>     * Called when validation fails
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>     */</FONT>
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Abstract">abstract</FONT> <FONT CLASS="Void">void</FONT> renderError();
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>     * Called when the renderer should add itself to the content pane;
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>     * @param content the panel to which the Renderer should add itself
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>     * @param GridBagConstraintsFactory
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>     * @param row the current row index in the table
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>     * @param components should adjust preferred size when the overflow flag is set
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>     * to compensate for width loss due to the scroll bar
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>     * @return the row index after adding all its components
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>     */</FONT>
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Abstract">abstract</FONT> <FONT CLASS="Int">int</FONT> addSelf(JPanel content, <A HREF="../../../../../org/tp23/gui/GBCF.java.html">GBCF</A> cf, <FONT CLASS="Int">int</FONT> row, <FONT CLASS="Boolean">boolean</FONT> overflow);
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setInstallerContext(<A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx){
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>        <FONT CLASS="This">this</FONT>.ctx = ctx;
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>    }
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>}
+<FONT CLASS="LN">87</FONT><A NAME="87"></A></pre>
+</BODY>
+</HTML>

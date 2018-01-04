@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!--
+
+This is the build.xml run by AntInstaller for the demo app
+
+It is a normal Ant build script, but remember that it is run in a similar
+way to running
+> ant -buildfile build.xml default,tgdoc,tgsrc
+
+this is targets selected in the selector page have dependencies those
+dependencies may be run once for each target selected
+e.g. if tgdoc had depends="default" and the installer passed
+default,tgdoc  ant would run default then default again then tgdoc
+
+To avoid this problem targets can be forced in the gui using the following
+input in the page to choose components to install
+		<input
+			type="target"
+			displayText="Core components"
+			target="default"
+			defaultValue="true"
+			force="true"/>
+
+-->
+
+<project name="Installation Build"  default=""  basedir="${basedir}">
+
+	<!-- this is required to pick up the properties generated during the install pages -->
+	<property file="${basedir}/ant.install.properties"/>
+
+
+	<target name="default" depends="">
+		<echo message="Colour selected [${colour}]"/>
+		<echo message="Installation Directory [${installDir}]"/>
+		<echo message="Entered Property [${myProperty}]"/>
+		<echo message="Checkbox Property [${truefalseprop}]"/>
+		<echo message="File [${selectedfile}]"/>
+		<mkdir dir="${basedir}/temp"/>
+		<unzip src="installpack.zip" dest="${basedir}/temp"/>
+		<mkdir dir="${installDir}"/>
+		<mkdir dir="${installDir}/classes"/>
+		<mkdir dir="${installDir}/config"/>
+		<mkdir dir="${installDir}/lib"/>
+		<copy file="${basedir}/temp/bin/run.sh"  tofile="${installDir}/run.sh"/>
+		<copy file="${basedir}/temp/bin/run.cmd"  tofile="${installDir}/run.cmd"/>
+		<chmod file="${installDir}/run.sh" perm="774">
+		</chmod>
+		<copy file="${basedir}/temp/README.txt" tofile="${installDir}"/>
+		<copy todir="${installDir}/classes">
+			<fileset dir="${basedir}/temp/classes"/>
+		</copy>
+		<copy todir="${installDir}/config">
+			<fileset dir="${basedir}/temp/config"/>
+		</copy>
+		<replace file="${installDir}/config/example-config.xml">
+			<replacefilter token="@TextProperty@"   value="${myProperty}"/>
+			<replacefilter token="@SelectedFile@"     value="${selectedfile}"/>
+			<replacefilter token="@Colour@" value="${colour}"/>
+			<replacefilter token="@Boolean@" value="${truefalseprop}"/>
+		</replace>
+		<replace file="${installDir}/config/demo.properties">
+			<replacefilter token="@TextProperty@"   value="${myProperty}"/>
+			<replacefilter token="@SelectedFile@"     value="${selectedfile}"/>
+			<replacefilter token="@Colour@" value="${colour}"/>
+			<replacefilter token="@Boolean@" value="${truefalseprop}"/>
+		</replace>
+	</target>
+
+	<target name="tgdoc" depends="">
+		<echo message="Installing documentation files"/>
+		<mkdir dir="${installDir}/doc"/>
+		<copy todir="${installDir}/doc">
+			<fileset dir="${basedir}/temp/doc"/>
+		</copy>
+	</target>
+
+	<target name="tgsrc" depends="">
+		<echo message="Installing Source files"/>
+		<mkdir dir="${installDir}/src"/>
+		<copy todir="${installDir}/src">
+			<fileset dir="${basedir}/temp/src"/>
+		</copy>
+	</target>
+
+	<target name="cleanuptarget" depends="">
+		<delete dir="${basedir}/temp">
+		</delete>
+	</target>
+</project>

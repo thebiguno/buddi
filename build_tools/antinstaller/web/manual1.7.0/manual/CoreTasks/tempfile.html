@@ -1,0 +1,164 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+    
+<html>
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <title>Tempfile
+ Task</title>
+ <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+</head>
+
+<body>
+
+
+            <h2><a name="tempfile">Tempfile Task</a></h2>
+            <br>This task sets a property to the name of a temporary file.
+  
+          
+          <h3><a name="description">Description</a></h3>
+
+<p>
+          This task sets a property to the name of a temporary file.
+          Unlike <code>java.io.File.createTempFile</code>,
+          this task does not actually create the temporary file, but it does guarantee that the
+          file did not exist when the task was executed.
+
+          <p>Examples:
+
+          <pre>&lt;tempfile property="temp.file"/&gt;</pre>
+
+          create a temporary file
+
+          <pre>&lt;tempfile property="temp.file" suffix=".xml"/&gt;</pre>
+
+          create a temporary file with the <code>.xml</code> suffix
+
+          <pre>&lt;tempfile property="temp.file" destDir="build"/&gt;</pre>
+
+          create a temporary file in the <code>build</code> subdirectory
+
+      </blockquote>
+</p>
+    <!-- End Description -->
+
+ <!-- Ignore -->
+
+
+
+
+
+        
+          
+          <h3><a name="attributes">Parameters</a></h3>
+
+        <table border="1" cellpadding="2" cellspacing="0">
+          <tr>
+        <td>
+          <b>Attribute</b>
+        </td>
+        <td>
+          <b>Description</b>
+        </td>
+        <td>
+          <b>Type</b>
+        </td>
+        <td>
+          <b>Requirement</b>
+        </td>
+          </tr>
+    <!-- Attribute Group -->    
+        <!-- Attribute -->
+    <tr>
+        <td>
+          property
+        </td>
+        <td>
+          Sets the property you wish to assign the temporary file to.
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          Required
+        </td>
+    </tr>
+
+    <!-- Attribute Group -->    
+        <!-- Attribute -->
+    <tr>
+        <td>
+          destdir
+        </td>
+        <td>
+          Sets the destination directory. If not set, the basedir directory is used instead.
+        </td>
+        <td>
+          File
+        </td>
+        <td>
+          Optional
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          prefix
+        </td>
+        <td>
+          Sets the optional prefix string for the temp file.
+        </td>
+        <td>
+          String
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          suffix
+        </td>
+        <td>
+          Sets the optional suffix string for the temp file.
+        </td>
+        <td>
+          String
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          deleteonexit
+        </td>
+        <td>
+          Whether the temp file will be marked for deletion on normal exit of the Java Virtual Machine (even though the file may never be created); default <em>false</em>. <strong>Since Ant 1.7</strong>
+        </td>
+        <td>
+          String
+        </td>
+    </tr>
+
+
+        </table>
+      </blockquote>
+    <!-- End Attributes -->
+
+    <!-- Start Elements -->
+          
+          <h3><a name="elements">Parameters as nested elements</a></h3>
+
+</body>
+</html>

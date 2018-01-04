@@ -1,0 +1,11 @@
+[version]
+signature="$chicago$"
+
+[DefaultInstall]
+UpdateInis=Addlink
+
+[AddLink]
+setup.ini, progman.groups,, "group0=AntInstaller"
+setup.ini, group0,, ""AntInstaller""
+setup.ini, group0,, """AntInstaller Docs"",""cmd /c """"@installDir@\web\index.html"""""", ""@installDir@\AntInstaller.ico"",0,"
+setup.ini, group0,, """AntInstaller Wizard"",""cmd /c """"@installDir@\wizard.cmd"""""", ""@installDir@\AntInstaller.ico"",0,"

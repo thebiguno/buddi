@@ -1,0 +1,4 @@
+Crystal Icons from KDE install
+
+http://www.everaldo.com/crystal.html
+License : LGPL

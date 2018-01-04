@@ -1,0 +1,227 @@
+<?xml version="1.0"?>
+<!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
+
+
+<installer
+			ui="swing,text"
+			verbose="true"
+			debug="false"
+			lookAndFeel="greymetal"
+			antialiased="true"
+			wide="600:300"
+			name="Test Installer"
+			windowIcon="/resources/gkmain_inv.png"
+			defaultImageResource="/resources/makewavesdawn.png"
+			minJavaVersion="1.4"
+			finishButtonText="Build">
+	<page
+			type="input"
+			name="intro"
+			displayText="Overflow=&quot;true&quot; test"
+			overflow="true">
+		<comment
+				displayText="Wide test based on overflow"
+				title="true"/>
+		<comment
+				displayText="This is just a bold comment"
+				bold="true"/>
+		<comment
+				displayText="This is just a comment"/>
+		<comment
+				explanatoryText="This is aload of text that has tabs	in	it
+and should eventually overflow the page.
+so here is some more waffle and perhaps it is time to download lorum ipsum eh!!
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exercitation ulliam corper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem veleum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel willum lunombro dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. 
+Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie, musica, sport etc., li tot Europa usa li sam vocabularium. Li lingues differe solmen in li grammatica, li pronunciation e li plu commun vocabules. Omnicos directe al desirabilitá de un nov lingua franca: on refusa continuar payar custosi traductores. It solmen va esser necessi far uniform grammatica, pronunciation e plu sommun paroles. 
+Ma quande lingues coalesce, li grammatica del resultant lingue es plu simplic e regulari quam ti del coalescent lingues. Li nov lingua franca va esser plu simplic e regulari quam li existent Europan lingues. It va esser tam simplic quam Occidental: in fact, it va esser Occidental. A un Angleso it va semblar un simplificat Angles, quam un skeptic Cambridge amico dit me que Occidental es. "
+				displayText=""/>
+	</page>
+	<page
+			type="splash"
+			name="splash"
+			displayText="Splash Pages dont support overflow"
+			imageResource="/resources/antbar.png"
+			splashResource="/resources/example-splash.png"
+			altText="example text splash"/>
+
+	<page
+			type="license"
+			name="license"
+			displayText="License don't need overflow"
+			resource="/LICENSE-ant-install.txt"
+			usePaging="true"
+			imageResource="/resources/antbar.png">
+	</page>
+	<page
+			type="input"
+			name="properties.1"
+			displayText="Some pages can be normal">
+		<text property="myProperty" defaultValue="blah blah" displayText="Enter a value"/>
+		<checkbox
+				property="isvalue"
+				displayText="Do you want to do this"
+				defaultValue="true"
+				force="false"/>
+		<select
+				property="colour"
+				defaultValue="#FF0000"
+				displayText="Select your favorite colour">
+			<option text="Red" value="#FF0000"/>
+			<option text="Green" value="#00FF00"/>
+			<option text="Blue" value="#0000FF"/>
+		</select>
+		<directory
+				property="installDir"
+				defaultValue="/usr/local/demoapp"
+				defaultValueWin="${env.ProgramFiles}\demoapp"
+				displayText="Select an installation directory"
+				create="true"
+				checkExists="true"/>
+		<file
+				property="webxml"
+				defaultValue="/usr/tomcat/webapps/default/WEB-INF/web.xml"
+				defaultValueWin="C:\tomcat\webapps\default\WEB-INF\web.xml"
+				displayText="Select the web.xml file"
+				checkExists="false"/>
+	</page>
+	<page
+			type="input"
+			name="selector"
+			displayText="Overflow page"
+			imageResource="/resources/antbar.png"
+			overflow="true">
+		<comment
+				displayText="Choose the components you want to install"
+				bold="true"/>
+		<target
+			displayText="Core components"
+			target="default"
+			defaultValue="true"
+			force="true"/>
+		<target
+			displayText="Source code"
+			target="tgsrc"
+			defaultValue="true"
+			force="false"/>
+		<validated
+			property="validatedtext"
+			displayText="Validated Text Input"
+			defaultValue="23/10/2004"
+			regex="^[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]$"/>
+		<text
+			property="unvalidatedtext"
+			displayText="Unvalidated User Name"
+			defaultValue="${java.user.name}"/>
+		<password
+			property="unsafepassword"
+			displayText="Enter a password"
+			defaultValue="pa55word"
+			regex="[0-9a-zA-Z_]{8}"/>
+		<select
+				property="lang"
+				defaultValue="uk"
+				displayText="Select your favorite language"
+				explanatoryText="a large-select would work here too">
+			<option text="Spanish" value="es"/>
+			<option text="Catalan" value="ca"/>
+			<option text="English" value="uk"/>
+			<option text="French" value="fr"/>
+			<option text="Japanese" value="jp"/>
+			<option text="Persian" value="pe"/>
+			<option text="Urdu" value="ur"/>
+			<option text="Flemish" value="fl"/>
+			<option text="German" value="de"/>
+			<option text="Greek" value="gk"/>
+			<option text="Turkish" value="tk"/>
+			<option text="Slav" value="sv"/>
+			<option text="Euskera" value="ek"/>
+			<option text="Welsh" value="we"/>
+			<option text="Jamaican patoi" value="ra"/>
+			<option text="Mockney" value="??"/>
+			<option text="Giberish" value="¿¿"/>
+			<option text="Love" value="lv"/>
+			<option text="Sign" value=":)"/>
+			<option text="Java" value="jv"/>
+			<option text="C++" value="++"/>
+			<option text="American" value="us"/>
+		</select>
+		<target
+			displayText="OS Specific target"
+			osSpecific="true"
+			target="myOsSpecific"
+			defaultValue="true"
+			force="false"/>
+	</page>
+	<page
+			ifProperty="${lang}=lv"
+			type="input"
+			name="Language of Love"
+			displayText="Language of Love">
+		<comment
+				displayText="Aaaarrr, how sweet"
+				bold="true"/>
+	</page>
+	<page
+			ifProperty="${lang}=us"
+			type="input"
+			name="American"
+			displayText="Hey Yankiee">
+		<comment
+				displayText="It totaliser and initialise, with Ss you know, but never mind"
+				bold="true"/>
+	</page>
+	<page
+			ifTarget="tgsrc"
+			type="input"
+			name="properties.2"
+			displayText="Required if Source code selected">
+		<text property="myProperty2" defaultValue="tiddly poop" displayText="Enter a value"/>
+		<select
+				property="colour2"
+				defaultValue="#FF0000"
+				displayText="colour2"
+				explanatoryText="This field can be used on any input field to render further descriptive text
+				This field can be used on any input field to render further descriptive text">
+			<option text="Red" value="#FF0000"/>
+			<option text="Green" value="#00FF00"/>
+			<option text="Blue" value="#0000FF"/>
+		</select>
+		<text property="myProperty3" defaultValue="blah blah" displayText="Enter a value"/>
+		<date property="date.property" dateFormat="dd-MM-yy mm:ss" defaultValue="TODAY" displayText="Enter a date"/>
+		<!-- example disabled since you might not have tomcat installed -->
+		<!--app-root
+				property="tomcat.root"
+				defaultValue="/var"
+				displayText="Select the tomcat root"
+				checkFile1="conf/tomcat-users.xml"
+				checkFile2="conf/server.xml"
+				checkDir1="webapps"
+				checkDir2="conf">
+		</app-root-->
+	</page>
+	<page
+			type="input"
+			name="contrib"
+			displayText="Overflow but no effect here"
+			overflow="true">
+		<target-select
+				property="colourtarget"
+				defaultValue="tgt1"
+				displayText="Select a target"
+				explanatoryText="only one target available">
+			<option text="target-one" value="tgt1"/>
+			<option text="target-two" value="tgt2"/>
+			<option text="target-three" value="tgt3"/>
+		</target-select>
+	</page>
+	<page
+			type="progress"
+			name="progress"
+			displayText="Progress does not need overflow"
+			imageResource="/resources/antbar.png"
+			showTargets="false"
+			target="cleanuptarget">
+	</page>
+</installer>
+
+

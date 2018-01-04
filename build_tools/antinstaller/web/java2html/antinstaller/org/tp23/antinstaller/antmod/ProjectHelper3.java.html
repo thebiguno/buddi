@@ -1,0 +1,1063 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.antmod.ProjectHelper3 (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">ProjectHelper3.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/*
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright  2000-2004 The Apache Software Foundation
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> *  Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> *  you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> *  You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> *      http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> *  Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> *  distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> *  See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> *  limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> *
+<FONT CLASS="LN">16</FONT><A NAME="16"></A> */</FONT>
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.antmod.index.html" target="packageFrame">org.tp23.antinstaller.antmod</A>;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A>
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.io.File;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.io.FileInputStream;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.io.FileNotFoundException;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> java.io.IOException;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> java.io.InputStream;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> java.io.UnsupportedEncodingException;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="Import">import</FONT> java.net.URL;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> java.util.Hashtable;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A><FONT CLASS="Import">import</FONT> java.util.Stack;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A>
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.BuildException;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.Location;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.Project;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.ProjectHelper;
+<FONT CLASS="LN">34</FONT><A NAME="34"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.RuntimeConfigurable;
+<FONT CLASS="LN">35</FONT><A NAME="35"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.Target;
+<FONT CLASS="LN">36</FONT><A NAME="36"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.Task;
+<FONT CLASS="LN">37</FONT><A NAME="37"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.UnknownElement;
+<FONT CLASS="LN">38</FONT><A NAME="38"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.helper.AntXMLContext;
+<FONT CLASS="LN">39</FONT><A NAME="39"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.util.FileUtils;
+<FONT CLASS="LN">40</FONT><A NAME="40"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.util.JAXPUtils;
+<FONT CLASS="LN">41</FONT><A NAME="41"></A><FONT CLASS="Import">import</FONT> org.xml.sax.Attributes;
+<FONT CLASS="LN">42</FONT><A NAME="42"></A><FONT CLASS="Import">import</FONT> org.xml.sax.InputSource;
+<FONT CLASS="LN">43</FONT><A NAME="43"></A><FONT CLASS="Import">import</FONT> org.xml.sax.Locator;
+<FONT CLASS="LN">44</FONT><A NAME="44"></A><FONT CLASS="Import">import</FONT> org.xml.sax.SAXException;
+<FONT CLASS="LN">45</FONT><A NAME="45"></A><FONT CLASS="Import">import</FONT> org.xml.sax.SAXParseException;
+<FONT CLASS="LN">46</FONT><A NAME="46"></A><FONT CLASS="Import">import</FONT> org.xml.sax.XMLReader;
+<FONT CLASS="LN">47</FONT><A NAME="47"></A><FONT CLASS="Import">import</FONT> org.xml.sax.helpers.DefaultHandler;
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>
+<FONT CLASS="LN">49</FONT><A NAME="49"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">50</FONT><A NAME="50"></A> * Sax2 based project reader
+<FONT CLASS="LN">51</FONT><A NAME="51"></A> * 
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>* This file has been modified by Paul Hinds for Antinstaller and is not the same
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>* as the ProjectHelper2 delivered with Ant 1.6 although almost identical
+<FONT CLASS="LN">54</FONT><A NAME="54"></A> */</FONT>
+<FONT CLASS="LN">55</FONT><A NAME="55"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> ProjectHelper3 <FONT CLASS="Extends">extends</FONT> ProjectHelper {
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>    <FONT CLASS="MultiLineComment">/* Stateless */</FONT>
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>    <FONT CLASS="SingleLineComment">// singletons - since all state is in the context
+<FONT CLASS="LN">59</FONT><A NAME="59"></A></FONT>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> AntHandler elementHandler = <FONT CLASS="New">new</FONT> ElementHandler();
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> AntHandler targetHandler = <FONT CLASS="New">new</FONT> TargetHandler();
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> AntHandler mainHandler = <FONT CLASS="New">new</FONT> MainHandler();
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> AntHandler projectHandler = <FONT CLASS="New">new</FONT> ProjectHandler();
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>     * helper for path -&gt; URI and URI -&gt; path conversions.
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>     */</FONT>
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> FileUtils fu = FileUtils.newFileUtils();
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>     * Parse an unknown element from a url
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>     *
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>     * @param project the current project
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>     * @param source  the url containing the task
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>     * @return a configured task
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>     * @exception BuildException if an error occurs
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>     */</FONT>
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>    <FONT CLASS="Public">public</FONT> UnknownElement parseUnknownElement(Project project, URL source)
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>        <FONT CLASS="Throws">throws</FONT> BuildException {
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>        Target dummyTarget = <FONT CLASS="New">new</FONT> Target();
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>        dummyTarget.setProject(project);
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>        AntXMLContext context = <FONT CLASS="New">new</FONT> AntXMLContext(project);
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>        context.addTarget(dummyTarget);
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>        context.setImplicitTarget(dummyTarget);
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>        parse(context.getProject(), source,
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>              <FONT CLASS="New">new</FONT> RootHandler(context, elementHandler));
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>        Task[] tasks = dummyTarget.getTasks();
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>        <FONT CLASS="If">if</FONT> (tasks.length != <FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"No tasks defined"</FONT>);
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>        }
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>        <FONT CLASS="Return">return</FONT> (UnknownElement) tasks[<FONT CLASS="IntegerLiteral">0</FONT>];
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>    }
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>     * Parse a source xml input.
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>     *
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>     * @param project the current project
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>     * @param source  the xml source
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>     * @exception BuildException if an error occurs
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>     */</FONT>
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> parse(Project project, Object source)
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>            <FONT CLASS="Throws">throws</FONT> BuildException {
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>        getImportStack().addElement(source);
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>        <FONT CLASS="SingleLineComment">//System.out.println("Adding " + source);
+<FONT CLASS="LN">05</FONT><A NAME="105"></A></FONT>        AntXMLContext context = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>        context = (AntXMLContext) project.getReference(<FONT CLASS="StringLiteral">"ant.parsing.context"</FONT>);
+<FONT CLASS="LN">07</FONT><A NAME="107"></A><FONT CLASS="SingleLineComment">//        System.out.println("Parsing " + getImportStack().size() + " " +
+<FONT CLASS="LN">08</FONT><A NAME="108"></A></FONT><FONT CLASS="SingleLineComment">//                context+ " " + getImportStack() );
+<FONT CLASS="LN">09</FONT><A NAME="109"></A></FONT>        <FONT CLASS="If">if</FONT> (context == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>            context = <FONT CLASS="New">new</FONT> AntXMLContext(project);
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>            project.addReference(<FONT CLASS="StringLiteral">"ant.parsing.context"</FONT>, context);
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>            project.addReference(<FONT CLASS="StringLiteral">"ant.targets"</FONT>, context.getTargets());
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>        }
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>        <FONT CLASS="If">if</FONT> (getImportStack().size() &gt; <FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>            <FONT CLASS="SingleLineComment">// we are in an imported file.
+<FONT CLASS="LN">17</FONT><A NAME="117"></A></FONT>            context.setIgnoreProjectTag(<FONT CLASS="True">true</FONT>);
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>            Target currentTarget = context.getCurrentTarget();
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>                Target newCurrent = <FONT CLASS="New">new</FONT> Target();
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>                newCurrent.setProject(project);
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>                newCurrent.setName(<FONT CLASS="StringLiteral">""</FONT>);
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>                context.setCurrentTarget(newCurrent);
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>                parse(project, source, <FONT CLASS="New">new</FONT> RootHandler(context, mainHandler));
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>                newCurrent.execute();
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>            } <FONT CLASS="Finally">finally</FONT> {
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>                context.setCurrentTarget(currentTarget);
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>            }
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>        } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>            <FONT CLASS="SingleLineComment">// top level file
+<FONT CLASS="LN">31</FONT><A NAME="131"></A></FONT>            parse(project, source, <FONT CLASS="New">new</FONT> RootHandler(context, mainHandler));
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>            <FONT CLASS="SingleLineComment">// Execute the top-level target
+<FONT CLASS="LN">33</FONT><A NAME="133"></A></FONT>            context.getImplicitTarget().execute();
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>        }
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>    }
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>     * Parses the project file, configuring the project as it goes.
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>     *
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>     * @param project the current project
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>     * @param source  the xml source
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>     * @param handler the root handler to use (contains the current context)
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>     * @exception BuildException if the configuration is invalid or cannot
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>     *                           be read
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>     */</FONT>
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> parse(Project project, Object source, RootHandler handler)
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>            <FONT CLASS="Throws">throws</FONT> BuildException {
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>        AntXMLContext context = handler.context;
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>        File buildFile = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>        URL  url = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>        String buildFileName = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>        <FONT CLASS="If">if</FONT> (source <FONT CLASS="InstanceOf">instanceof</FONT> File) {
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>            buildFile = (File) source;
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>            buildFile = fu.normalize(buildFile.getAbsolutePath());
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>            context.setBuildFile(buildFile);
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>            buildFileName = buildFile.toString();
+<FONT CLASS="LN">60</FONT><A NAME="160"></A><FONT CLASS="SingleLineComment">//         } else if (source instanceof InputStream ) {
+<FONT CLASS="LN">61</FONT><A NAME="161"></A></FONT>        } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (source <FONT CLASS="InstanceOf">instanceof</FONT> URL) {
+<FONT CLASS="LN">62</FONT><A NAME="162"></A><FONT CLASS="SingleLineComment">//          These commented out code is the only difference
+<FONT CLASS="LN">63</FONT><A NAME="163"></A></FONT><FONT CLASS="SingleLineComment">//          between this class and ProjectHelper2
+<FONT CLASS="LN">64</FONT><A NAME="164"></A></FONT><FONT CLASS="SingleLineComment">//            if (handler.getCurrentAntHandler() != elementHandler) {
+<FONT CLASS="LN">65</FONT><A NAME="165"></A></FONT><FONT CLASS="SingleLineComment">//                throw new BuildException(
+<FONT CLASS="LN">66</FONT><A NAME="166"></A></FONT><FONT CLASS="SingleLineComment">//                    "Source " + source.getClass().getName()
+<FONT CLASS="LN">67</FONT><A NAME="167"></A></FONT><FONT CLASS="SingleLineComment">//                    + " not supported by this plugin for "
+<FONT CLASS="LN">68</FONT><A NAME="168"></A></FONT><FONT CLASS="SingleLineComment">//                    + " non task xml");
+<FONT CLASS="LN">69</FONT><A NAME="169"></A></FONT><FONT CLASS="SingleLineComment">//            }
+<FONT CLASS="LN">70</FONT><A NAME="170"></A></FONT>            url = (URL) source;
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>            buildFileName = url.toString();
+<FONT CLASS="LN">72</FONT><A NAME="172"></A><FONT CLASS="SingleLineComment">//         } else if (source instanceof InputSource ) {
+<FONT CLASS="LN">73</FONT><A NAME="173"></A></FONT>        } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Source "</FONT> + source.getClass().getName()
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>                                     + <FONT CLASS="StringLiteral">" not supported by this plugin"</FONT>);
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>        }
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>        InputStream inputStream = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>        InputSource inputSource = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>            <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>             * SAX 2 style parser used to parse the given file.
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>             */</FONT>
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>            XMLReader parser = JAXPUtils.getNamespaceXMLReader();
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>            String uri = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>            <FONT CLASS="If">if</FONT> (buildFile != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>                uri = fu.toURI(buildFile.getAbsolutePath());
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>                inputStream = <FONT CLASS="New">new</FONT> FileInputStream(buildFile);
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>            } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>                inputStream = url.openStream();
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>                uri = url.toString(); <FONT CLASS="SingleLineComment">// ?? OK ??
+<FONT CLASS="LN">95</FONT><A NAME="195"></A></FONT>            }
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>            inputSource = <FONT CLASS="New">new</FONT> InputSource(inputStream);
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>            <FONT CLASS="If">if</FONT> (uri != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>                inputSource.setSystemId(uri);
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>            }
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>            project.log(<FONT CLASS="StringLiteral">"parsing buildfile "</FONT> + buildFileName
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>                        + <FONT CLASS="StringLiteral">" with URI = "</FONT> + uri, Project.MSG_VERBOSE);
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>            DefaultHandler hb = handler;
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>            parser.setContentHandler(hb);
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>            parser.setEntityResolver(hb);
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>            parser.setErrorHandler(hb);
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>            parser.setDTDHandler(hb);
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>            parser.parse(inputSource);
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>        } <FONT CLASS="Catch">catch</FONT> (SAXParseException exc) {
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>            Location location = <FONT CLASS="New">new</FONT> Location(exc.getSystemId(),
+<FONT CLASS="LN">13</FONT><A NAME="213"></A>                exc.getLineNumber(), exc.getColumnNumber());
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>            Throwable t = exc.getException();
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>            <FONT CLASS="If">if</FONT> (t <FONT CLASS="InstanceOf">instanceof</FONT> BuildException) {
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>                BuildException be = (BuildException) t;
+<FONT CLASS="LN">18</FONT><A NAME="218"></A>                <FONT CLASS="If">if</FONT> (be.getLocation() == Location.UNKNOWN_LOCATION) {
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>                    be.setLocation(location);
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>                }
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>                <FONT CLASS="Throw">throw</FONT> be;
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>            }
+<FONT CLASS="LN">23</FONT><A NAME="223"></A>
+<FONT CLASS="LN">24</FONT><A NAME="224"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(exc.getMessage(), t, location);
+<FONT CLASS="LN">25</FONT><A NAME="225"></A>        } <FONT CLASS="Catch">catch</FONT> (SAXException exc) {
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>            Throwable t = exc.getException();
+<FONT CLASS="LN">27</FONT><A NAME="227"></A>            <FONT CLASS="If">if</FONT> (t <FONT CLASS="InstanceOf">instanceof</FONT> BuildException) {
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>                <FONT CLASS="Throw">throw</FONT> (BuildException) t;
+<FONT CLASS="LN">29</FONT><A NAME="229"></A>            }
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(exc.getMessage(), t);
+<FONT CLASS="LN">31</FONT><A NAME="231"></A>        } <FONT CLASS="Catch">catch</FONT> (FileNotFoundException exc) {
+<FONT CLASS="LN">32</FONT><A NAME="232"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(exc);
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>        } <FONT CLASS="Catch">catch</FONT> (UnsupportedEncodingException exc) {
+<FONT CLASS="LN">34</FONT><A NAME="234"></A>              <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Encoding of project file "</FONT>
+<FONT CLASS="LN">35</FONT><A NAME="235"></A>                                       + buildFileName + <FONT CLASS="StringLiteral">" is invalid."</FONT>,
+<FONT CLASS="LN">36</FONT><A NAME="236"></A>                                       exc);
+<FONT CLASS="LN">37</FONT><A NAME="237"></A>        } <FONT CLASS="Catch">catch</FONT> (IOException exc) {
+<FONT CLASS="LN">38</FONT><A NAME="238"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"Error reading project file "</FONT>
+<FONT CLASS="LN">39</FONT><A NAME="239"></A>                                     + buildFileName + <FONT CLASS="StringLiteral">": "</FONT> + exc.getMessage(),
+<FONT CLASS="LN">40</FONT><A NAME="240"></A>                                     exc);
+<FONT CLASS="LN">41</FONT><A NAME="241"></A>        } <FONT CLASS="Finally">finally</FONT> {
+<FONT CLASS="LN">42</FONT><A NAME="242"></A>            <FONT CLASS="If">if</FONT> (inputStream != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">43</FONT><A NAME="243"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">44</FONT><A NAME="244"></A>                    inputStream.close();
+<FONT CLASS="LN">45</FONT><A NAME="245"></A>                } <FONT CLASS="Catch">catch</FONT> (IOException ioe) {
+<FONT CLASS="LN">46</FONT><A NAME="246"></A>                    <FONT CLASS="SingleLineComment">// ignore this
+<FONT CLASS="LN">47</FONT><A NAME="247"></A></FONT>                }
+<FONT CLASS="LN">48</FONT><A NAME="248"></A>            }
+<FONT CLASS="LN">49</FONT><A NAME="249"></A>        }
+<FONT CLASS="LN">50</FONT><A NAME="250"></A>    }
+<FONT CLASS="LN">51</FONT><A NAME="251"></A>
+<FONT CLASS="LN">52</FONT><A NAME="252"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">53</FONT><A NAME="253"></A>     * The common superclass for all SAX event handlers used to parse
+<FONT CLASS="LN">54</FONT><A NAME="254"></A>     * the configuration file.
+<FONT CLASS="LN">55</FONT><A NAME="255"></A>     *
+<FONT CLASS="LN">56</FONT><A NAME="256"></A>     * The context will hold all state information. At each time
+<FONT CLASS="LN">57</FONT><A NAME="257"></A>     * there is one active handler for the current element. It can
+<FONT CLASS="LN">58</FONT><A NAME="258"></A>     * use onStartChild() to set an alternate handler for the child.
+<FONT CLASS="LN">59</FONT><A NAME="259"></A>     */</FONT>
+<FONT CLASS="LN">60</FONT><A NAME="260"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Class">class</FONT> AntHandler  {
+<FONT CLASS="LN">61</FONT><A NAME="261"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">62</FONT><A NAME="262"></A>         * Handles the start of an element. This base implementation does
+<FONT CLASS="LN">63</FONT><A NAME="263"></A>         * nothing.
+<FONT CLASS="LN">64</FONT><A NAME="264"></A>         *
+<FONT CLASS="LN">65</FONT><A NAME="265"></A>         * @param uri the namespace URI for the tag
+<FONT CLASS="LN">66</FONT><A NAME="266"></A>         * @param tag The name of the element being started.
+<FONT CLASS="LN">67</FONT><A NAME="267"></A>         *            Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">68</FONT><A NAME="268"></A>         * @param qname The qualified name of the element.
+<FONT CLASS="LN">69</FONT><A NAME="269"></A>         * @param attrs Attributes of the element being started.
+<FONT CLASS="LN">70</FONT><A NAME="270"></A>         *              Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">71</FONT><A NAME="271"></A>         * @param context The context that this element is in.
+<FONT CLASS="LN">72</FONT><A NAME="272"></A>         *
+<FONT CLASS="LN">73</FONT><A NAME="273"></A>         * @exception SAXParseException if this method is not overridden, or in
+<FONT CLASS="LN">74</FONT><A NAME="274"></A>         *                              case of error in an overridden version
+<FONT CLASS="LN">75</FONT><A NAME="275"></A>         */</FONT>
+<FONT CLASS="LN">76</FONT><A NAME="276"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> onStartElement(String uri, String tag, String qname,
+<FONT CLASS="LN">77</FONT><A NAME="277"></A>                                   Attributes attrs,
+<FONT CLASS="LN">78</FONT><A NAME="278"></A>                                   AntXMLContext context)
+<FONT CLASS="LN">79</FONT><A NAME="279"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">80</FONT><A NAME="280"></A>        }
+<FONT CLASS="LN">81</FONT><A NAME="281"></A>
+<FONT CLASS="LN">82</FONT><A NAME="282"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">83</FONT><A NAME="283"></A>         * Handles the start of an element. This base implementation just
+<FONT CLASS="LN">84</FONT><A NAME="284"></A>         * throws an exception - you must override this method if you expect
+<FONT CLASS="LN">85</FONT><A NAME="285"></A>         * child elements.
+<FONT CLASS="LN">86</FONT><A NAME="286"></A>         *
+<FONT CLASS="LN">87</FONT><A NAME="287"></A>         * @param uri The namespace uri for this element.
+<FONT CLASS="LN">88</FONT><A NAME="288"></A>         * @param tag The name of the element being started.
+<FONT CLASS="LN">89</FONT><A NAME="289"></A>         *            Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">90</FONT><A NAME="290"></A>         * @param qname The qualified name for this element.
+<FONT CLASS="LN">91</FONT><A NAME="291"></A>         * @param attrs Attributes of the element being started.
+<FONT CLASS="LN">92</FONT><A NAME="292"></A>         *              Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">93</FONT><A NAME="293"></A>         * @param context The current context.
+<FONT CLASS="LN">94</FONT><A NAME="294"></A>         * @return a handler (in the derived classes)
+<FONT CLASS="LN">95</FONT><A NAME="295"></A>         *
+<FONT CLASS="LN">96</FONT><A NAME="296"></A>         * @exception SAXParseException if this method is not overridden, or in
+<FONT CLASS="LN">97</FONT><A NAME="297"></A>         *                              case of error in an overridden version
+<FONT CLASS="LN">98</FONT><A NAME="298"></A>         */</FONT>
+<FONT CLASS="LN">99</FONT><A NAME="299"></A>        <FONT CLASS="Public">public</FONT> AntHandler onStartChild(String uri, String tag, String qname,
+<FONT CLASS="LN">00</FONT><A NAME="300"></A>                                       Attributes attrs,
+<FONT CLASS="LN">01</FONT><A NAME="301"></A>                                       AntXMLContext context)
+<FONT CLASS="LN">02</FONT><A NAME="302"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">03</FONT><A NAME="303"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> SAXParseException(<FONT CLASS="StringLiteral">"Unexpected element \""</FONT> + qname
+<FONT CLASS="LN">04</FONT><A NAME="304"></A>                + <FONT CLASS="StringLiteral">" \""</FONT>, context.getLocator());
+<FONT CLASS="LN">05</FONT><A NAME="305"></A>        }
+<FONT CLASS="LN">06</FONT><A NAME="306"></A>
+<FONT CLASS="LN">07</FONT><A NAME="307"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">08</FONT><A NAME="308"></A>         * Handle the end of a element.
+<FONT CLASS="LN">09</FONT><A NAME="309"></A>         *
+<FONT CLASS="LN">10</FONT><A NAME="310"></A>         * @param uri the namespace uri of the element
+<FONT CLASS="LN">11</FONT><A NAME="311"></A>         * @param tag the tag of the element
+<FONT CLASS="LN">12</FONT><A NAME="312"></A>         * @param qname the qualified name of the element
+<FONT CLASS="LN">13</FONT><A NAME="313"></A>         * @param context the current context
+<FONT CLASS="LN">14</FONT><A NAME="314"></A>         * @exception SAXParseException if an error occurs
+<FONT CLASS="LN">15</FONT><A NAME="315"></A>         */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="316"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> onEndChild(String uri, String tag, String qname,
+<FONT CLASS="LN">17</FONT><A NAME="317"></A>                                     AntXMLContext context)
+<FONT CLASS="LN">18</FONT><A NAME="318"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">19</FONT><A NAME="319"></A>        }
+<FONT CLASS="LN">20</FONT><A NAME="320"></A>
+<FONT CLASS="LN">21</FONT><A NAME="321"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">22</FONT><A NAME="322"></A>         * This method is called when this element and all elements nested into it have been
+<FONT CLASS="LN">23</FONT><A NAME="323"></A>         * handled. I.e., this happens at the &amp;lt;/end_tag_of_the_element&amp;gt;.
+<FONT CLASS="LN">24</FONT><A NAME="324"></A>         * @param uri the namespace uri for this element
+<FONT CLASS="LN">25</FONT><A NAME="325"></A>         * @param tag the element name
+<FONT CLASS="LN">26</FONT><A NAME="326"></A>         * @param context the current context
+<FONT CLASS="LN">27</FONT><A NAME="327"></A>         */</FONT>
+<FONT CLASS="LN">28</FONT><A NAME="328"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> onEndElement(String uri, String tag,
+<FONT CLASS="LN">29</FONT><A NAME="329"></A>                                 AntXMLContext context) {
+<FONT CLASS="LN">30</FONT><A NAME="330"></A>        }
+<FONT CLASS="LN">31</FONT><A NAME="331"></A>
+<FONT CLASS="LN">32</FONT><A NAME="332"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">33</FONT><A NAME="333"></A>         * Handles text within an element. This base implementation just
+<FONT CLASS="LN">34</FONT><A NAME="334"></A>         * throws an exception, you must override it if you expect content.
+<FONT CLASS="LN">35</FONT><A NAME="335"></A>         *
+<FONT CLASS="LN">36</FONT><A NAME="336"></A>         * @param buf A character array of the text within the element.
+<FONT CLASS="LN">37</FONT><A NAME="337"></A>         *            Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">38</FONT><A NAME="338"></A>         * @param start The start element in the array.
+<FONT CLASS="LN">39</FONT><A NAME="339"></A>         * @param count The number of characters to read from the array.
+<FONT CLASS="LN">40</FONT><A NAME="340"></A>         * @param context The current context.
+<FONT CLASS="LN">41</FONT><A NAME="341"></A>         *
+<FONT CLASS="LN">42</FONT><A NAME="342"></A>         * @exception SAXParseException if this method is not overridden, or in
+<FONT CLASS="LN">43</FONT><A NAME="343"></A>         *                              case of error in an overridden version
+<FONT CLASS="LN">44</FONT><A NAME="344"></A>         */</FONT>
+<FONT CLASS="LN">45</FONT><A NAME="345"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> characters(<FONT CLASS="Char">char</FONT>[] buf, <FONT CLASS="Int">int</FONT> start, <FONT CLASS="Int">int</FONT> count, AntXMLContext context)
+<FONT CLASS="LN">46</FONT><A NAME="346"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">47</FONT><A NAME="347"></A>            String s = <FONT CLASS="New">new</FONT> String(buf, start, count).trim();
+<FONT CLASS="LN">48</FONT><A NAME="348"></A>
+<FONT CLASS="LN">49</FONT><A NAME="349"></A>            <FONT CLASS="If">if</FONT> (s.length() &gt; <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">50</FONT><A NAME="350"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> SAXParseException(<FONT CLASS="StringLiteral">"Unexpected text \""</FONT> + s
+<FONT CLASS="LN">51</FONT><A NAME="351"></A>                    + <FONT CLASS="StringLiteral">"\""</FONT>, context.getLocator());
+<FONT CLASS="LN">52</FONT><A NAME="352"></A>            }
+<FONT CLASS="LN">53</FONT><A NAME="353"></A>        }
+<FONT CLASS="LN">54</FONT><A NAME="354"></A>
+<FONT CLASS="LN">55</FONT><A NAME="355"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">56</FONT><A NAME="356"></A>         * Will be called every time a namespace is reached.
+<FONT CLASS="LN">57</FONT><A NAME="357"></A>         * It'll verify if the ns was processed, and if not load the task
+<FONT CLASS="LN">58</FONT><A NAME="358"></A>         * definitions.
+<FONT CLASS="LN">59</FONT><A NAME="359"></A>         * @param uri The namespace uri.
+<FONT CLASS="LN">60</FONT><A NAME="360"></A>         */</FONT>
+<FONT CLASS="LN">61</FONT><A NAME="361"></A>        <FONT CLASS="Protected">protected</FONT> <FONT CLASS="Void">void</FONT> checkNamespace(String uri) {
+<FONT CLASS="LN">62</FONT><A NAME="362"></A>
+<FONT CLASS="LN">63</FONT><A NAME="363"></A>        }
+<FONT CLASS="LN">64</FONT><A NAME="364"></A>    }
+<FONT CLASS="LN">65</FONT><A NAME="365"></A>
+<FONT CLASS="LN">66</FONT><A NAME="366"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">67</FONT><A NAME="367"></A>     * Handler for ant processing. Uses a stack of AntHandlers to
+<FONT CLASS="LN">68</FONT><A NAME="368"></A>     * implement each element ( the original parser used a recursive behavior,
+<FONT CLASS="LN">69</FONT><A NAME="369"></A>     * with the implicit execution stack )
+<FONT CLASS="LN">70</FONT><A NAME="370"></A>     */</FONT>
+<FONT CLASS="LN">71</FONT><A NAME="371"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Class">class</FONT> RootHandler <FONT CLASS="Extends">extends</FONT> DefaultHandler {
+<FONT CLASS="LN">72</FONT><A NAME="372"></A>        <FONT CLASS="Private">private</FONT> Stack antHandlers = <FONT CLASS="New">new</FONT> Stack();
+<FONT CLASS="LN">73</FONT><A NAME="373"></A>        <FONT CLASS="Private">private</FONT> AntHandler currentHandler = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">74</FONT><A NAME="374"></A>        <FONT CLASS="Private">private</FONT> AntXMLContext context;
+<FONT CLASS="LN">75</FONT><A NAME="375"></A>
+<FONT CLASS="LN">76</FONT><A NAME="376"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">77</FONT><A NAME="377"></A>         * Creates a new RootHandler instance.
+<FONT CLASS="LN">78</FONT><A NAME="378"></A>         *
+<FONT CLASS="LN">79</FONT><A NAME="379"></A>         * @param context The context for the handler.
+<FONT CLASS="LN">80</FONT><A NAME="380"></A>         * @param rootHandler The handler for the root element.
+<FONT CLASS="LN">81</FONT><A NAME="381"></A>         */</FONT>
+<FONT CLASS="LN">82</FONT><A NAME="382"></A>        <FONT CLASS="Public">public</FONT> RootHandler(AntXMLContext context, AntHandler rootHandler) {
+<FONT CLASS="LN">83</FONT><A NAME="383"></A>            currentHandler = rootHandler;
+<FONT CLASS="LN">84</FONT><A NAME="384"></A>            antHandlers.push(currentHandler);
+<FONT CLASS="LN">85</FONT><A NAME="385"></A>            <FONT CLASS="This">this</FONT>.context = context;
+<FONT CLASS="LN">86</FONT><A NAME="386"></A>        }
+<FONT CLASS="LN">87</FONT><A NAME="387"></A>
+<FONT CLASS="LN">88</FONT><A NAME="388"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">89</FONT><A NAME="389"></A>         * Returns the current ant handler object.
+<FONT CLASS="LN">90</FONT><A NAME="390"></A>         * @return the current ant handler.
+<FONT CLASS="LN">91</FONT><A NAME="391"></A>         */</FONT>
+<FONT CLASS="LN">92</FONT><A NAME="392"></A>        <FONT CLASS="Public">public</FONT> AntHandler getCurrentAntHandler() {
+<FONT CLASS="LN">93</FONT><A NAME="393"></A>            <FONT CLASS="Return">return</FONT> currentHandler;
+<FONT CLASS="LN">94</FONT><A NAME="394"></A>        }
+<FONT CLASS="LN">95</FONT><A NAME="395"></A>
+<FONT CLASS="LN">96</FONT><A NAME="396"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">97</FONT><A NAME="397"></A>         * Resolves file: URIs relative to the build file.
+<FONT CLASS="LN">98</FONT><A NAME="398"></A>         *
+<FONT CLASS="LN">99</FONT><A NAME="399"></A>         * @param publicId The public identifier, or &lt;code&gt;null&lt;/code&gt;
+<FONT CLASS="LN">00</FONT><A NAME="400"></A>         *                 if none is available. Ignored in this
+<FONT CLASS="LN">01</FONT><A NAME="401"></A>         *                 implementation.
+<FONT CLASS="LN">02</FONT><A NAME="402"></A>         * @param systemId The system identifier provided in the XML
+<FONT CLASS="LN">03</FONT><A NAME="403"></A>         *                 document. Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">04</FONT><A NAME="404"></A>         * @return an inputsource for this identifier
+<FONT CLASS="LN">05</FONT><A NAME="405"></A>         */</FONT>
+<FONT CLASS="LN">06</FONT><A NAME="406"></A>        <FONT CLASS="Public">public</FONT> InputSource resolveEntity(String publicId,
+<FONT CLASS="LN">07</FONT><A NAME="407"></A>                                         String systemId) {
+<FONT CLASS="LN">08</FONT><A NAME="408"></A>
+<FONT CLASS="LN">09</FONT><A NAME="409"></A>            context.getProject().log(<FONT CLASS="StringLiteral">"resolving systemId: "</FONT>
+<FONT CLASS="LN">10</FONT><A NAME="410"></A>                + systemId, Project.MSG_VERBOSE);
+<FONT CLASS="LN">11</FONT><A NAME="411"></A>
+<FONT CLASS="LN">12</FONT><A NAME="412"></A>            <FONT CLASS="If">if</FONT> (systemId.startsWith(<FONT CLASS="StringLiteral">"file:"</FONT>)) {
+<FONT CLASS="LN">13</FONT><A NAME="413"></A>                String path = fu.fromURI(systemId);
+<FONT CLASS="LN">14</FONT><A NAME="414"></A>
+<FONT CLASS="LN">15</FONT><A NAME="415"></A>                File file = <FONT CLASS="New">new</FONT> File(path);
+<FONT CLASS="LN">16</FONT><A NAME="416"></A>                <FONT CLASS="If">if</FONT> (!file.isAbsolute()) {
+<FONT CLASS="LN">17</FONT><A NAME="417"></A>                    file = fu.resolveFile(context.getBuildFileParent(), path);
+<FONT CLASS="LN">18</FONT><A NAME="418"></A>                }
+<FONT CLASS="LN">19</FONT><A NAME="419"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">20</FONT><A NAME="420"></A>                    InputSource inputSource =
+<FONT CLASS="LN">21</FONT><A NAME="421"></A>                            <FONT CLASS="New">new</FONT> InputSource(<FONT CLASS="New">new</FONT> FileInputStream(file));
+<FONT CLASS="LN">22</FONT><A NAME="422"></A>                    inputSource.setSystemId(fu.toURI(file.getAbsolutePath()));
+<FONT CLASS="LN">23</FONT><A NAME="423"></A>                    <FONT CLASS="Return">return</FONT> inputSource;
+<FONT CLASS="LN">24</FONT><A NAME="424"></A>                } <FONT CLASS="Catch">catch</FONT> (FileNotFoundException fne) {
+<FONT CLASS="LN">25</FONT><A NAME="425"></A>                    context.getProject().log(file.getAbsolutePath()
+<FONT CLASS="LN">26</FONT><A NAME="426"></A>                        + <FONT CLASS="StringLiteral">" could not be found"</FONT>, Project.MSG_WARN);
+<FONT CLASS="LN">27</FONT><A NAME="427"></A>                }
+<FONT CLASS="LN">28</FONT><A NAME="428"></A>
+<FONT CLASS="LN">29</FONT><A NAME="429"></A>            }
+<FONT CLASS="LN">30</FONT><A NAME="430"></A>            <FONT CLASS="SingleLineComment">// use default if not file or file not found
+<FONT CLASS="LN">31</FONT><A NAME="431"></A></FONT>            <FONT CLASS="Return">return</FONT> <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">32</FONT><A NAME="432"></A>        }
+<FONT CLASS="LN">33</FONT><A NAME="433"></A>
+<FONT CLASS="LN">34</FONT><A NAME="434"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">35</FONT><A NAME="435"></A>         * Handles the start of a project element. A project handler is created
+<FONT CLASS="LN">36</FONT><A NAME="436"></A>         * and initialised with the element name and attributes.
+<FONT CLASS="LN">37</FONT><A NAME="437"></A>         *
+<FONT CLASS="LN">38</FONT><A NAME="438"></A>         * @param uri The namespace uri for this element.
+<FONT CLASS="LN">39</FONT><A NAME="439"></A>         * @param tag The name of the element being started.
+<FONT CLASS="LN">40</FONT><A NAME="440"></A>         *            Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">41</FONT><A NAME="441"></A>         * @param qname The qualified name for this element.
+<FONT CLASS="LN">42</FONT><A NAME="442"></A>         * @param attrs Attributes of the element being started.
+<FONT CLASS="LN">43</FONT><A NAME="443"></A>         *              Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">44</FONT><A NAME="444"></A>         *
+<FONT CLASS="LN">45</FONT><A NAME="445"></A>         * @exception org.xml.sax.SAXParseException if the tag given is not
+<FONT CLASS="LN">46</FONT><A NAME="446"></A>         *                              &lt;code&gt;"project"&lt;/code&gt;
+<FONT CLASS="LN">47</FONT><A NAME="447"></A>         */</FONT>
+<FONT CLASS="LN">48</FONT><A NAME="448"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> startElement(String uri, String tag, String qname, Attributes attrs)
+<FONT CLASS="LN">49</FONT><A NAME="449"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">50</FONT><A NAME="450"></A>            AntHandler next
+<FONT CLASS="LN">51</FONT><A NAME="451"></A>                = currentHandler.onStartChild(uri, tag, qname, attrs, context);
+<FONT CLASS="LN">52</FONT><A NAME="452"></A>            antHandlers.push(currentHandler);
+<FONT CLASS="LN">53</FONT><A NAME="453"></A>            currentHandler = next;
+<FONT CLASS="LN">54</FONT><A NAME="454"></A>            currentHandler.onStartElement(uri, tag, qname, attrs, context);
+<FONT CLASS="LN">55</FONT><A NAME="455"></A>        }
+<FONT CLASS="LN">56</FONT><A NAME="456"></A>
+<FONT CLASS="LN">57</FONT><A NAME="457"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">58</FONT><A NAME="458"></A>         * Sets the locator in the project helper for future reference.
+<FONT CLASS="LN">59</FONT><A NAME="459"></A>         *
+<FONT CLASS="LN">60</FONT><A NAME="460"></A>         * @param locator The locator used by the parser.
+<FONT CLASS="LN">61</FONT><A NAME="461"></A>         *                Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">62</FONT><A NAME="462"></A>         */</FONT>
+<FONT CLASS="LN">63</FONT><A NAME="463"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setDocumentLocator(Locator locator) {
+<FONT CLASS="LN">64</FONT><A NAME="464"></A>            context.setLocator(locator);
+<FONT CLASS="LN">65</FONT><A NAME="465"></A>        }
+<FONT CLASS="LN">66</FONT><A NAME="466"></A>
+<FONT CLASS="LN">67</FONT><A NAME="467"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">68</FONT><A NAME="468"></A>         * Handles the end of an element. Any required clean-up is performed
+<FONT CLASS="LN">69</FONT><A NAME="469"></A>         * by the onEndElement() method and then the original handler
+<FONT CLASS="LN">70</FONT><A NAME="470"></A>         * is restored to the parser.
+<FONT CLASS="LN">71</FONT><A NAME="471"></A>         *
+<FONT CLASS="LN">72</FONT><A NAME="472"></A>         * @param uri  The namespace URI for this element.
+<FONT CLASS="LN">73</FONT><A NAME="473"></A>         * @param name The name of the element which is ending.
+<FONT CLASS="LN">74</FONT><A NAME="474"></A>         *             Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">75</FONT><A NAME="475"></A>         * @param qName The qualified name for this element.
+<FONT CLASS="LN">76</FONT><A NAME="476"></A>         *
+<FONT CLASS="LN">77</FONT><A NAME="477"></A>         * @exception SAXException in case of error (not thrown in
+<FONT CLASS="LN">78</FONT><A NAME="478"></A>         *                         this implementation)
+<FONT CLASS="LN">79</FONT><A NAME="479"></A>         *
+<FONT CLASS="LN">80</FONT><A NAME="480"></A>         */</FONT>
+<FONT CLASS="LN">81</FONT><A NAME="481"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> endElement(String uri, String name, String qName) <FONT CLASS="Throws">throws</FONT> SAXException {
+<FONT CLASS="LN">82</FONT><A NAME="482"></A>            currentHandler.onEndElement(uri, name, context);
+<FONT CLASS="LN">83</FONT><A NAME="483"></A>            AntHandler prev = (AntHandler) antHandlers.pop();
+<FONT CLASS="LN">84</FONT><A NAME="484"></A>            currentHandler = prev;
+<FONT CLASS="LN">85</FONT><A NAME="485"></A>            <FONT CLASS="If">if</FONT> (currentHandler != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">86</FONT><A NAME="486"></A>                currentHandler.onEndChild(uri, name, qName, context);
+<FONT CLASS="LN">87</FONT><A NAME="487"></A>            }
+<FONT CLASS="LN">88</FONT><A NAME="488"></A>        }
+<FONT CLASS="LN">89</FONT><A NAME="489"></A>
+<FONT CLASS="LN">90</FONT><A NAME="490"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">91</FONT><A NAME="491"></A>         * Handle text within an element, calls currentHandler.characters.
+<FONT CLASS="LN">92</FONT><A NAME="492"></A>         *
+<FONT CLASS="LN">93</FONT><A NAME="493"></A>         * @param buf  A character array of the test.
+<FONT CLASS="LN">94</FONT><A NAME="494"></A>         * @param start The start offset in the array.
+<FONT CLASS="LN">95</FONT><A NAME="495"></A>         * @param count The number of characters to read.
+<FONT CLASS="LN">96</FONT><A NAME="496"></A>         * @exception SAXParseException if an error occurs
+<FONT CLASS="LN">97</FONT><A NAME="497"></A>         */</FONT>
+<FONT CLASS="LN">98</FONT><A NAME="498"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> characters(<FONT CLASS="Char">char</FONT>[] buf, <FONT CLASS="Int">int</FONT> start, <FONT CLASS="Int">int</FONT> count)
+<FONT CLASS="LN">99</FONT><A NAME="499"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">00</FONT><A NAME="500"></A>            currentHandler.characters(buf, start, count, context);
+<FONT CLASS="LN">01</FONT><A NAME="501"></A>        }
+<FONT CLASS="LN">02</FONT><A NAME="502"></A>
+<FONT CLASS="LN">03</FONT><A NAME="503"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">04</FONT><A NAME="504"></A>         * Start a namespace prefix to uri mapping
+<FONT CLASS="LN">05</FONT><A NAME="505"></A>         *
+<FONT CLASS="LN">06</FONT><A NAME="506"></A>         * @param prefix the namespace prefix
+<FONT CLASS="LN">07</FONT><A NAME="507"></A>         * @param uri the namespace uri
+<FONT CLASS="LN">08</FONT><A NAME="508"></A>         */</FONT>
+<FONT CLASS="LN">09</FONT><A NAME="509"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> startPrefixMapping(String prefix, String uri) {
+<FONT CLASS="LN">10</FONT><A NAME="510"></A>            context.startPrefixMapping(prefix, uri);
+<FONT CLASS="LN">11</FONT><A NAME="511"></A>        }
+<FONT CLASS="LN">12</FONT><A NAME="512"></A>
+<FONT CLASS="LN">13</FONT><A NAME="513"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">14</FONT><A NAME="514"></A>         * End a namepace prefix to uri mapping
+<FONT CLASS="LN">15</FONT><A NAME="515"></A>         *
+<FONT CLASS="LN">16</FONT><A NAME="516"></A>         * @param prefix the prefix that is not mapped anymore
+<FONT CLASS="LN">17</FONT><A NAME="517"></A>         */</FONT>
+<FONT CLASS="LN">18</FONT><A NAME="518"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> endPrefixMapping(String prefix) {
+<FONT CLASS="LN">19</FONT><A NAME="519"></A>            context.endPrefixMapping(prefix);
+<FONT CLASS="LN">20</FONT><A NAME="520"></A>        }
+<FONT CLASS="LN">21</FONT><A NAME="521"></A>    }
+<FONT CLASS="LN">22</FONT><A NAME="522"></A>
+<FONT CLASS="LN">23</FONT><A NAME="523"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">24</FONT><A NAME="524"></A>     * The main handler - it handles the &amp;lt;project&amp;gt; tag.
+<FONT CLASS="LN">25</FONT><A NAME="525"></A>     *
+<FONT CLASS="LN">26</FONT><A NAME="526"></A>     * @see AntHandler
+<FONT CLASS="LN">27</FONT><A NAME="527"></A>     */</FONT>
+<FONT CLASS="LN">28</FONT><A NAME="528"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Class">class</FONT> MainHandler <FONT CLASS="Extends">extends</FONT> AntHandler {
+<FONT CLASS="LN">29</FONT><A NAME="529"></A>
+<FONT CLASS="LN">30</FONT><A NAME="530"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">31</FONT><A NAME="531"></A>         * Handle the project tag
+<FONT CLASS="LN">32</FONT><A NAME="532"></A>         *
+<FONT CLASS="LN">33</FONT><A NAME="533"></A>         * @param uri The namespace uri.
+<FONT CLASS="LN">34</FONT><A NAME="534"></A>         * @param name The element tag.
+<FONT CLASS="LN">35</FONT><A NAME="535"></A>         * @param qname The element qualified name.
+<FONT CLASS="LN">36</FONT><A NAME="536"></A>         * @param attrs The attributes of the element.
+<FONT CLASS="LN">37</FONT><A NAME="537"></A>         * @param context The current context.
+<FONT CLASS="LN">38</FONT><A NAME="538"></A>         * @return The project handler that handles subelements of project
+<FONT CLASS="LN">39</FONT><A NAME="539"></A>         * @exception SAXParseException if the qualified name is not "project".
+<FONT CLASS="LN">40</FONT><A NAME="540"></A>         */</FONT>
+<FONT CLASS="LN">41</FONT><A NAME="541"></A>        <FONT CLASS="Public">public</FONT> AntHandler onStartChild(String uri, String name, String qname,
+<FONT CLASS="LN">42</FONT><A NAME="542"></A>                                       Attributes attrs,
+<FONT CLASS="LN">43</FONT><A NAME="543"></A>                                       AntXMLContext context)
+<FONT CLASS="LN">44</FONT><A NAME="544"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">45</FONT><A NAME="545"></A>            <FONT CLASS="If">if</FONT> (name.equals(<FONT CLASS="StringLiteral">"project"</FONT>)
+<FONT CLASS="LN">46</FONT><A NAME="546"></A>                &amp;&amp; (uri.equals(<FONT CLASS="StringLiteral">""</FONT>) || uri.equals(ANT_CORE_URI))) {
+<FONT CLASS="LN">47</FONT><A NAME="547"></A>                <FONT CLASS="Return">return</FONT> ProjectHelper3.projectHandler;
+<FONT CLASS="LN">48</FONT><A NAME="548"></A>            } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">49</FONT><A NAME="549"></A><FONT CLASS="SingleLineComment">//                 if (context.importlevel &gt; 0) {
+<FONT CLASS="LN">50</FONT><A NAME="550"></A></FONT><FONT CLASS="SingleLineComment">//                     // we are in an imported file. Allow top-level &lt;target&gt;.
+<FONT CLASS="LN">51</FONT><A NAME="551"></A></FONT><FONT CLASS="SingleLineComment">//                     if (qname.equals( "target" ) )
+<FONT CLASS="LN">52</FONT><A NAME="552"></A></FONT><FONT CLASS="SingleLineComment">//                         return ProjectHelper3.targetHandler;
+<FONT CLASS="LN">53</FONT><A NAME="553"></A></FONT><FONT CLASS="SingleLineComment">//                 }
+<FONT CLASS="LN">54</FONT><A NAME="554"></A></FONT>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> SAXParseException(<FONT CLASS="StringLiteral">"Unexpected element \""</FONT> + qname
+<FONT CLASS="LN">55</FONT><A NAME="555"></A>                    + <FONT CLASS="StringLiteral">"\" "</FONT> + name, context.getLocator());
+<FONT CLASS="LN">56</FONT><A NAME="556"></A>            }
+<FONT CLASS="LN">57</FONT><A NAME="557"></A>        }
+<FONT CLASS="LN">58</FONT><A NAME="558"></A>    }
+<FONT CLASS="LN">59</FONT><A NAME="559"></A>
+<FONT CLASS="LN">60</FONT><A NAME="560"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">61</FONT><A NAME="561"></A>     * Handler for the top level "project" element.
+<FONT CLASS="LN">62</FONT><A NAME="562"></A>     */</FONT>
+<FONT CLASS="LN">63</FONT><A NAME="563"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Class">class</FONT> ProjectHandler <FONT CLASS="Extends">extends</FONT> AntHandler {
+<FONT CLASS="LN">64</FONT><A NAME="564"></A>
+<FONT CLASS="LN">65</FONT><A NAME="565"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">66</FONT><A NAME="566"></A>         * Initialisation routine called after handler creation
+<FONT CLASS="LN">67</FONT><A NAME="567"></A>         * with the element name and attributes. The attributes which
+<FONT CLASS="LN">68</FONT><A NAME="568"></A>         * this handler can deal with are: &lt;code&gt;"default"&lt;/code&gt;,
+<FONT CLASS="LN">69</FONT><A NAME="569"></A>         * &lt;code&gt;"name"&lt;/code&gt;, &lt;code&gt;"id"&lt;/code&gt; and &lt;code&gt;"basedir"&lt;/code&gt;.
+<FONT CLASS="LN">70</FONT><A NAME="570"></A>         *
+<FONT CLASS="LN">71</FONT><A NAME="571"></A>         * @param uri The namespace URI for this element.
+<FONT CLASS="LN">72</FONT><A NAME="572"></A>         * @param tag Name of the element which caused this handler
+<FONT CLASS="LN">73</FONT><A NAME="573"></A>         *            to be created. Should not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">74</FONT><A NAME="574"></A>         *            Ignored in this implementation.
+<FONT CLASS="LN">75</FONT><A NAME="575"></A>         * @param qname The qualified name for this element.
+<FONT CLASS="LN">76</FONT><A NAME="576"></A>         * @param attrs Attributes of the element which caused this
+<FONT CLASS="LN">77</FONT><A NAME="577"></A>         *              handler to be created. Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">78</FONT><A NAME="578"></A>         * @param context The current context.
+<FONT CLASS="LN">79</FONT><A NAME="579"></A>         *
+<FONT CLASS="LN">80</FONT><A NAME="580"></A>         * @exception SAXParseException if an unexpected attribute is
+<FONT CLASS="LN">81</FONT><A NAME="581"></A>         *            encountered or if the &lt;code&gt;"default"&lt;/code&gt; attribute
+<FONT CLASS="LN">82</FONT><A NAME="582"></A>         *            is missing.
+<FONT CLASS="LN">83</FONT><A NAME="583"></A>         */</FONT>
+<FONT CLASS="LN">84</FONT><A NAME="584"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> onStartElement(String uri, String tag, String qname,
+<FONT CLASS="LN">85</FONT><A NAME="585"></A>                                   Attributes attrs,
+<FONT CLASS="LN">86</FONT><A NAME="586"></A>                                   AntXMLContext context)
+<FONT CLASS="LN">87</FONT><A NAME="587"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">88</FONT><A NAME="588"></A>            String id = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">89</FONT><A NAME="589"></A>            String baseDir = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">90</FONT><A NAME="590"></A>            <FONT CLASS="Boolean">boolean</FONT> nameAttributeSet = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">91</FONT><A NAME="591"></A>
+<FONT CLASS="LN">92</FONT><A NAME="592"></A>            Project project = context.getProject();
+<FONT CLASS="LN">93</FONT><A NAME="593"></A>
+<FONT CLASS="LN">94</FONT><A NAME="594"></A>            <FONT CLASS="FormalComment">/** XXX I really don't like this - the XML processor is still
+<FONT CLASS="LN">95</FONT><A NAME="595"></A>             * too 'involved' in the processing. A better solution (IMO)
+<FONT CLASS="LN">96</FONT><A NAME="596"></A>             * would be to create UE for Project and Target too, and
+<FONT CLASS="LN">97</FONT><A NAME="597"></A>             * then process the tree and have Project/Target deal with
+<FONT CLASS="LN">98</FONT><A NAME="598"></A>             * its attributes ( similar with Description ).
+<FONT CLASS="LN">99</FONT><A NAME="599"></A>             *
+<FONT CLASS="LN">00</FONT><A NAME="600"></A>             * If we eventually switch to ( or add support for ) DOM,
+<FONT CLASS="LN">01</FONT><A NAME="601"></A>             * things will work smoothly - UE can be avoided almost completely
+<FONT CLASS="LN">02</FONT><A NAME="602"></A>             * ( it could still be created on demand, for backward compatibility )
+<FONT CLASS="LN">03</FONT><A NAME="603"></A>             */</FONT>
+<FONT CLASS="LN">04</FONT><A NAME="604"></A>
+<FONT CLASS="LN">05</FONT><A NAME="605"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; attrs.getLength(); i++) {
+<FONT CLASS="LN">06</FONT><A NAME="606"></A>                String attrUri = attrs.getURI(i);
+<FONT CLASS="LN">07</FONT><A NAME="607"></A>                <FONT CLASS="If">if</FONT> (attrUri != <FONT CLASS="Null">null</FONT>
+<FONT CLASS="LN">08</FONT><A NAME="608"></A>                    &amp;&amp; !attrUri.equals(<FONT CLASS="StringLiteral">""</FONT>)
+<FONT CLASS="LN">09</FONT><A NAME="609"></A>                    &amp;&amp; !attrUri.equals(uri)) {
+<FONT CLASS="LN">10</FONT><A NAME="610"></A>                    <FONT CLASS="Continue">continue</FONT>; <FONT CLASS="SingleLineComment">// Ignore attributes from unknown uris
+<FONT CLASS="LN">11</FONT><A NAME="611"></A></FONT>                }
+<FONT CLASS="LN">12</FONT><A NAME="612"></A>                String key = attrs.getLocalName(i);
+<FONT CLASS="LN">13</FONT><A NAME="613"></A>                String value = attrs.getValue(i);
+<FONT CLASS="LN">14</FONT><A NAME="614"></A>
+<FONT CLASS="LN">15</FONT><A NAME="615"></A>                <FONT CLASS="If">if</FONT> (key.equals(<FONT CLASS="StringLiteral">"default"</FONT>)) {
+<FONT CLASS="LN">16</FONT><A NAME="616"></A>                    <FONT CLASS="If">if</FONT> (value != <FONT CLASS="Null">null</FONT> &amp;&amp; !value.equals(<FONT CLASS="StringLiteral">""</FONT>)) {
+<FONT CLASS="LN">17</FONT><A NAME="617"></A>                        <FONT CLASS="If">if</FONT> (!context.isIgnoringProjectTag()) {
+<FONT CLASS="LN">18</FONT><A NAME="618"></A>                            project.setDefault(value);
+<FONT CLASS="LN">19</FONT><A NAME="619"></A>                        }
+<FONT CLASS="LN">20</FONT><A NAME="620"></A>                    }
+<FONT CLASS="LN">21</FONT><A NAME="621"></A>                } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (key.equals(<FONT CLASS="StringLiteral">"name"</FONT>)) {
+<FONT CLASS="LN">22</FONT><A NAME="622"></A>                    <FONT CLASS="If">if</FONT> (value != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">23</FONT><A NAME="623"></A>                        context.setCurrentProjectName(value);
+<FONT CLASS="LN">24</FONT><A NAME="624"></A>                        nameAttributeSet = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">25</FONT><A NAME="625"></A>                        <FONT CLASS="If">if</FONT> (!context.isIgnoringProjectTag()) {
+<FONT CLASS="LN">26</FONT><A NAME="626"></A>                            project.setName(value);
+<FONT CLASS="LN">27</FONT><A NAME="627"></A>                            project.addReference(value, project);
+<FONT CLASS="LN">28</FONT><A NAME="628"></A>                        }
+<FONT CLASS="LN">29</FONT><A NAME="629"></A>                    }
+<FONT CLASS="LN">30</FONT><A NAME="630"></A>                } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (key.equals(<FONT CLASS="StringLiteral">"id"</FONT>)) {
+<FONT CLASS="LN">31</FONT><A NAME="631"></A>                    <FONT CLASS="If">if</FONT> (value != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">32</FONT><A NAME="632"></A>                        <FONT CLASS="SingleLineComment">// What's the difference between id and name ?
+<FONT CLASS="LN">33</FONT><A NAME="633"></A></FONT>                        <FONT CLASS="If">if</FONT> (!context.isIgnoringProjectTag()) {
+<FONT CLASS="LN">34</FONT><A NAME="634"></A>                            project.addReference(value, project);
+<FONT CLASS="LN">35</FONT><A NAME="635"></A>                        }
+<FONT CLASS="LN">36</FONT><A NAME="636"></A>                    }
+<FONT CLASS="LN">37</FONT><A NAME="637"></A>                } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (key.equals(<FONT CLASS="StringLiteral">"basedir"</FONT>)) {
+<FONT CLASS="LN">38</FONT><A NAME="638"></A>                    <FONT CLASS="If">if</FONT> (!context.isIgnoringProjectTag()) {
+<FONT CLASS="LN">39</FONT><A NAME="639"></A>                        baseDir = value;
+<FONT CLASS="LN">40</FONT><A NAME="640"></A>                    }
+<FONT CLASS="LN">41</FONT><A NAME="641"></A>                } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">42</FONT><A NAME="642"></A>                    <FONT CLASS="SingleLineComment">// XXX ignore attributes in a different NS ( maybe store them ? )
+<FONT CLASS="LN">43</FONT><A NAME="643"></A></FONT>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> SAXParseException(<FONT CLASS="StringLiteral">"Unexpected attribute \""</FONT>
+<FONT CLASS="LN">44</FONT><A NAME="644"></A>                        + attrs.getQName(i) + <FONT CLASS="StringLiteral">"\""</FONT>, context.getLocator());
+<FONT CLASS="LN">45</FONT><A NAME="645"></A>                }
+<FONT CLASS="LN">46</FONT><A NAME="646"></A>            }
+<FONT CLASS="LN">47</FONT><A NAME="647"></A>
+<FONT CLASS="LN">48</FONT><A NAME="648"></A>            <FONT CLASS="SingleLineComment">// XXX Move to Project ( so it is shared by all helpers )
+<FONT CLASS="LN">49</FONT><A NAME="649"></A></FONT>            String antFileProp = <FONT CLASS="StringLiteral">"ant.file."</FONT> + context.getCurrentProjectName();
+<FONT CLASS="LN">50</FONT><A NAME="650"></A>            String dup = project.getProperty(antFileProp);
+<FONT CLASS="LN">51</FONT><A NAME="651"></A>            <FONT CLASS="If">if</FONT> (dup != <FONT CLASS="Null">null</FONT> &amp;&amp; nameAttributeSet) {
+<FONT CLASS="LN">52</FONT><A NAME="652"></A>                File dupFile = <FONT CLASS="New">new</FONT> File(dup);
+<FONT CLASS="LN">53</FONT><A NAME="653"></A>                <FONT CLASS="If">if</FONT> (context.isIgnoringProjectTag()
+<FONT CLASS="LN">54</FONT><A NAME="654"></A>                    &amp;&amp; !dupFile.equals(context.getBuildFile())) {
+<FONT CLASS="LN">55</FONT><A NAME="655"></A>                    project.log(<FONT CLASS="StringLiteral">"Duplicated project name in import. Project "</FONT>
+<FONT CLASS="LN">56</FONT><A NAME="656"></A>                        + context.getCurrentProjectName() + <FONT CLASS="StringLiteral">" defined first in "</FONT>
+<FONT CLASS="LN">57</FONT><A NAME="657"></A>                        + dup + <FONT CLASS="StringLiteral">" and again in "</FONT> + context.getBuildFile(),
+<FONT CLASS="LN">58</FONT><A NAME="658"></A>                        Project.MSG_WARN);
+<FONT CLASS="LN">59</FONT><A NAME="659"></A>                }
+<FONT CLASS="LN">60</FONT><A NAME="660"></A>            }
+<FONT CLASS="LN">61</FONT><A NAME="661"></A>
+<FONT CLASS="LN">62</FONT><A NAME="662"></A>            <FONT CLASS="If">if</FONT> (context.getBuildFile() != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">63</FONT><A NAME="663"></A>                project.setUserProperty(<FONT CLASS="StringLiteral">"ant.file."</FONT>
+<FONT CLASS="LN">64</FONT><A NAME="664"></A>                    + context.getCurrentProjectName(),
+<FONT CLASS="LN">65</FONT><A NAME="665"></A>                    context.getBuildFile().toString());
+<FONT CLASS="LN">66</FONT><A NAME="666"></A>            }
+<FONT CLASS="LN">67</FONT><A NAME="667"></A>
+<FONT CLASS="LN">68</FONT><A NAME="668"></A>            <FONT CLASS="If">if</FONT> (context.isIgnoringProjectTag()) {
+<FONT CLASS="LN">69</FONT><A NAME="669"></A>                <FONT CLASS="SingleLineComment">// no further processing
+<FONT CLASS="LN">70</FONT><A NAME="670"></A></FONT>                <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">71</FONT><A NAME="671"></A>            }
+<FONT CLASS="LN">72</FONT><A NAME="672"></A>            <FONT CLASS="SingleLineComment">// set explicitly before starting ?
+<FONT CLASS="LN">73</FONT><A NAME="673"></A></FONT>            <FONT CLASS="If">if</FONT> (project.getProperty(<FONT CLASS="StringLiteral">"basedir"</FONT>) != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">74</FONT><A NAME="674"></A>                project.setBasedir(project.getProperty(<FONT CLASS="StringLiteral">"basedir"</FONT>));
+<FONT CLASS="LN">75</FONT><A NAME="675"></A>            } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">76</FONT><A NAME="676"></A>                <FONT CLASS="SingleLineComment">// Default for baseDir is the location of the build file.
+<FONT CLASS="LN">77</FONT><A NAME="677"></A></FONT>                <FONT CLASS="If">if</FONT> (baseDir == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">78</FONT><A NAME="678"></A>                    project.setBasedir(context.getBuildFileParent().getAbsolutePath());
+<FONT CLASS="LN">79</FONT><A NAME="679"></A>                } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">80</FONT><A NAME="680"></A>                    <FONT CLASS="SingleLineComment">// check whether the user has specified an absolute path
+<FONT CLASS="LN">81</FONT><A NAME="681"></A></FONT>                    <FONT CLASS="If">if</FONT> ((<FONT CLASS="New">new</FONT> File(baseDir)).isAbsolute()) {
+<FONT CLASS="LN">82</FONT><A NAME="682"></A>                        project.setBasedir(baseDir);
+<FONT CLASS="LN">83</FONT><A NAME="683"></A>                    } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">84</FONT><A NAME="684"></A>                        project.setBaseDir(fu.resolveFile(
+<FONT CLASS="LN">85</FONT><A NAME="685"></A>                                               context.getBuildFileParent(), baseDir));
+<FONT CLASS="LN">86</FONT><A NAME="686"></A>                    }
+<FONT CLASS="LN">87</FONT><A NAME="687"></A>                }
+<FONT CLASS="LN">88</FONT><A NAME="688"></A>            }
+<FONT CLASS="LN">89</FONT><A NAME="689"></A>
+<FONT CLASS="LN">90</FONT><A NAME="690"></A>            project.addTarget(<FONT CLASS="StringLiteral">""</FONT>, context.getImplicitTarget());
+<FONT CLASS="LN">91</FONT><A NAME="691"></A>            context.setCurrentTarget(context.getImplicitTarget());
+<FONT CLASS="LN">92</FONT><A NAME="692"></A>        }
+<FONT CLASS="LN">93</FONT><A NAME="693"></A>
+<FONT CLASS="LN">94</FONT><A NAME="694"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">95</FONT><A NAME="695"></A>         * Handles the start of a top-level element within the project. An
+<FONT CLASS="LN">96</FONT><A NAME="696"></A>         * appropriate handler is created and initialised with the details
+<FONT CLASS="LN">97</FONT><A NAME="697"></A>         * of the element.
+<FONT CLASS="LN">98</FONT><A NAME="698"></A>         *
+<FONT CLASS="LN">99</FONT><A NAME="699"></A>         * @param uri The namespace URI for this element.
+<FONT CLASS="LN">00</FONT><A NAME="700"></A>         * @param name The name of the element being started.
+<FONT CLASS="LN">01</FONT><A NAME="701"></A>         *            Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">02</FONT><A NAME="702"></A>         * @param qname The qualified name for this element.
+<FONT CLASS="LN">03</FONT><A NAME="703"></A>         * @param attrs Attributes of the element being started.
+<FONT CLASS="LN">04</FONT><A NAME="704"></A>         *              Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">05</FONT><A NAME="705"></A>         * @param context The context for this element.
+<FONT CLASS="LN">06</FONT><A NAME="706"></A>         * @return a target or an element handler.
+<FONT CLASS="LN">07</FONT><A NAME="707"></A>         *
+<FONT CLASS="LN">08</FONT><A NAME="708"></A>         * @exception org.xml.sax.SAXParseException if the tag given is not
+<FONT CLASS="LN">09</FONT><A NAME="709"></A>         *            &lt;code&gt;"taskdef"&lt;/code&gt;, &lt;code&gt;"typedef"&lt;/code&gt;,
+<FONT CLASS="LN">10</FONT><A NAME="710"></A>         *            &lt;code&gt;"property"&lt;/code&gt;, &lt;code&gt;"target"&lt;/code&gt;
+<FONT CLASS="LN">11</FONT><A NAME="711"></A>         *            or a data type definition
+<FONT CLASS="LN">12</FONT><A NAME="712"></A>         */</FONT>
+<FONT CLASS="LN">13</FONT><A NAME="713"></A>        <FONT CLASS="Public">public</FONT> AntHandler onStartChild(String uri, String name, String qname,
+<FONT CLASS="LN">14</FONT><A NAME="714"></A>                                       Attributes attrs,
+<FONT CLASS="LN">15</FONT><A NAME="715"></A>                                       AntXMLContext context)
+<FONT CLASS="LN">16</FONT><A NAME="716"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">17</FONT><A NAME="717"></A>            <FONT CLASS="If">if</FONT> (name.equals(<FONT CLASS="StringLiteral">"target"</FONT>)
+<FONT CLASS="LN">18</FONT><A NAME="718"></A>                &amp;&amp; (uri.equals(<FONT CLASS="StringLiteral">""</FONT>) || uri.equals(ANT_CORE_URI))) {
+<FONT CLASS="LN">19</FONT><A NAME="719"></A>                <FONT CLASS="Return">return</FONT> ProjectHelper3.targetHandler;
+<FONT CLASS="LN">20</FONT><A NAME="720"></A>            } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">21</FONT><A NAME="721"></A>                <FONT CLASS="Return">return</FONT> ProjectHelper3.elementHandler;
+<FONT CLASS="LN">22</FONT><A NAME="722"></A>            }
+<FONT CLASS="LN">23</FONT><A NAME="723"></A>        }
+<FONT CLASS="LN">24</FONT><A NAME="724"></A>
+<FONT CLASS="LN">25</FONT><A NAME="725"></A>    }
+<FONT CLASS="LN">26</FONT><A NAME="726"></A>
+<FONT CLASS="LN">27</FONT><A NAME="727"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">28</FONT><A NAME="728"></A>     * Handler for "target" elements.
+<FONT CLASS="LN">29</FONT><A NAME="729"></A>     */</FONT>
+<FONT CLASS="LN">30</FONT><A NAME="730"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Class">class</FONT> TargetHandler <FONT CLASS="Extends">extends</FONT> AntHandler {
+<FONT CLASS="LN">31</FONT><A NAME="731"></A>
+<FONT CLASS="LN">32</FONT><A NAME="732"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">33</FONT><A NAME="733"></A>         * Initialisation routine called after handler creation
+<FONT CLASS="LN">34</FONT><A NAME="734"></A>         * with the element name and attributes. The attributes which
+<FONT CLASS="LN">35</FONT><A NAME="735"></A>         * this handler can deal with are: &lt;code&gt;"name"&lt;/code&gt;,
+<FONT CLASS="LN">36</FONT><A NAME="736"></A>         * &lt;code&gt;"depends"&lt;/code&gt;, &lt;code&gt;"if"&lt;/code&gt;,
+<FONT CLASS="LN">37</FONT><A NAME="737"></A>         * &lt;code&gt;"unless"&lt;/code&gt;, &lt;code&gt;"id"&lt;/code&gt; and
+<FONT CLASS="LN">38</FONT><A NAME="738"></A>         * &lt;code&gt;"description"&lt;/code&gt;.
+<FONT CLASS="LN">39</FONT><A NAME="739"></A>         *
+<FONT CLASS="LN">40</FONT><A NAME="740"></A>         * @param uri The namespace URI for this element.
+<FONT CLASS="LN">41</FONT><A NAME="741"></A>         * @param tag Name of the element which caused this handler
+<FONT CLASS="LN">42</FONT><A NAME="742"></A>         *            to be created. Should not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">43</FONT><A NAME="743"></A>         *            Ignored in this implementation.
+<FONT CLASS="LN">44</FONT><A NAME="744"></A>         * @param qname The qualified name for this element.
+<FONT CLASS="LN">45</FONT><A NAME="745"></A>         * @param attrs Attributes of the element which caused this
+<FONT CLASS="LN">46</FONT><A NAME="746"></A>         *              handler to be created. Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">47</FONT><A NAME="747"></A>         * @param context The current context.
+<FONT CLASS="LN">48</FONT><A NAME="748"></A>         *
+<FONT CLASS="LN">49</FONT><A NAME="749"></A>         * @exception SAXParseException if an unexpected attribute is encountered
+<FONT CLASS="LN">50</FONT><A NAME="750"></A>         *            or if the &lt;code&gt;"name"&lt;/code&gt; attribute is missing.
+<FONT CLASS="LN">51</FONT><A NAME="751"></A>         */</FONT>
+<FONT CLASS="LN">52</FONT><A NAME="752"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> onStartElement(String uri, String tag, String qname,
+<FONT CLASS="LN">53</FONT><A NAME="753"></A>                                   Attributes attrs,
+<FONT CLASS="LN">54</FONT><A NAME="754"></A>                                   AntXMLContext context)
+<FONT CLASS="LN">55</FONT><A NAME="755"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">56</FONT><A NAME="756"></A>            String name = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">57</FONT><A NAME="757"></A>            String depends = <FONT CLASS="StringLiteral">""</FONT>;
+<FONT CLASS="LN">58</FONT><A NAME="758"></A>
+<FONT CLASS="LN">59</FONT><A NAME="759"></A>            Project project = context.getProject();
+<FONT CLASS="LN">60</FONT><A NAME="760"></A>            Target target = <FONT CLASS="New">new</FONT> Target();
+<FONT CLASS="LN">61</FONT><A NAME="761"></A>            target.setProject(project);
+<FONT CLASS="LN">62</FONT><A NAME="762"></A>            context.addTarget(target);
+<FONT CLASS="LN">63</FONT><A NAME="763"></A>
+<FONT CLASS="LN">64</FONT><A NAME="764"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; attrs.getLength(); i++) {
+<FONT CLASS="LN">65</FONT><A NAME="765"></A>                String attrUri = attrs.getURI(i);
+<FONT CLASS="LN">66</FONT><A NAME="766"></A>                <FONT CLASS="If">if</FONT> (attrUri != <FONT CLASS="Null">null</FONT>
+<FONT CLASS="LN">67</FONT><A NAME="767"></A>                    &amp;&amp; !attrUri.equals(<FONT CLASS="StringLiteral">""</FONT>)
+<FONT CLASS="LN">68</FONT><A NAME="768"></A>                    &amp;&amp; !attrUri.equals(uri)) {
+<FONT CLASS="LN">69</FONT><A NAME="769"></A>                    <FONT CLASS="Continue">continue</FONT>; <FONT CLASS="SingleLineComment">// Ignore attributes from unknown uris
+<FONT CLASS="LN">70</FONT><A NAME="770"></A></FONT>                }
+<FONT CLASS="LN">71</FONT><A NAME="771"></A>                String key = attrs.getLocalName(i);
+<FONT CLASS="LN">72</FONT><A NAME="772"></A>                String value = attrs.getValue(i);
+<FONT CLASS="LN">73</FONT><A NAME="773"></A>
+<FONT CLASS="LN">74</FONT><A NAME="774"></A>                <FONT CLASS="If">if</FONT> (key.equals(<FONT CLASS="StringLiteral">"name"</FONT>)) {
+<FONT CLASS="LN">75</FONT><A NAME="775"></A>                    name = value;
+<FONT CLASS="LN">76</FONT><A NAME="776"></A>                    <FONT CLASS="If">if</FONT> (<FONT CLASS="StringLiteral">""</FONT>.equals(name)) {
+<FONT CLASS="LN">77</FONT><A NAME="777"></A>                        <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(<FONT CLASS="StringLiteral">"name attribute must "</FONT>
+<FONT CLASS="LN">78</FONT><A NAME="778"></A>                            + <FONT CLASS="StringLiteral">"not be empty"</FONT>);
+<FONT CLASS="LN">79</FONT><A NAME="779"></A>                    }
+<FONT CLASS="LN">80</FONT><A NAME="780"></A>                } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (key.equals(<FONT CLASS="StringLiteral">"depends"</FONT>)) {
+<FONT CLASS="LN">81</FONT><A NAME="781"></A>                    depends = value;
+<FONT CLASS="LN">82</FONT><A NAME="782"></A>                } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (key.equals(<FONT CLASS="StringLiteral">"if"</FONT>)) {
+<FONT CLASS="LN">83</FONT><A NAME="783"></A>                    target.setIf(value);
+<FONT CLASS="LN">84</FONT><A NAME="784"></A>                } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (key.equals(<FONT CLASS="StringLiteral">"unless"</FONT>)) {
+<FONT CLASS="LN">85</FONT><A NAME="785"></A>                    target.setUnless(value);
+<FONT CLASS="LN">86</FONT><A NAME="786"></A>                } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (key.equals(<FONT CLASS="StringLiteral">"id"</FONT>)) {
+<FONT CLASS="LN">87</FONT><A NAME="787"></A>                    <FONT CLASS="If">if</FONT> (value != <FONT CLASS="Null">null</FONT> &amp;&amp; !value.equals(<FONT CLASS="StringLiteral">""</FONT>)) {
+<FONT CLASS="LN">88</FONT><A NAME="788"></A>                        context.getProject().addReference(value, target);
+<FONT CLASS="LN">89</FONT><A NAME="789"></A>                    }
+<FONT CLASS="LN">90</FONT><A NAME="790"></A>                } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (key.equals(<FONT CLASS="StringLiteral">"description"</FONT>)) {
+<FONT CLASS="LN">91</FONT><A NAME="791"></A>                    target.setDescription(value);
+<FONT CLASS="LN">92</FONT><A NAME="792"></A>                } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">93</FONT><A NAME="793"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> SAXParseException(<FONT CLASS="StringLiteral">"Unexpected attribute \""</FONT>
+<FONT CLASS="LN">94</FONT><A NAME="794"></A>                        + key + <FONT CLASS="StringLiteral">"\""</FONT>, context.getLocator());
+<FONT CLASS="LN">95</FONT><A NAME="795"></A>                }
+<FONT CLASS="LN">96</FONT><A NAME="796"></A>            }
+<FONT CLASS="LN">97</FONT><A NAME="797"></A>
+<FONT CLASS="LN">98</FONT><A NAME="798"></A>            <FONT CLASS="If">if</FONT> (name == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">99</FONT><A NAME="799"></A>                <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> SAXParseException(<FONT CLASS="StringLiteral">"target element appears without "</FONT>
+<FONT CLASS="LN">00</FONT><A NAME="800"></A>                    + <FONT CLASS="StringLiteral">"a name attribute"</FONT>, context.getLocator());
+<FONT CLASS="LN">01</FONT><A NAME="801"></A>            }
+<FONT CLASS="LN">02</FONT><A NAME="802"></A>
+<FONT CLASS="LN">03</FONT><A NAME="803"></A>            Hashtable currentTargets = project.getTargets();
+<FONT CLASS="LN">04</FONT><A NAME="804"></A>
+<FONT CLASS="LN">05</FONT><A NAME="805"></A>            <FONT CLASS="SingleLineComment">// If the name has already been defined ( import for example )
+<FONT CLASS="LN">06</FONT><A NAME="806"></A></FONT>            <FONT CLASS="If">if</FONT> (currentTargets.containsKey(name)) {
+<FONT CLASS="LN">07</FONT><A NAME="807"></A>                <FONT CLASS="If">if</FONT> (!context.isIgnoringProjectTag()) {
+<FONT CLASS="LN">08</FONT><A NAME="808"></A>                    <FONT CLASS="SingleLineComment">// not in a import'ed file
+<FONT CLASS="LN">09</FONT><A NAME="809"></A></FONT>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(
+<FONT CLASS="LN">10</FONT><A NAME="810"></A>                        <FONT CLASS="StringLiteral">"Duplicate target '"</FONT> + name + <FONT CLASS="StringLiteral">"'"</FONT>,
+<FONT CLASS="LN">11</FONT><A NAME="811"></A>                        <FONT CLASS="New">new</FONT> Location(context.getLocator().getSystemId(),
+<FONT CLASS="LN">12</FONT><A NAME="812"></A>                                     context.getLocator().getLineNumber(),
+<FONT CLASS="LN">13</FONT><A NAME="813"></A>                                     context.getLocator().getColumnNumber()));
+<FONT CLASS="LN">14</FONT><A NAME="814"></A>                }
+<FONT CLASS="LN">15</FONT><A NAME="815"></A>                <FONT CLASS="SingleLineComment">// Alter the name.
+<FONT CLASS="LN">16</FONT><A NAME="816"></A></FONT>                <FONT CLASS="If">if</FONT> (context.getCurrentProjectName() != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">17</FONT><A NAME="817"></A>                    String newName = context.getCurrentProjectName()
+<FONT CLASS="LN">18</FONT><A NAME="818"></A>                        + <FONT CLASS="StringLiteral">"."</FONT> + name;
+<FONT CLASS="LN">19</FONT><A NAME="819"></A>                    project.log(<FONT CLASS="StringLiteral">"Already defined in main or a previous import, "</FONT>
+<FONT CLASS="LN">20</FONT><A NAME="820"></A>                        + <FONT CLASS="StringLiteral">"define "</FONT> + name + <FONT CLASS="StringLiteral">" as "</FONT> + newName,
+<FONT CLASS="LN">21</FONT><A NAME="821"></A>                                Project.MSG_VERBOSE);
+<FONT CLASS="LN">22</FONT><A NAME="822"></A>                    name = newName;
+<FONT CLASS="LN">23</FONT><A NAME="823"></A>                } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">24</FONT><A NAME="824"></A>                    project.log(<FONT CLASS="StringLiteral">"Already defined in main or a previous import, "</FONT>
+<FONT CLASS="LN">25</FONT><A NAME="825"></A>                        + <FONT CLASS="StringLiteral">"ignore "</FONT> + name, Project.MSG_VERBOSE);
+<FONT CLASS="LN">26</FONT><A NAME="826"></A>                    name = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">27</FONT><A NAME="827"></A>                }
+<FONT CLASS="LN">28</FONT><A NAME="828"></A>            }
+<FONT CLASS="LN">29</FONT><A NAME="829"></A>
+<FONT CLASS="LN">30</FONT><A NAME="830"></A>            <FONT CLASS="If">if</FONT> (name != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">31</FONT><A NAME="831"></A>                target.setName(name);
+<FONT CLASS="LN">32</FONT><A NAME="832"></A>                project.addOrReplaceTarget(name, target);
+<FONT CLASS="LN">33</FONT><A NAME="833"></A>            }
+<FONT CLASS="LN">34</FONT><A NAME="834"></A>
+<FONT CLASS="LN">35</FONT><A NAME="835"></A>            <FONT CLASS="SingleLineComment">// take care of dependencies
+<FONT CLASS="LN">36</FONT><A NAME="836"></A></FONT>            <FONT CLASS="If">if</FONT> (depends.length() &gt; <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">37</FONT><A NAME="837"></A>                target.setDepends(depends);
+<FONT CLASS="LN">38</FONT><A NAME="838"></A>            }
+<FONT CLASS="LN">39</FONT><A NAME="839"></A>        }
+<FONT CLASS="LN">40</FONT><A NAME="840"></A>
+<FONT CLASS="LN">41</FONT><A NAME="841"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">42</FONT><A NAME="842"></A>         * Handles the start of an element within a target.
+<FONT CLASS="LN">43</FONT><A NAME="843"></A>         *
+<FONT CLASS="LN">44</FONT><A NAME="844"></A>         * @param uri The namespace URI for this element.
+<FONT CLASS="LN">45</FONT><A NAME="845"></A>         * @param name The name of the element being started.
+<FONT CLASS="LN">46</FONT><A NAME="846"></A>         *            Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">47</FONT><A NAME="847"></A>         * @param qname The qualified name for this element.
+<FONT CLASS="LN">48</FONT><A NAME="848"></A>         * @param attrs Attributes of the element being started.
+<FONT CLASS="LN">49</FONT><A NAME="849"></A>         *              Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">50</FONT><A NAME="850"></A>         * @param context The current context.
+<FONT CLASS="LN">51</FONT><A NAME="851"></A>         * @return an element handler.
+<FONT CLASS="LN">52</FONT><A NAME="852"></A>         *
+<FONT CLASS="LN">53</FONT><A NAME="853"></A>         * @exception SAXParseException if an error occurs when initialising
+<FONT CLASS="LN">54</FONT><A NAME="854"></A>         *                              the appropriate child handler
+<FONT CLASS="LN">55</FONT><A NAME="855"></A>         */</FONT>
+<FONT CLASS="LN">56</FONT><A NAME="856"></A>        <FONT CLASS="Public">public</FONT> AntHandler onStartChild(String uri, String name, String qname,
+<FONT CLASS="LN">57</FONT><A NAME="857"></A>                                       Attributes attrs,
+<FONT CLASS="LN">58</FONT><A NAME="858"></A>                                       AntXMLContext context)
+<FONT CLASS="LN">59</FONT><A NAME="859"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">60</FONT><A NAME="860"></A>            <FONT CLASS="Return">return</FONT> ProjectHelper3.elementHandler;
+<FONT CLASS="LN">61</FONT><A NAME="861"></A>        }
+<FONT CLASS="LN">62</FONT><A NAME="862"></A>
+<FONT CLASS="LN">63</FONT><A NAME="863"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">64</FONT><A NAME="864"></A>         * Handle the end of the project, sets the current target of the
+<FONT CLASS="LN">65</FONT><A NAME="865"></A>         * context to be the implicit target.
+<FONT CLASS="LN">66</FONT><A NAME="866"></A>         *
+<FONT CLASS="LN">67</FONT><A NAME="867"></A>         * @param uri The namespace URI of the element.
+<FONT CLASS="LN">68</FONT><A NAME="868"></A>         * @param tag The name of the element.
+<FONT CLASS="LN">69</FONT><A NAME="869"></A>         * @param context The current context.
+<FONT CLASS="LN">70</FONT><A NAME="870"></A>         */</FONT>
+<FONT CLASS="LN">71</FONT><A NAME="871"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> onEndElement(String uri, String tag, AntXMLContext context) {
+<FONT CLASS="LN">72</FONT><A NAME="872"></A>            context.setCurrentTarget(context.getImplicitTarget());
+<FONT CLASS="LN">73</FONT><A NAME="873"></A>        }
+<FONT CLASS="LN">74</FONT><A NAME="874"></A>    }
+<FONT CLASS="LN">75</FONT><A NAME="875"></A>
+<FONT CLASS="LN">76</FONT><A NAME="876"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">77</FONT><A NAME="877"></A>     * Handler for all project elements ( tasks, data types )
+<FONT CLASS="LN">78</FONT><A NAME="878"></A>     */</FONT>
+<FONT CLASS="LN">79</FONT><A NAME="879"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Class">class</FONT> ElementHandler <FONT CLASS="Extends">extends</FONT> AntHandler {
+<FONT CLASS="LN">80</FONT><A NAME="880"></A>
+<FONT CLASS="LN">81</FONT><A NAME="881"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">82</FONT><A NAME="882"></A>         * Constructor.
+<FONT CLASS="LN">83</FONT><A NAME="883"></A>         */</FONT>
+<FONT CLASS="LN">84</FONT><A NAME="884"></A>        <FONT CLASS="Public">public</FONT> ElementHandler() {
+<FONT CLASS="LN">85</FONT><A NAME="885"></A>        }
+<FONT CLASS="LN">86</FONT><A NAME="886"></A>
+<FONT CLASS="LN">87</FONT><A NAME="887"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">88</FONT><A NAME="888"></A>         * Initialisation routine called after handler creation
+<FONT CLASS="LN">89</FONT><A NAME="889"></A>         * with the element name and attributes. This configures
+<FONT CLASS="LN">90</FONT><A NAME="890"></A>         * the element with its attributes and sets it up with
+<FONT CLASS="LN">91</FONT><A NAME="891"></A>         * its parent container (if any). Nested elements are then
+<FONT CLASS="LN">92</FONT><A NAME="892"></A>         * added later as the parser encounters them.
+<FONT CLASS="LN">93</FONT><A NAME="893"></A>         *
+<FONT CLASS="LN">94</FONT><A NAME="894"></A>         * @param uri The namespace URI for this element.
+<FONT CLASS="LN">95</FONT><A NAME="895"></A>         * @param tag Name of the element which caused this handler
+<FONT CLASS="LN">96</FONT><A NAME="896"></A>         *            to be created. Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">97</FONT><A NAME="897"></A>         * @param qname The qualified name for this element.
+<FONT CLASS="LN">98</FONT><A NAME="898"></A>         * @param attrs Attributes of the element which caused this
+<FONT CLASS="LN">99</FONT><A NAME="899"></A>         *              handler to be created. Must not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">00</FONT><A NAME="900"></A>         * @param context The current context.
+<FONT CLASS="LN">01</FONT><A NAME="901"></A>         *
+<FONT CLASS="LN">02</FONT><A NAME="902"></A>         * @exception SAXParseException in case of error (not thrown in
+<FONT CLASS="LN">03</FONT><A NAME="903"></A>         *                              this implementation)
+<FONT CLASS="LN">04</FONT><A NAME="904"></A>         */</FONT>
+<FONT CLASS="LN">05</FONT><A NAME="905"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> onStartElement(String uri, String tag, String qname,
+<FONT CLASS="LN">06</FONT><A NAME="906"></A>                                   Attributes attrs,
+<FONT CLASS="LN">07</FONT><A NAME="907"></A>                                   AntXMLContext context)
+<FONT CLASS="LN">08</FONT><A NAME="908"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">09</FONT><A NAME="909"></A>            RuntimeConfigurable parentWrapper = context.currentWrapper();
+<FONT CLASS="LN">10</FONT><A NAME="910"></A>            Object parent = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">11</FONT><A NAME="911"></A>
+<FONT CLASS="LN">12</FONT><A NAME="912"></A>            <FONT CLASS="If">if</FONT> (parentWrapper != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">13</FONT><A NAME="913"></A>                parent = parentWrapper.getProxy();
+<FONT CLASS="LN">14</FONT><A NAME="914"></A>            }
+<FONT CLASS="LN">15</FONT><A NAME="915"></A>
+<FONT CLASS="LN">16</FONT><A NAME="916"></A>            <FONT CLASS="MultiLineComment">/* UnknownElement is used for tasks and data types - with
+<FONT CLASS="LN">17</FONT><A NAME="917"></A>               delayed eval */</FONT>
+<FONT CLASS="LN">18</FONT><A NAME="918"></A>            UnknownElement task = <FONT CLASS="New">new</FONT> UnknownElement(tag);
+<FONT CLASS="LN">19</FONT><A NAME="919"></A>            task.setProject(context.getProject());
+<FONT CLASS="LN">20</FONT><A NAME="920"></A>            task.setNamespace(uri);
+<FONT CLASS="LN">21</FONT><A NAME="921"></A>            task.setQName(qname);
+<FONT CLASS="LN">22</FONT><A NAME="922"></A>            task.setTaskType(
+<FONT CLASS="LN">23</FONT><A NAME="923"></A>                ProjectHelper.genComponentName(task.getNamespace(), tag));
+<FONT CLASS="LN">24</FONT><A NAME="924"></A>            task.setTaskName(qname);
+<FONT CLASS="LN">25</FONT><A NAME="925"></A>
+<FONT CLASS="LN">26</FONT><A NAME="926"></A>            Location location = <FONT CLASS="New">new</FONT> Location(context.getLocator().getSystemId(),
+<FONT CLASS="LN">27</FONT><A NAME="927"></A>                    context.getLocator().getLineNumber(),
+<FONT CLASS="LN">28</FONT><A NAME="928"></A>                    context.getLocator().getColumnNumber());
+<FONT CLASS="LN">29</FONT><A NAME="929"></A>            task.setLocation(location);
+<FONT CLASS="LN">30</FONT><A NAME="930"></A>            task.setOwningTarget(context.getCurrentTarget());
+<FONT CLASS="LN">31</FONT><A NAME="931"></A>
+<FONT CLASS="LN">32</FONT><A NAME="932"></A>            context.configureId(task, attrs);
+<FONT CLASS="LN">33</FONT><A NAME="933"></A>
+<FONT CLASS="LN">34</FONT><A NAME="934"></A>            <FONT CLASS="If">if</FONT> (parent != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">35</FONT><A NAME="935"></A>                <FONT CLASS="SingleLineComment">// Nested element
+<FONT CLASS="LN">36</FONT><A NAME="936"></A></FONT>                ((UnknownElement) parent).addChild(task);
+<FONT CLASS="LN">37</FONT><A NAME="937"></A>            }  <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">38</FONT><A NAME="938"></A>                <FONT CLASS="SingleLineComment">// Task included in a target ( including the default one ).
+<FONT CLASS="LN">39</FONT><A NAME="939"></A></FONT>                context.getCurrentTarget().addTask(task);
+<FONT CLASS="LN">40</FONT><A NAME="940"></A>            }
+<FONT CLASS="LN">41</FONT><A NAME="941"></A>
+<FONT CLASS="LN">42</FONT><A NAME="942"></A>            <FONT CLASS="SingleLineComment">// container.addTask(task);
+<FONT CLASS="LN">43</FONT><A NAME="943"></A></FONT>            <FONT CLASS="SingleLineComment">// This is a nop in UE: task.init();
+<FONT CLASS="LN">44</FONT><A NAME="944"></A></FONT>
+<FONT CLASS="LN">45</FONT><A NAME="945"></A>            RuntimeConfigurable wrapper
+<FONT CLASS="LN">46</FONT><A NAME="946"></A>                = <FONT CLASS="New">new</FONT> RuntimeConfigurable(task, task.getTaskName());
+<FONT CLASS="LN">47</FONT><A NAME="947"></A>
+<FONT CLASS="LN">48</FONT><A NAME="948"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; attrs.getLength(); i++) {
+<FONT CLASS="LN">49</FONT><A NAME="949"></A>                String name = attrs.getLocalName(i);
+<FONT CLASS="LN">50</FONT><A NAME="950"></A>                String attrUri = attrs.getURI(i);
+<FONT CLASS="LN">51</FONT><A NAME="951"></A>                <FONT CLASS="If">if</FONT> (attrUri != <FONT CLASS="Null">null</FONT>
+<FONT CLASS="LN">52</FONT><A NAME="952"></A>                    &amp;&amp; !attrUri.equals(<FONT CLASS="StringLiteral">""</FONT>)
+<FONT CLASS="LN">53</FONT><A NAME="953"></A>                    &amp;&amp; !attrUri.equals(uri)) {
+<FONT CLASS="LN">54</FONT><A NAME="954"></A>                    name = attrUri + <FONT CLASS="StringLiteral">":"</FONT> + attrs.getQName(i);
+<FONT CLASS="LN">55</FONT><A NAME="955"></A>                }
+<FONT CLASS="LN">56</FONT><A NAME="956"></A>                String value = attrs.getValue(i);
+<FONT CLASS="LN">57</FONT><A NAME="957"></A>                <FONT CLASS="SingleLineComment">// PR: Hack for ant-type value
+<FONT CLASS="LN">58</FONT><A NAME="958"></A></FONT>                <FONT CLASS="SingleLineComment">//  an ant-type is a component name which can
+<FONT CLASS="LN">59</FONT><A NAME="959"></A></FONT>                <FONT CLASS="SingleLineComment">// be namespaced, need to extract the name
+<FONT CLASS="LN">60</FONT><A NAME="960"></A></FONT>                <FONT CLASS="SingleLineComment">// and convert from qualified name to uri/name
+<FONT CLASS="LN">61</FONT><A NAME="961"></A></FONT>                <FONT CLASS="If">if</FONT> (ANT_TYPE.equals(name)
+<FONT CLASS="LN">62</FONT><A NAME="962"></A>                    || (ANT_CORE_URI.equals(attrUri)
+<FONT CLASS="LN">63</FONT><A NAME="963"></A>                        &amp;&amp; ANT_TYPE.equals(attrs.getLocalName(i)))) {
+<FONT CLASS="LN">64</FONT><A NAME="964"></A>                    name = ANT_TYPE;
+<FONT CLASS="LN">65</FONT><A NAME="965"></A>                    <FONT CLASS="Int">int</FONT> index = value.indexOf(<FONT CLASS="StringLiteral">":"</FONT>);
+<FONT CLASS="LN">66</FONT><A NAME="966"></A>                    <FONT CLASS="If">if</FONT> (index != -<FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">67</FONT><A NAME="967"></A>                        String prefix = value.substring(<FONT CLASS="IntegerLiteral">0</FONT>, index);
+<FONT CLASS="LN">68</FONT><A NAME="968"></A>                        String mappedUri = context.getPrefixMapping(prefix);
+<FONT CLASS="LN">69</FONT><A NAME="969"></A>                        <FONT CLASS="If">if</FONT> (mappedUri == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">70</FONT><A NAME="970"></A>                            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> BuildException(
+<FONT CLASS="LN">71</FONT><A NAME="971"></A>                                <FONT CLASS="StringLiteral">"Unable to find XML NS prefix "</FONT> + prefix);
+<FONT CLASS="LN">72</FONT><A NAME="972"></A>                        }
+<FONT CLASS="LN">73</FONT><A NAME="973"></A>                        value = ProjectHelper.genComponentName(
+<FONT CLASS="LN">74</FONT><A NAME="974"></A>                            mappedUri, value.substring(index + <FONT CLASS="IntegerLiteral">1</FONT>));
+<FONT CLASS="LN">75</FONT><A NAME="975"></A>                    }
+<FONT CLASS="LN">76</FONT><A NAME="976"></A>                }
+<FONT CLASS="LN">77</FONT><A NAME="977"></A>                wrapper.setAttribute(name, value);
+<FONT CLASS="LN">78</FONT><A NAME="978"></A>            }
+<FONT CLASS="LN">79</FONT><A NAME="979"></A>
+<FONT CLASS="LN">80</FONT><A NAME="980"></A>            <FONT CLASS="If">if</FONT> (parentWrapper != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">81</FONT><A NAME="981"></A>                parentWrapper.addChild(wrapper);
+<FONT CLASS="LN">82</FONT><A NAME="982"></A>            }
+<FONT CLASS="LN">83</FONT><A NAME="983"></A>
+<FONT CLASS="LN">84</FONT><A NAME="984"></A>            context.pushWrapper(wrapper);
+<FONT CLASS="LN">85</FONT><A NAME="985"></A>        }
+<FONT CLASS="LN">86</FONT><A NAME="986"></A>
+<FONT CLASS="LN">87</FONT><A NAME="987"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">88</FONT><A NAME="988"></A>         * Adds text to the task, using the wrapper
+<FONT CLASS="LN">89</FONT><A NAME="989"></A>         *
+<FONT CLASS="LN">90</FONT><A NAME="990"></A>         * @param buf A character array of the text within the element.
+<FONT CLASS="LN">91</FONT><A NAME="991"></A>         *            Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">92</FONT><A NAME="992"></A>         * @param start The start element in the array.
+<FONT CLASS="LN">93</FONT><A NAME="993"></A>         * @param count The number of characters to read from the array.
+<FONT CLASS="LN">94</FONT><A NAME="994"></A>         * @param context The current context.
+<FONT CLASS="LN">95</FONT><A NAME="995"></A>         *
+<FONT CLASS="LN">96</FONT><A NAME="996"></A>         * @exception SAXParseException if the element doesn't support text
+<FONT CLASS="LN">97</FONT><A NAME="997"></A>         *
+<FONT CLASS="LN">98</FONT><A NAME="998"></A>         * @see ProjectHelper#addText(Project,java.lang.Object,char[],int,int)
+<FONT CLASS="LN">99</FONT><A NAME="999"></A>         */</FONT>
+<FONT CLASS="LN">00</FONT><A NAME="1000"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> characters(<FONT CLASS="Char">char</FONT>[] buf, <FONT CLASS="Int">int</FONT> start, <FONT CLASS="Int">int</FONT> count,
+<FONT CLASS="LN">01</FONT><A NAME="1001"></A>                               AntXMLContext context)
+<FONT CLASS="LN">02</FONT><A NAME="1002"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">03</FONT><A NAME="1003"></A>            RuntimeConfigurable wrapper = context.currentWrapper();
+<FONT CLASS="LN">04</FONT><A NAME="1004"></A>            wrapper.addText(buf, start, count);
+<FONT CLASS="LN">05</FONT><A NAME="1005"></A>        }
+<FONT CLASS="LN">06</FONT><A NAME="1006"></A>
+<FONT CLASS="LN">07</FONT><A NAME="1007"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">08</FONT><A NAME="1008"></A>         * Handles the start of an element within a target. Task containers
+<FONT CLASS="LN">09</FONT><A NAME="1009"></A>         * will always use another task handler, and all other tasks
+<FONT CLASS="LN">10</FONT><A NAME="1010"></A>         * will always use a nested element handler.
+<FONT CLASS="LN">11</FONT><A NAME="1011"></A>         *
+<FONT CLASS="LN">12</FONT><A NAME="1012"></A>         * @param uri The namespace URI for this element.
+<FONT CLASS="LN">13</FONT><A NAME="1013"></A>         * @param tag The name of the element being started.
+<FONT CLASS="LN">14</FONT><A NAME="1014"></A>         *            Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">15</FONT><A NAME="1015"></A>         * @param qname The qualified name for this element.
+<FONT CLASS="LN">16</FONT><A NAME="1016"></A>         * @param attrs Attributes of the element being started.
+<FONT CLASS="LN">17</FONT><A NAME="1017"></A>         *              Will not be &lt;code&gt;null&lt;/code&gt;.
+<FONT CLASS="LN">18</FONT><A NAME="1018"></A>         * @param context The current context.
+<FONT CLASS="LN">19</FONT><A NAME="1019"></A>         * @return The handler for elements.
+<FONT CLASS="LN">20</FONT><A NAME="1020"></A>         *
+<FONT CLASS="LN">21</FONT><A NAME="1021"></A>         * @exception SAXParseException if an error occurs when initialising
+<FONT CLASS="LN">22</FONT><A NAME="1022"></A>         *                              the appropriate child handler
+<FONT CLASS="LN">23</FONT><A NAME="1023"></A>         */</FONT>
+<FONT CLASS="LN">24</FONT><A NAME="1024"></A>        <FONT CLASS="Public">public</FONT> AntHandler onStartChild(String uri, String tag, String qname,
+<FONT CLASS="LN">25</FONT><A NAME="1025"></A>                                       Attributes attrs,
+<FONT CLASS="LN">26</FONT><A NAME="1026"></A>                                       AntXMLContext context)
+<FONT CLASS="LN">27</FONT><A NAME="1027"></A>            <FONT CLASS="Throws">throws</FONT> SAXParseException {
+<FONT CLASS="LN">28</FONT><A NAME="1028"></A>            <FONT CLASS="Return">return</FONT> ProjectHelper3.elementHandler;
+<FONT CLASS="LN">29</FONT><A NAME="1029"></A>        }
+<FONT CLASS="LN">30</FONT><A NAME="1030"></A>
+<FONT CLASS="LN">31</FONT><A NAME="1031"></A>        <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">32</FONT><A NAME="1032"></A>         * Handles the end of the element. This pops the wrapper from
+<FONT CLASS="LN">33</FONT><A NAME="1033"></A>         * the context.
+<FONT CLASS="LN">34</FONT><A NAME="1034"></A>         *
+<FONT CLASS="LN">35</FONT><A NAME="1035"></A>         * @param uri The namespace URI for the element.
+<FONT CLASS="LN">36</FONT><A NAME="1036"></A>         * @param tag The name of the element.
+<FONT CLASS="LN">37</FONT><A NAME="1037"></A>         * @param context The current context.
+<FONT CLASS="LN">38</FONT><A NAME="1038"></A>         */</FONT>
+<FONT CLASS="LN">39</FONT><A NAME="1039"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> onEndElement(String uri, String tag, AntXMLContext context) {
+<FONT CLASS="LN">40</FONT><A NAME="1040"></A>            context.popWrapper();
+<FONT CLASS="LN">41</FONT><A NAME="1041"></A>        }
+<FONT CLASS="LN">42</FONT><A NAME="1042"></A>    }
+<FONT CLASS="LN">43</FONT><A NAME="1043"></A>}
+<FONT CLASS="LN">44</FONT><A NAME="1044"></A></pre>
+</BODY>
+</HTML>

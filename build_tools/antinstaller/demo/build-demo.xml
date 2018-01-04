@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!--
+
+This Ant script is used to package parts of the demo app to create an installer
+
+the selfextract target shows an example of creating a self extracting jar for the demo app
+
+run with ...
+
+ant -buildfile build-demo.xml
+
+-->
+<project name="Create Demo Installer Zip Build"  default="selfextract"  basedir=".">
+
+    <!-- Default location in installed tree -->
+    <property name="installDir" location=".."/>
+	<!-- This file should either not exist or contain a property that points to a valid ./antlib${ant.lib.version} directory -->
+	<property file="${installDir}/build/version.properties"/>
+
+    <path id="taskdef.cp">
+	  <fileset dir="${installDir}/lib">
+        <include name="ant-installer-ext.jar"/>
+        <include name="ant-installer.jar"/>
+      </fileset>
+	</path>
+	
+	<target name="_set-version" if="antlib.missing" depends="_check-version">
+		<property name="ant.lib.version" value=""/>
+	</target>
+	<target name="_check-version">
+		<condition property="antlib.missing">
+			<not><available file="${installDir}/antlib${ant.lib.version}"/></not>
+		</condition>
+	</target>
+	<target name="selfextract" depends="_set-version, build-resources">
+		<echo message="*** *** Building demo-installer.jar *** *** "/>
+    	<echo message="*** ***"/>
+		<taskdef 
+			name="installer" 
+			classname="org.tp23.antinstaller.taskdefs.Installer"
+			classpathref="taskdef.cp"/>
+        <installer file="${installDir}/demo/artifacts/demo-installer.jar" compress="true"
+				extractType="SelfExtractor"
+				installConfig="installer/antinstall-config.xml"
+				buildFile="installer/build.xml"
+				antInstallLib="${installDir}/lib"
+				antLib="${installDir}/antlib${ant.lib.version}"
+				validateConfig="true"
+				failOnError="true"
+				icons="eclipse">
+			<fileset dir="${installDir}/demo/artifacts" includes="installpack.zip"/>
+			<fileset dir="installclasspath" includes="resources/*"/>
+		</installer>
+		<!-- old build jar  file="./selfextractpack.jar" compress="true">
+			<manifest>
+				<attribute name="Manifest-Version" value="1.0"/>
+				<attribute name="Main-Class" value="org.tp23.antinstaller.selfextract.SelfExtractor"/>
+				<attribute name="Look-And-Feel" value="org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel"/>
+			</manifest>
+			<fileset dir="selfextract">
+				<include name="**/*"/>
+			</fileset>
+			<zipgroupfileset dir="installlib" includes="*.jar"/>
+		</jar-->
+	</target>
+
+	<target name="clean">
+		<echo message="*** *** Cleaning demo artifacts *** *** "/>
+    	<echo message="*** ***"/>
+		<delete dir="${installDir}/demo/classes" failonerror="false"/>
+		<delete file="${installDir}/demo/artifacts/installpack.zip" failonerror="false"/>
+		<delete file="${installDir}/demo/artifacts/demo-installer.jar" failonerror="false"/>
+	</target>
+
+	<target name="build-resources">
+		<echo message="*** *** Creating demo resources ZIP *** *** "/>
+    	<echo message="*** ***"/>
+		<mkdir dir="${installDir}/demo/classes"/>
+		<javac destdir="${installDir}/demo/classes" srcdir="src"/>
+		<copy 
+			file="src/resources/demo.png" 
+			tofile="${installDir}/demo/classes/resources/demo.png" 
+			overwrite="true"/>
+		<mkdir dir="${installDir}/demo/artifacts"/>
+		<delete file="${installDir}/demo/artifacts/installpack.zip" failonerror="false"/>
+		<mkdir dir="${installDir}/demo/artifacts"/>
+		<zip  file="${installDir}/demo/artifacts/installpack.zip">
+			<zipfileset dir="." defaultexcludes="true">
+				<include name="bin/**/*"/>
+				<include name="classes/**/*"/>
+				<include name="config/**/*"/>
+				<include name="doc/**/*"/>
+				<include name="src/**/*"/>
+				<include name="README.txt"/>
+				<include name="DEMO-README.txt"/>
+			</zipfileset>
+			<zipfileset dir="${installDir}/demo" defaultexcludes="true">
+				<include name="classes/**/*"/>
+			</zipfileset>
+		</zip>
+	</target>
+
+</project>

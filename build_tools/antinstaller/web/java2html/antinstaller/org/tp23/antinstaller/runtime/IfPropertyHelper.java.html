@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.runtime.IfPropertyHelper (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">IfPropertyHelper.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.runtime.index.html" target="packageFrame">org.tp23.antinstaller.runtime</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">org.tp23.antinstaller.InstallException</A>;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">org.tp23.antinstaller.InstallerContext</A>;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/page/Page.java.html">org.tp23.antinstaller.page.Page</A>;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">org.tp23.antinstaller.page.SimpleInputPage</A>;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/logic/Expression.java.html">org.tp23.antinstaller.runtime.logic.Expression</A>;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/logic/ExpressionBuilder.java.html">org.tp23.antinstaller.runtime.logic.ExpressionBuilder</A>;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A>
+<FONT CLASS="LN">25</FONT><A NAME="25"></A>
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">27</FONT><A NAME="27"></A> * &lt;p&gt;Encapsulates code fo the ifProperty feature&lt;/p&gt;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A> * N.B.  It is the installer generator's responsibility to ensure that properties passed
+<FONT CLASS="LN">29</FONT><A NAME="29"></A> * to the less than or greater than test are valid Numbers.
+<FONT CLASS="LN">30</FONT><A NAME="30"></A> * The internal Java format used is a Double so avalid regex would be
+<FONT CLASS="LN">31</FONT><A NAME="31"></A> * something like [0-9]+\.*[0-9]*  or [0-9]+ for an Integer.
+<FONT CLASS="LN">32</FONT><A NAME="32"></A> * The rather strange -=  and += syntax is used because &amp;gt; and &amp;lt;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A> * must be escaped to &amp;amp;gt; and &amp;amp;lt; in XML attributes and the legibility
+<FONT CLASS="LN">34</FONT><A NAME="34"></A> * of the configuration files would be impared.
+<FONT CLASS="LN">35</FONT><A NAME="35"></A> * REF: 1145496
+<FONT CLASS="LN">36</FONT><A NAME="36"></A> * @author Paul Hinds
+<FONT CLASS="LN">37</FONT><A NAME="37"></A> * @version $Id: IfPropertyHelper.java,v 1.5 2007/01/19 00:24:36 teknopaul Exp $
+<FONT CLASS="LN">38</FONT><A NAME="38"></A> */</FONT>
+<FONT CLASS="LN">39</FONT><A NAME="39"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> IfPropertyHelper {
+<FONT CLASS="LN">40</FONT><A NAME="40"></A>    
+<FONT CLASS="LN">41</FONT><A NAME="41"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">42</FONT><A NAME="42"></A>    <FONT CLASS="Public">public</FONT> IfPropertyHelper(<A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx){
+<FONT CLASS="LN">43</FONT><A NAME="43"></A>        <FONT CLASS="This">this</FONT>.ctx = ctx;
+<FONT CLASS="LN">44</FONT><A NAME="44"></A>    }
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>     * @return boolean true to SHOW the page
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>     */</FONT>
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> ifProperty(<A HREF="../../../../org/tp23/antinstaller/page/Page.java.html">Page</A> next) <FONT CLASS="Throws">throws</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> {
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>        <FONT CLASS="SingleLineComment">// show page if ifProperty is specified and property is correct
+<FONT CLASS="LN">51</FONT><A NAME="51"></A></FONT>        <FONT CLASS="If">if</FONT>(next <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">SimpleInputPage</A>) {
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>            <A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">SimpleInputPage</A> conditionalPage = (<A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">SimpleInputPage</A>) next;
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>            String ifProperty = conditionalPage.getIfProperty();
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>            <FONT CLASS="If">if</FONT> (ifProperty != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>                <A HREF="../../../../org/tp23/antinstaller/runtime/logic/Expression.java.html">Expression</A> expression;
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>                <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>                    expression = ExpressionBuilder.parseLogicalExpressions( ctx.getInstaller().getResultContainer(),
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>                                                                                   ifProperty );
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>                }
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>                <FONT CLASS="Catch">catch</FONT>( <A HREF="../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">ConfigurationException</A> configExc ) {
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>                    <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A>( <FONT CLASS="StringLiteral">"Error parsing ifProperty condition for page "</FONT> + next.getName(),
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>                                                configExc );    
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>                }
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>                <FONT CLASS="Return">return</FONT> expression.evaluate();
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>            }
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>        }
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>; <FONT CLASS="SingleLineComment">// show the page by default
+<FONT CLASS="LN">69</FONT><A NAME="69"></A></FONT>    }
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>    
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>     * @return boolean true to SHOW the page
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>     */</FONT>
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> ifTarget(<A HREF="../../../../org/tp23/antinstaller/page/Page.java.html">Page</A> next, <A HREF="../../../../org/tp23/antinstaller/page/Page.java.html">Page</A>[] pages){
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>        <FONT CLASS="SingleLineComment">// skip iftarget specified and target is missing
+<FONT CLASS="LN">76</FONT><A NAME="76"></A></FONT>        <FONT CLASS="If">if</FONT>(next <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">SimpleInputPage</A>){
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>            <A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">SimpleInputPage</A> conditionalPage = (<A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">SimpleInputPage</A>) next;
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>            String ifTarget = conditionalPage.getIfTarget();
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>            <FONT CLASS="If">if</FONT> (ifTarget != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>                <FONT CLASS="Boolean">boolean</FONT> show = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>                <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> p = <FONT CLASS="IntegerLiteral">0</FONT>; p &lt; pages.length; p++) {
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>                    show |= pages[p].isTarget(ifTarget);
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>                }
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>                <FONT CLASS="Return">return</FONT> show;
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>            }
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>        }
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>    }
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>}
+<FONT CLASS="LN">90</FONT><A NAME="90"></A></pre>
+</BODY>
+</HTML>

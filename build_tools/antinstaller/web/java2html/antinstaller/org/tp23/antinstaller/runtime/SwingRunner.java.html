@@ -1,0 +1,407 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.runtime.SwingRunner (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">SwingRunner.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.runtime.index.html" target="packageFrame">org.tp23.antinstaller.runtime</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.awt.GraphicsConfiguration;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.io.ByteArrayOutputStream;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.io.InputStream;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.util.ArrayList;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.util.List;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> java.util.ResourceBundle;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A>
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> javax.swing.ImageIcon;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="Import">import</FONT> javax.swing.JFrame;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A>
+<FONT CLASS="LN">28</FONT><A NAME="28"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">org.tp23.antinstaller.InstallException</A>;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/Installer.java.html">org.tp23.antinstaller.Installer</A>;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">org.tp23.antinstaller.InstallerContext</A>;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/ValidationException.java.html">org.tp23.antinstaller.ValidationException</A>;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/antmod/FeedbackListener.java.html">org.tp23.antinstaller.antmod.FeedbackListener</A>;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/page/Page.java.html">org.tp23.antinstaller.page.Page</A>;
+<FONT CLASS="LN">34</FONT><A NAME="34"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/AntOutputRenderer.java.html">org.tp23.antinstaller.renderer.AntOutputRenderer</A>;
+<FONT CLASS="LN">35</FONT><A NAME="35"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/RendererFactory.java.html">org.tp23.antinstaller.renderer.RendererFactory</A>;
+<FONT CLASS="LN">36</FONT><A NAME="36"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/swing/PageCompletionListener.java.html">org.tp23.antinstaller.renderer.swing.PageCompletionListener</A>;
+<FONT CLASS="LN">37</FONT><A NAME="37"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SizeConstants.java.html">org.tp23.antinstaller.renderer.swing.SizeConstants</A>;
+<FONT CLASS="LN">38</FONT><A NAME="38"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingInstallerContext.java.html">org.tp23.antinstaller.renderer.swing.SwingInstallerContext</A>;
+<FONT CLASS="LN">39</FONT><A NAME="39"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingMessageRenderer.java.html">org.tp23.antinstaller.renderer.swing.SwingMessageRenderer</A>;
+<FONT CLASS="LN">40</FONT><A NAME="40"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">org.tp23.antinstaller.renderer.swing.SwingPageRenderer</A>;
+<FONT CLASS="LN">41</FONT><A NAME="41"></A>
+<FONT CLASS="LN">42</FONT><A NAME="42"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">43</FONT><A NAME="43"></A> * &lt;p&gt;Runs the installer in a JFrame window &lt;/p&gt;
+<FONT CLASS="LN">44</FONT><A NAME="44"></A> * &lt;p&gt;This class uses the Installer object tree as its data source and renderers
+<FONT CLASS="LN">45</FONT><A NAME="45"></A> * from the org.tp23.antinstaller.renderer.swing package &lt;/p&gt;
+<FONT CLASS="LN">46</FONT><A NAME="46"></A> * Runners must also create a MessageRenderer and make it available in the
+<FONT CLASS="LN">47</FONT><A NAME="47"></A> * InstallerContext
+<FONT CLASS="LN">48</FONT><A NAME="48"></A> * &lt;p&gt;Copyright: Copyright (c) 2004&lt;/p&gt;
+<FONT CLASS="LN">49</FONT><A NAME="49"></A> * &lt;p&gt;Company: tp23&lt;/p&gt;
+<FONT CLASS="LN">50</FONT><A NAME="50"></A> *
+<FONT CLASS="LN">51</FONT><A NAME="51"></A> * @author Paul Hinds
+<FONT CLASS="LN">52</FONT><A NAME="52"></A> * @version $Id: SwingRunner.java,v 1.11 2007/01/19 00:24:36 teknopaul Exp $
+<FONT CLASS="LN">53</FONT><A NAME="53"></A> */</FONT>
+<FONT CLASS="LN">54</FONT><A NAME="54"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> SwingRunner <FONT CLASS="Extends">extends</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/AntRunner.java.html">AntRunner</A> <FONT CLASS="Implements">implements</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/Runner.java.html">Runner</A>, <A HREF="../../../../org/tp23/antinstaller/renderer/swing/PageCompletionListener.java.html">PageCompletionListener</A> {
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> ResourceBundle res = ResourceBundle.getBundle(<FONT CLASS="StringLiteral">"org.tp23.antinstaller.renderer.Res"</FONT>);
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>    <FONT CLASS="Protected">protected</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingInstallerContext.java.html">SwingInstallerContext</A> swingCtx = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>    <FONT CLASS="Private">private</FONT> JFrame frame = <FONT CLASS="New">new</FONT> JFrame();
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>    <FONT CLASS="Private">private</FONT> List pageRenderers;
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Volatile">volatile</FONT> <FONT CLASS="Boolean">boolean</FONT> doAnt = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>    <FONT CLASS="Protected">protected</FONT> Thread initialThread;
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>    <FONT CLASS="Protected">protected</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/IfPropertyHelper.java.html">IfPropertyHelper</A> ifHelper;
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>    <FONT CLASS="SingleLineComment">// context local property refs
+<FONT CLASS="LN">66</FONT><A NAME="66"></A></FONT>    <FONT CLASS="Protected">protected</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx;
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>    <FONT CLASS="Protected">protected</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/Logger.java.html">Logger</A> logger;
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>    <FONT CLASS="Protected">protected</FONT> <A HREF="../../../../org/tp23/antinstaller/Installer.java.html">Installer</A> installer;
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>    <FONT CLASS="Public">public</FONT> SwingRunner(<A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx) {
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>        <FONT CLASS="Super">super</FONT>(ctx);
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>        swingCtx = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingInstallerContext.java.html">SwingInstallerContext</A>(ctx, frame);
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>        <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingMessageRenderer.java.html">SwingMessageRenderer</A> smr = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingMessageRenderer.java.html">SwingMessageRenderer</A>();
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>        smr.setOwner(frame);
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>        ctx.setMessageRenderer(smr);
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>        ctx.setBuildListener(<FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/antmod/FeedbackListener.java.html">FeedbackListener</A>(swingCtx));
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>        ifHelper = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/IfPropertyHelper.java.html">IfPropertyHelper</A>(ctx);
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>        logger = ctx.getLogger();
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>        installer = ctx.getInstaller();
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>        <FONT CLASS="This">this</FONT>.ctx = ctx;
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>    }
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>     * Renders the installer in a Swing GUI, this method blocks until
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>     * the UI has finished
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>     *
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>     * @return boolean false implies user aborted
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>     * @throws InstallException
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>     */</FONT>
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> runInstaller() <FONT CLASS="Throws">throws</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> {
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>            frame.setTitle(installer.getName());
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>            frame.setSize(SizeConstants.PAGE_WIDTH, SizeConstants.PAGE_HEIGHT);
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>            frame.getRootPane().setDoubleBuffered(<FONT CLASS="True">true</FONT>);
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>            setLocation(frame);
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>            setIcon(frame, installer);
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>            preparePages(installer.getPages(), ctx);
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>            showFirstPage();
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>            <FONT CLASS="SingleLineComment">// need to  block here until pages are complete
+<FONT CLASS="LN">05</FONT><A NAME="105"></A></FONT>            initialThread = Thread.currentThread();
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>                Thread.sleep(Long.MAX_VALUE);
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>            }
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>            <FONT CLASS="Catch">catch</FONT> (InterruptedException ex1) {
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>            }
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>            <FONT CLASS="Return">return</FONT> doAnt;
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>        }
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>        <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">Exception</A> ex) {
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>            logger.log(<FONT CLASS="StringLiteral">"Fatal exception: "</FONT> + ex.getMessage());
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>            <FONT CLASS="If">if</FONT> (ctx.getInstaller().isVerbose()) {
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>                logger.log(ex);
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>            }
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>            ctx.getMessageRenderer().printMessage(<FONT CLASS="StringLiteral">"Fatal exception: "</FONT> + ex.getMessage());
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A>(<FONT CLASS="StringLiteral">""</FONT>, ex);
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>        }
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>    }
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> pageBack(<A HREF="../../../../org/tp23/antinstaller/page/Page.java.html">Page</A> page) {
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>        <FONT CLASS="If">if</FONT> (page.isAbort()) {
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>            abort();
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>            <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>        }
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>        <A HREF="../../../../org/tp23/antinstaller/page/Page.java.html">Page</A>[] pages = installer.getPages();
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; pages.length; i++) {
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>            <FONT CLASS="If">if</FONT> (pages[i] == page) {
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>                <FONT CLASS="SingleLineComment">// found current page
+<FONT CLASS="LN">33</FONT><A NAME="133"></A></FONT>                <FONT CLASS="If">if</FONT> (i &gt; <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>                    <FONT CLASS="SingleLineComment">//skip pages if the ifTarget or ifProperty attributes exist and fail
+<FONT CLASS="LN">36</FONT><A NAME="136"></A></FONT>                    <FONT CLASS="Int">int</FONT> nextIdx = i - <FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>                    <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>                        <FONT CLASS="While">while</FONT> (<FONT CLASS="True">true</FONT>) {
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>                            <FONT CLASS="If">if</FONT> (!ifHelper.ifTarget(pages[nextIdx], pages) ||
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>                                    !ifHelper.ifProperty(pages[nextIdx])) {
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>                                <FONT CLASS="SingleLineComment">//Continue looping
+<FONT CLASS="LN">42</FONT><A NAME="142"></A></FONT>                                --nextIdx;
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>                            } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>                                <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>                            }
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>                        }
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>                    }
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>                    <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> instExc) {
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>                        logger.log(<FONT CLASS="StringLiteral">"InstallException rendering page:"</FONT> + page.getName());
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>                        logger.log(installer, instExc);
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>                    }
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>                    <FONT CLASS="SingleLineComment">//for(;ifTargetSkip(pages[nextIdx], pages);nextIdx--);
+<FONT CLASS="LN">54</FONT><A NAME="154"></A></FONT>
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>                    <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A> renderer = (<A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A>) pageRenderers.get(nextIdx);
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>                    ctx.setCurrentPage(pages[nextIdx]);
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>                    <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>                        renderNext(renderer);
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>                    }
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>                    <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> ex) {
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>                        logger.log(<FONT CLASS="StringLiteral">"InstallExcepiton rendering page:"</FONT> + page.getName());
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>                        logger.log(installer, ex);
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>                    }
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>                    <FONT CLASS="Catch">catch</FONT> (ClassNotFoundException ex) {
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>                        logger.log(<FONT CLASS="StringLiteral">"ClassNotFoundException rendering page:"</FONT> + page.getName());
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>                        logger.log(installer, ex);
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>                    }
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>                    <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>                }
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>            }
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>        }
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>    }
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>     * Called when a page is complete and the next button is pressed.
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>     * This method is called by the event thread that looses exceptions so Throwable
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>     * is caught
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>     *
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>     * @param page Page
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>     */</FONT>
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> pageComplete(<A HREF="../../../../org/tp23/antinstaller/page/Page.java.html">Page</A> page) {
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>            <FONT CLASS="If">if</FONT> (page.isAbort()) {
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>                abort();
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>                <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>            }
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>            runPost(page);
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>            <A HREF="../../../../org/tp23/antinstaller/page/Page.java.html">Page</A>[] pages = installer.getPages();
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>            <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A> currentRenderer;
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; pages.length; i++) {
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>                <FONT CLASS="If">if</FONT> (pages[i] == page) { <FONT CLASS="SingleLineComment">// found current page
+<FONT CLASS="LN">92</FONT><A NAME="192"></A></FONT>                    currentRenderer = (<A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A>) pageRenderers.get(i);
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>                    <FONT CLASS="SingleLineComment">// check validation
+<FONT CLASS="LN">94</FONT><A NAME="194"></A></FONT>                    <FONT CLASS="Boolean">boolean</FONT> validationPassed = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>                    <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>                        currentRenderer.updateInputFields();
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>                        validationPassed = currentRenderer.validateFields();
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>                    } <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/ValidationException.java.html">ValidationException</A> ve) {
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>                        logger.log(<FONT CLASS="StringLiteral">"ValidationException rendering page:"</FONT> + page.getName());
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>                        logger.log(installer, ve);
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>                        <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>                    }
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>                    <FONT CLASS="If">if</FONT> (!validationPassed) {
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>                        <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>                    }
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>                    <FONT CLASS="If">if</FONT> (i &lt; pages.length - <FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>                        <FONT CLASS="SingleLineComment">//more pages left
+<FONT CLASS="LN">11</FONT><A NAME="211"></A></FONT>
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>                        <FONT CLASS="SingleLineComment">// skip the page if the ifTarget or ifProperty dictate it
+<FONT CLASS="LN">13</FONT><A NAME="213"></A></FONT>                        <FONT CLASS="Int">int</FONT> nextIdx = i + <FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>                        <FONT CLASS="While">while</FONT> (<FONT CLASS="True">true</FONT>) {
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>                            <FONT CLASS="If">if</FONT> (!ifHelper.ifTarget(pages[nextIdx], pages) ||
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>                                    !ifHelper.ifProperty(pages[nextIdx])) {
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>                                <FONT CLASS="SingleLineComment">//Continue looping
+<FONT CLASS="LN">18</FONT><A NAME="218"></A></FONT>                                nextIdx++;
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>                            } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>                                <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>                            }
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>                        }
+<FONT CLASS="LN">23</FONT><A NAME="223"></A>
+<FONT CLASS="LN">24</FONT><A NAME="224"></A>
+<FONT CLASS="LN">25</FONT><A NAME="225"></A>                        <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A> renderer = (<A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A>) pageRenderers.get(nextIdx);
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>                        ctx.setCurrentPage(pages[nextIdx]);
+<FONT CLASS="LN">27</FONT><A NAME="227"></A>                        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>                            renderNext(renderer);
+<FONT CLASS="LN">29</FONT><A NAME="229"></A>                        }
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>                        <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> ex) {
+<FONT CLASS="LN">31</FONT><A NAME="231"></A>                            logger.log(<FONT CLASS="StringLiteral">"InstallException rendering page:"</FONT> + page.getName());
+<FONT CLASS="LN">32</FONT><A NAME="232"></A>                            logger.log(installer, ex);
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>                        }
+<FONT CLASS="LN">34</FONT><A NAME="234"></A>                        <FONT CLASS="Catch">catch</FONT> (ClassNotFoundException ex) {
+<FONT CLASS="LN">35</FONT><A NAME="235"></A>                            logger.log(<FONT CLASS="StringLiteral">"ClassNotFoundException rendering page:"</FONT> + page.getName());
+<FONT CLASS="LN">36</FONT><A NAME="236"></A>                            logger.log(installer, ex);
+<FONT CLASS="LN">37</FONT><A NAME="237"></A>                        }
+<FONT CLASS="LN">38</FONT><A NAME="238"></A>                        <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">39</FONT><A NAME="239"></A>                    }
+<FONT CLASS="LN">40</FONT><A NAME="240"></A>                    <FONT CLASS="If">if</FONT> (i == pages.length - <FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">41</FONT><A NAME="241"></A>                        <FONT CLASS="SingleLineComment">// all done
+<FONT CLASS="LN">42</FONT><A NAME="242"></A></FONT>                        currentRenderer.getBackButton().setEnabled(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">43</FONT><A NAME="243"></A>                        currentRenderer.getNextButton().setEnabled(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">44</FONT><A NAME="244"></A>                        currentRenderer.getFinishButton().setEnabled(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">45</FONT><A NAME="245"></A>                        doAnt = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">46</FONT><A NAME="246"></A>                        initialThread.interrupt();
+<FONT CLASS="LN">47</FONT><A NAME="247"></A>                        <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">48</FONT><A NAME="248"></A>                    }
+<FONT CLASS="LN">49</FONT><A NAME="249"></A>                }
+<FONT CLASS="LN">50</FONT><A NAME="250"></A>            }
+<FONT CLASS="LN">51</FONT><A NAME="251"></A>        }
+<FONT CLASS="LN">52</FONT><A NAME="252"></A>        <FONT CLASS="Catch">catch</FONT> (Throwable e) {
+<FONT CLASS="LN">53</FONT><A NAME="253"></A>            ctx.log(<FONT CLASS="StringLiteral">"Throwable during page completion:"</FONT> + e.getMessage());
+<FONT CLASS="LN">54</FONT><A NAME="254"></A>            <FONT CLASS="If">if</FONT> (ctx.getInstaller().isVerbose()) {
+<FONT CLASS="LN">55</FONT><A NAME="255"></A>                ctx.log(e);
+<FONT CLASS="LN">56</FONT><A NAME="256"></A>            }
+<FONT CLASS="LN">57</FONT><A NAME="257"></A>        }
+<FONT CLASS="LN">58</FONT><A NAME="258"></A>    }
+<FONT CLASS="LN">59</FONT><A NAME="259"></A>
+<FONT CLASS="LN">60</FONT><A NAME="260"></A>    <FONT CLASS="Protected">protected</FONT> <FONT CLASS="Void">void</FONT> showFirstPage() <FONT CLASS="Throws">throws</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">Exception</A> {
+<FONT CLASS="LN">61</FONT><A NAME="261"></A>        ctx.setCurrentPage(installer.getPages()[<FONT CLASS="IntegerLiteral">0</FONT>]);
+<FONT CLASS="LN">62</FONT><A NAME="262"></A>        renderNext((<A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A>) pageRenderers.get(<FONT CLASS="IntegerLiteral">0</FONT>));
+<FONT CLASS="LN">63</FONT><A NAME="263"></A>    }
+<FONT CLASS="LN">64</FONT><A NAME="264"></A>
+<FONT CLASS="LN">65</FONT><A NAME="265"></A>
+<FONT CLASS="LN">66</FONT><A NAME="266"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> preparePages(<A HREF="../../../../org/tp23/antinstaller/page/Page.java.html">Page</A>[] pages, <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx) <FONT CLASS="Throws">throws</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">Exception</A> {
+<FONT CLASS="LN">67</FONT><A NAME="267"></A>        pageRenderers = <FONT CLASS="New">new</FONT> ArrayList();
+<FONT CLASS="LN">68</FONT><A NAME="268"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; pages.length; i++) {
+<FONT CLASS="LN">69</FONT><A NAME="269"></A>            <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A> renderer = RendererFactory.getSwingPageRenderer(pages[i]);
+<FONT CLASS="LN">70</FONT><A NAME="270"></A>            <FONT CLASS="If">if</FONT> (i == <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">71</FONT><A NAME="271"></A>                renderer.getBackButton().setEnabled(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">72</FONT><A NAME="272"></A>            }
+<FONT CLASS="LN">73</FONT><A NAME="273"></A>            renderer.setContext(swingCtx);
+<FONT CLASS="LN">74</FONT><A NAME="274"></A>            renderer.setPageCompletionListener(<FONT CLASS="This">this</FONT>);
+<FONT CLASS="LN">75</FONT><A NAME="275"></A>            renderer.setPage(pages[i]);
+<FONT CLASS="LN">76</FONT><A NAME="276"></A>            renderer.instanceInit();
+<FONT CLASS="LN">77</FONT><A NAME="277"></A>            pageRenderers.add(renderer);
+<FONT CLASS="LN">78</FONT><A NAME="278"></A>            <FONT CLASS="If">if</FONT> (renderer <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/AntOutputRenderer.java.html">AntOutputRenderer</A>) {
+<FONT CLASS="LN">79</FONT><A NAME="279"></A>                ctx.setAntOutputRenderer((<A HREF="../../../../org/tp23/antinstaller/renderer/AntOutputRenderer.java.html">AntOutputRenderer</A>) renderer);
+<FONT CLASS="LN">80</FONT><A NAME="280"></A>            }
+<FONT CLASS="LN">81</FONT><A NAME="281"></A>        }
+<FONT CLASS="LN">82</FONT><A NAME="282"></A>    }
+<FONT CLASS="LN">83</FONT><A NAME="283"></A>
+<FONT CLASS="LN">84</FONT><A NAME="284"></A>    <FONT CLASS="Protected">protected</FONT> <FONT CLASS="Void">void</FONT> renderNext(<A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A> renderer) <FONT CLASS="Throws">throws</FONT> ClassNotFoundException, <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> {
+<FONT CLASS="LN">85</FONT><A NAME="285"></A>        renderer.updateDefaultValues();
+<FONT CLASS="LN">86</FONT><A NAME="286"></A>        frame.getContentPane().removeAll();
+<FONT CLASS="LN">87</FONT><A NAME="287"></A>        frame.getContentPane().add(renderer);
+<FONT CLASS="LN">88</FONT><A NAME="288"></A>        frame.getContentPane().repaint();
+<FONT CLASS="LN">89</FONT><A NAME="289"></A>        frame.show();
+<FONT CLASS="LN">90</FONT><A NAME="290"></A>        <FONT CLASS="If">if</FONT> (renderer.getNextButton().isEnabled()) {
+<FONT CLASS="LN">91</FONT><A NAME="291"></A>            renderer.getNextButton().requestFocus();
+<FONT CLASS="LN">92</FONT><A NAME="292"></A>        } <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT> (renderer.getFinishButton().isEnabled()) {
+<FONT CLASS="LN">93</FONT><A NAME="293"></A>            renderer.getFinishButton().requestFocus();
+<FONT CLASS="LN">94</FONT><A NAME="294"></A>        }
+<FONT CLASS="LN">95</FONT><A NAME="295"></A>    }
+<FONT CLASS="LN">96</FONT><A NAME="296"></A>
+<FONT CLASS="LN">97</FONT><A NAME="297"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> setLocation(JFrame frame) {
+<FONT CLASS="LN">98</FONT><A NAME="298"></A>        GraphicsConfiguration config = frame.getGraphicsConfiguration();
+<FONT CLASS="LN">99</FONT><A NAME="299"></A>        <FONT CLASS="Int">int</FONT> x = (<FONT CLASS="Int">int</FONT>) config.getBounds().getCenterX() - (SizeConstants.PAGE_WIDTH / <FONT CLASS="IntegerLiteral">2</FONT>);
+<FONT CLASS="LN">00</FONT><A NAME="300"></A>        <FONT CLASS="Int">int</FONT> y = (<FONT CLASS="Int">int</FONT>) config.getBounds().getCenterY() - (SizeConstants.PAGE_HEIGHT / <FONT CLASS="IntegerLiteral">2</FONT>);
+<FONT CLASS="LN">01</FONT><A NAME="301"></A>        frame.setLocation(x, y);
+<FONT CLASS="LN">02</FONT><A NAME="302"></A>        frame.setResizable(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">03</FONT><A NAME="303"></A>    }
+<FONT CLASS="LN">04</FONT><A NAME="304"></A>
+<FONT CLASS="LN">05</FONT><A NAME="305"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> setIcon(JFrame frame, <A HREF="../../../../org/tp23/antinstaller/Installer.java.html">Installer</A> installer) {
+<FONT CLASS="LN">06</FONT><A NAME="306"></A>        String iconResource = installer.getWindowIcon();
+<FONT CLASS="LN">07</FONT><A NAME="307"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">08</FONT><A NAME="308"></A>            <FONT CLASS="If">if</FONT> (iconResource == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">09</FONT><A NAME="309"></A>                <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">10</FONT><A NAME="310"></A>            }
+<FONT CLASS="LN">11</FONT><A NAME="311"></A>            InputStream in = <FONT CLASS="This">this</FONT>.getClass().getResourceAsStream(iconResource);
+<FONT CLASS="LN">12</FONT><A NAME="312"></A>            ByteArrayOutputStream baos = <FONT CLASS="New">new</FONT> ByteArrayOutputStream();
+<FONT CLASS="LN">13</FONT><A NAME="313"></A>            <FONT CLASS="Byte">byte</FONT>[] buffer = <FONT CLASS="New">new</FONT> <FONT CLASS="Byte">byte</FONT>[<FONT CLASS="IntegerLiteral">256</FONT>];
+<FONT CLASS="LN">14</FONT><A NAME="314"></A>            <FONT CLASS="Int">int</FONT> read = <FONT CLASS="IntegerLiteral">0</FONT>; <FONT CLASS="SingleLineComment">// The number of bytes read from the stream
+<FONT CLASS="LN">15</FONT><A NAME="315"></A></FONT>            <FONT CLASS="For">for</FONT> (read = in.read(buffer); read != -<FONT CLASS="IntegerLiteral">1</FONT>; read = in.read(buffer)) {
+<FONT CLASS="LN">16</FONT><A NAME="316"></A>                baos.write(buffer, <FONT CLASS="IntegerLiteral">0</FONT>, read);
+<FONT CLASS="LN">17</FONT><A NAME="317"></A>            }
+<FONT CLASS="LN">18</FONT><A NAME="318"></A>            ImageIcon icon = <FONT CLASS="New">new</FONT> ImageIcon(baos.toByteArray());
+<FONT CLASS="LN">19</FONT><A NAME="319"></A>            <FONT CLASS="SingleLineComment">//Image icon = Toolkit.getDefaultToolkit().createImage(baos.toByteArray());
+<FONT CLASS="LN">20</FONT><A NAME="320"></A></FONT>            frame.setIconImage(icon.getImage());
+<FONT CLASS="LN">21</FONT><A NAME="321"></A>        }
+<FONT CLASS="LN">22</FONT><A NAME="322"></A>        <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">Exception</A> ex) {
+<FONT CLASS="LN">23</FONT><A NAME="323"></A>            <FONT CLASS="SingleLineComment">// we can live with out an icon
+<FONT CLASS="LN">24</FONT><A NAME="324"></A></FONT>            logger.log(<FONT CLASS="StringLiteral">"Can not load icon resource: "</FONT> + iconResource);
+<FONT CLASS="LN">25</FONT><A NAME="325"></A>            logger.log(installer, ex);
+<FONT CLASS="LN">26</FONT><A NAME="326"></A>        }
+<FONT CLASS="LN">27</FONT><A NAME="327"></A>    }
+<FONT CLASS="LN">28</FONT><A NAME="328"></A>
+<FONT CLASS="LN">29</FONT><A NAME="329"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> antFinished() {
+<FONT CLASS="LN">30</FONT><A NAME="330"></A>        <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A> renderer = (<A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A>) pageRenderers.get(pageRenderers.size() - <FONT CLASS="IntegerLiteral">1</FONT>);
+<FONT CLASS="LN">31</FONT><A NAME="331"></A>        renderer.getBackButton().setEnabled(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">32</FONT><A NAME="332"></A>        renderer.getNextButton().setEnabled(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">33</FONT><A NAME="333"></A>        renderer.getCancelButton().setEnabled(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">34</FONT><A NAME="334"></A>        renderer.getFinishButton().setText(res.getString(<FONT CLASS="StringLiteral">"exit"</FONT>));
+<FONT CLASS="LN">35</FONT><A NAME="335"></A>        renderer.getFinishButton().setEnabled(<FONT CLASS="True">true</FONT>);
+<FONT CLASS="LN">36</FONT><A NAME="336"></A>        renderer.getFinishButton().requestFocus();
+<FONT CLASS="LN">37</FONT><A NAME="337"></A>        renderer.getTitleLabel().setText(res.getString(<FONT CLASS="StringLiteral">"complete"</FONT>));
+<FONT CLASS="LN">38</FONT><A NAME="338"></A>        ctx.getAntOutputRenderer().getErr().flush();
+<FONT CLASS="LN">39</FONT><A NAME="339"></A>        ctx.getAntOutputRenderer().getOut().flush();
+<FONT CLASS="LN">40</FONT><A NAME="340"></A>        ctx.getMessageRenderer().printMessage(res.getString(<FONT CLASS="StringLiteral">"finished"</FONT>));
+<FONT CLASS="LN">41</FONT><A NAME="341"></A>    }
+<FONT CLASS="LN">42</FONT><A NAME="342"></A>
+<FONT CLASS="LN">43</FONT><A NAME="343"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> fatalError() {
+<FONT CLASS="LN">44</FONT><A NAME="344"></A>        List renderers = getPageRenderers();
+<FONT CLASS="LN">45</FONT><A NAME="345"></A>        <FONT CLASS="If">if</FONT> ((renderers != <FONT CLASS="Null">null</FONT>) &amp;&amp; (renderers.size() &gt; <FONT CLASS="IntegerLiteral">0</FONT>)) {
+<FONT CLASS="LN">46</FONT><A NAME="346"></A>            <A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A> renderer = (<A HREF="../../../../org/tp23/antinstaller/renderer/swing/SwingPageRenderer.java.html">SwingPageRenderer</A>) renderers.get(renderers.size() - <FONT CLASS="IntegerLiteral">1</FONT>);
+<FONT CLASS="LN">47</FONT><A NAME="347"></A>            renderer.getBackButton().setEnabled(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">48</FONT><A NAME="348"></A>            renderer.getNextButton().setEnabled(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">49</FONT><A NAME="349"></A>            renderer.getCancelButton().setEnabled(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">50</FONT><A NAME="350"></A>            renderer.getFinishButton().setText(res.getString(<FONT CLASS="StringLiteral">"exit"</FONT>));
+<FONT CLASS="LN">51</FONT><A NAME="351"></A>            renderer.getFinishButton().setEnabled(<FONT CLASS="True">true</FONT>);
+<FONT CLASS="LN">52</FONT><A NAME="352"></A>            renderer.getFinishButton().requestFocus();
+<FONT CLASS="LN">53</FONT><A NAME="353"></A>            renderer.getTitleLabel().setText(res.getString(<FONT CLASS="StringLiteral">"failed"</FONT>));
+<FONT CLASS="LN">54</FONT><A NAME="354"></A>        }
+<FONT CLASS="LN">55</FONT><A NAME="355"></A>        <FONT CLASS="SingleLineComment">// else - we're done here, or should we call abort()?
+<FONT CLASS="LN">56</FONT><A NAME="356"></A></FONT>    }
+<FONT CLASS="LN">57</FONT><A NAME="357"></A>
+<FONT CLASS="LN">58</FONT><A NAME="358"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">59</FONT><A NAME="359"></A>     * Returns a string representation of the object.
+<FONT CLASS="LN">60</FONT><A NAME="360"></A>     *
+<FONT CLASS="LN">61</FONT><A NAME="361"></A>     * @return a string representation of the object.
+<FONT CLASS="LN">62</FONT><A NAME="362"></A>     */</FONT>
+<FONT CLASS="LN">63</FONT><A NAME="363"></A>    <FONT CLASS="Public">public</FONT> String toString() {
+<FONT CLASS="LN">64</FONT><A NAME="364"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="StringLiteral">"SwingRunner"</FONT>;
+<FONT CLASS="LN">65</FONT><A NAME="365"></A>    }
+<FONT CLASS="LN">66</FONT><A NAME="366"></A>
+<FONT CLASS="LN">67</FONT><A NAME="367"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> abort() {
+<FONT CLASS="LN">68</FONT><A NAME="368"></A>        <FONT CLASS="This">this</FONT>.doAnt = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">69</FONT><A NAME="369"></A>        initialThread.interrupt();
+<FONT CLASS="LN">70</FONT><A NAME="370"></A>    }
+<FONT CLASS="LN">71</FONT><A NAME="371"></A>
+<FONT CLASS="LN">72</FONT><A NAME="372"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">73</FONT><A NAME="373"></A>     * @return Returns the frame.
+<FONT CLASS="LN">74</FONT><A NAME="374"></A>     */</FONT>
+<FONT CLASS="LN">75</FONT><A NAME="375"></A>    <FONT CLASS="Public">public</FONT> JFrame getFrame() {
+<FONT CLASS="LN">76</FONT><A NAME="376"></A>        <FONT CLASS="Return">return</FONT> frame;
+<FONT CLASS="LN">77</FONT><A NAME="377"></A>    }
+<FONT CLASS="LN">78</FONT><A NAME="378"></A>
+<FONT CLASS="LN">79</FONT><A NAME="379"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">80</FONT><A NAME="380"></A>     * This method is only valid after the PageRenderers have been generated
+<FONT CLASS="LN">81</FONT><A NAME="381"></A>     *
+<FONT CLASS="LN">82</FONT><A NAME="382"></A>     * @return Returns the pageRenderers.
+<FONT CLASS="LN">83</FONT><A NAME="383"></A>     */</FONT>
+<FONT CLASS="LN">84</FONT><A NAME="384"></A>    <FONT CLASS="Public">public</FONT> List getPageRenderers() {
+<FONT CLASS="LN">85</FONT><A NAME="385"></A>        <FONT CLASS="Return">return</FONT> pageRenderers;
+<FONT CLASS="LN">86</FONT><A NAME="386"></A>    }
+<FONT CLASS="LN">87</FONT><A NAME="387"></A>}
+<FONT CLASS="LN">88</FONT><A NAME="388"></A></pre>
+</BODY>
+</HTML>

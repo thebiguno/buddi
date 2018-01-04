@@ -1,0 +1,291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.InstallerContext (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">InstallerContext.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../org.tp23.antinstaller.index.html" target="packageFrame">org.tp23.antinstaller</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.io.File;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.util.Enumeration;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.util.Iterator;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.util.Properties;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.util.Vector;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A>
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.BuildListener;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.taskdefs.Execute;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../org/tp23/antinstaller/page/Page.java.html">org.tp23.antinstaller.page.Page</A>;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../org/tp23/antinstaller/renderer/AntOutputRenderer.java.html">org.tp23.antinstaller.renderer.AntOutputRenderer</A>;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../org/tp23/antinstaller/renderer/MessageRenderer.java.html">org.tp23.antinstaller.renderer.MessageRenderer</A>;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../org/tp23/antinstaller/runtime/Logger.java.html">org.tp23.antinstaller.runtime.Logger</A>;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../org/tp23/antinstaller/runtime/Runner.java.html">org.tp23.antinstaller.runtime.Runner</A>;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../org/tp23/antinstaller/runtime/exe/AntLauncherFilter.java.html">org.tp23.antinstaller.runtime.exe.AntLauncherFilter</A>;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../org/tp23/antinstaller/runtime/exe/LoadConfigFilter.java.html">org.tp23.antinstaller.runtime.exe.LoadConfigFilter</A>;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">34</FONT><A NAME="34"></A> *
+<FONT CLASS="LN">35</FONT><A NAME="35"></A> * &lt;p&gt;A single InstallerContext is created by the ExecInstall class and
+<FONT CLASS="LN">36</FONT><A NAME="36"></A> * exist for the duration of the Install screens and the runing of
+<FONT CLASS="LN">37</FONT><A NAME="37"></A> * the Ant Script. &lt;/p&gt;
+<FONT CLASS="LN">38</FONT><A NAME="38"></A> * @author Paul Hinds
+<FONT CLASS="LN">39</FONT><A NAME="39"></A> * @version $Id: InstallerContext.java,v 1.10 2007/01/28 08:44:41 teknopaul Exp $
+<FONT CLASS="LN">40</FONT><A NAME="40"></A> */</FONT>
+<FONT CLASS="LN">41</FONT><A NAME="41"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> InstallerContext {
+<FONT CLASS="LN">42</FONT><A NAME="42"></A>
+<FONT CLASS="LN">43</FONT><A NAME="43"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">44</FONT><A NAME="44"></A>     * This is the prefix for environment variables, unlike Ant this is fixed to
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>     * the common prefix of "env".  If you dont like this complain to the bug reports
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>     * on sourceforge
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>     */</FONT>
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String ENV_PREFIX = <FONT CLASS="StringLiteral">"env."</FONT>;
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>     * This is the prefix for Java system property variables.
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>     * This is fixed to "java."
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>     */</FONT>
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String JAVA_PREFIX = <FONT CLASS="StringLiteral">"java."</FONT>;
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../org/tp23/antinstaller/runtime/Logger.java.html">Logger</A> logger = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../org/tp23/antinstaller/Installer.java.html">Installer</A> installer = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../org/tp23/antinstaller/renderer/MessageRenderer.java.html">MessageRenderer</A> messageRenderer = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../org/tp23/antinstaller/renderer/AntOutputRenderer.java.html">AntOutputRenderer</A> antOutputRenderer = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../org/tp23/antinstaller/runtime/Runner.java.html">Runner</A> runner = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../org/tp23/antinstaller/page/Page.java.html">Page</A> currentPage = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>    <FONT CLASS="Private">private</FONT> java.io.File fileRoot = <FONT CLASS="Null">null</FONT>; <FONT CLASS="SingleLineComment">// ant basedir
+<FONT CLASS="LN">62</FONT><A NAME="62"></A></FONT>    <FONT CLASS="Private">private</FONT> BuildListener buildListener = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../org/tp23/antinstaller/runtime/exe/AntLauncherFilter.java.html">AntLauncherFilter</A> antRunner = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>    <FONT CLASS="Private">private</FONT> String uIOverride = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>    <FONT CLASS="Private">private</FONT> String installerConfigFile = LoadConfigFilter.INSTALLER_CONFIG_FILE;
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>    <FONT CLASS="Private">private</FONT> String antBuildFile = <FONT CLASS="StringLiteral">"build.xml"</FONT>;
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>    <FONT CLASS="Private">private</FONT> String configResource;
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>    
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>    
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>    <FONT CLASS="SingleLineComment">// called after the Ant part has been run
+<FONT CLASS="LN">71</FONT><A NAME="71"></A></FONT>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> installedSucceded = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>     
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>    <FONT CLASS="Public">public</FONT> InstallerContext() {
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>    }
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setInstallSucceded(<FONT CLASS="Boolean">boolean</FONT> installedSucceded){
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>        <FONT CLASS="This">this</FONT>.installedSucceded=installedSucceded;
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>    }
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> isInstallSucceded(){
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>        <FONT CLASS="Return">return</FONT> installedSucceded;
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>    }
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>    
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> log(String message){
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>        <FONT CLASS="If">if</FONT>(logger != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>            logger.log(message);
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>        }
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>    }
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> log(Throwable message){
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>        <FONT CLASS="If">if</FONT>(logger != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>            logger.log(message);
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>        }
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>    }
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> log(<FONT CLASS="Boolean">boolean</FONT> vebose, Throwable message){
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>        <FONT CLASS="If">if</FONT>(vebose &amp;&amp; logger != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>            logger.log(message);
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>        }
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>    }
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>     * Check to see if the system is windoze to be able to return the correct prompted
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>     * directories.  This method should be IsNotWindows since it assumes anything
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>     * that is not windows is Unix
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>     * @return boolean true if not windows in the os.name System Property
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>     */</FONT>
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Boolean">boolean</FONT> isUnix(){
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>        <FONT CLASS="Return">return</FONT> System.getProperty(<FONT CLASS="StringLiteral">"os.name"</FONT>).toLowerCase().indexOf(<FONT CLASS="StringLiteral">"windows"</FONT>) == -<FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>    }
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>     * Use the standard Ant way to load the environment variables, this is not all inclusive
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>     * (but will be come Java 1.5 I imagine)
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>     * @return Properties
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>     */</FONT>
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> Properties getEnvironment(){
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>        Properties props = <FONT CLASS="New">new</FONT> Properties();
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>            Vector osEnv = Execute.getProcEnvironment();
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>            <FONT CLASS="For">for</FONT> (Enumeration e = osEnv.elements(); e.hasMoreElements(); ) {
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>                String entry = (String) e.nextElement();
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>                <FONT CLASS="Int">int</FONT> pos = entry.indexOf(<FONT CLASS="CharacerLiteral">'='</FONT>);
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>                <FONT CLASS="If">if</FONT> (pos != -<FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>                    props.put(ENV_PREFIX + entry.substring(<FONT CLASS="IntegerLiteral">0</FONT>, pos),
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>                              entry.substring(pos + <FONT CLASS="IntegerLiteral">1</FONT>));
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>                }
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>            }
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>        }
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>        <FONT CLASS="Catch">catch</FONT> (Exception ex) {
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>            <FONT CLASS="SingleLineComment">// swallow exceptions so this can be loaded statically
+<FONT CLASS="LN">29</FONT><A NAME="129"></A></FONT>            <FONT CLASS="SingleLineComment">// bit of a bugger if you need the environment on Mac OS 9 but not all apps
+<FONT CLASS="LN">30</FONT><A NAME="130"></A></FONT>            <FONT CLASS="SingleLineComment">// do so we don't want to die inother situations
+<FONT CLASS="LN">31</FONT><A NAME="131"></A></FONT>            System.out.println(<FONT CLASS="StringLiteral">"Can't load environment:"</FONT>+ex.getClass()+<FONT CLASS="StringLiteral">","</FONT>+ex.getMessage());
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>        }
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>        Properties javaSysProps = System.getProperties();
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>        Iterator iter = javaSysProps.keySet().iterator();
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>        <FONT CLASS="While">while</FONT> (iter.hasNext()) {
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>            Object key = (Object)iter.next();
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>            props.put(JAVA_PREFIX+key.toString(),javaSysProps.get(key));
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>        }
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>        <FONT CLASS="Return">return</FONT> props;
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>    }
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>    <FONT CLASS="SingleLineComment">// Bean methods
+<FONT CLASS="LN">43</FONT><A NAME="143"></A></FONT>    <FONT CLASS="Public">public</FONT> <A HREF="../../../org/tp23/antinstaller/Installer.java.html">Installer</A> getInstaller() {
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>        <FONT CLASS="Return">return</FONT> installer;
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>    }
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>    <FONT CLASS="Public">public</FONT> String getMinJavaVersion() {
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>        <FONT CLASS="Return">return</FONT> installer.getMinJavaVersion();
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>    }
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>    <FONT CLASS="Public">public</FONT> <A HREF="../../../org/tp23/antinstaller/renderer/MessageRenderer.java.html">MessageRenderer</A> getMessageRenderer() {
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>        <FONT CLASS="Return">return</FONT> messageRenderer;
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>    }
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setMessageRenderer(<A HREF="../../../org/tp23/antinstaller/renderer/MessageRenderer.java.html">MessageRenderer</A> messageRenderer) {
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>        <FONT CLASS="This">this</FONT>.messageRenderer = messageRenderer;
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>        <FONT CLASS="This">this</FONT>.messageRenderer.setInstallerContext(<FONT CLASS="This">this</FONT>);
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>    }
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>    
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>    <FONT CLASS="Public">public</FONT> <A HREF="../../../org/tp23/antinstaller/renderer/AntOutputRenderer.java.html">AntOutputRenderer</A> getAntOutputRenderer() {
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>        <FONT CLASS="Return">return</FONT> antOutputRenderer;
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>    }
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>    
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setAntOutputRenderer(<A HREF="../../../org/tp23/antinstaller/renderer/AntOutputRenderer.java.html">AntOutputRenderer</A> antOutputRenderer) {
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>        <FONT CLASS="This">this</FONT>.antOutputRenderer = antOutputRenderer;
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>    }
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>    
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>    <FONT CLASS="Public">public</FONT> <A HREF="../../../org/tp23/antinstaller/page/Page.java.html">Page</A> getCurrentPage() {
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>        <FONT CLASS="Return">return</FONT> currentPage;
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>    }
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>    
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setCurrentPage(<A HREF="../../../org/tp23/antinstaller/page/Page.java.html">Page</A> currentPage) {
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>        <FONT CLASS="This">this</FONT>.currentPage = currentPage;
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>    }
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>     * in SelfExtractor - the directory the install has extracted to &lt;br/&gt;
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>     * in Scripted installs - the base directory of the install      &lt;br/&gt;
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>     * in NonExtractor - the temporary space created for the build   &lt;br/&gt; 
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>     * @return 
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>     */</FONT>
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>    <FONT CLASS="Public">public</FONT> File getFileRoot() {
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>        <FONT CLASS="Return">return</FONT> fileRoot;
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>    }
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setFileRoot(File fileRoot) {
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>        <FONT CLASS="This">this</FONT>.fileRoot = fileRoot;
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>    }
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>    <FONT CLASS="Public">public</FONT> org.apache.tools.ant.BuildListener getBuildListener() {
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>        <FONT CLASS="Return">return</FONT> buildListener;
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>    }
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setBuildListener(org.apache.tools.ant.BuildListener buildListener) {
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>        <FONT CLASS="This">this</FONT>.buildListener = buildListener;
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>    }
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>    <FONT CLASS="Public">public</FONT> <A HREF="../../../org/tp23/antinstaller/runtime/exe/AntLauncherFilter.java.html">AntLauncherFilter</A> getAntRunner() {
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>        <FONT CLASS="Return">return</FONT> antRunner;
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>    }
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setAntRunner(<A HREF="../../../org/tp23/antinstaller/runtime/exe/AntLauncherFilter.java.html">AntLauncherFilter</A> antRunner) {
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>        <FONT CLASS="This">this</FONT>.antRunner = antRunner;
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>    }
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>    <FONT CLASS="Public">public</FONT> <A HREF="../../../org/tp23/antinstaller/runtime/Logger.java.html">Logger</A> getLogger() {
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>        <FONT CLASS="Return">return</FONT> logger;
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>    }
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setLogger(<A HREF="../../../org/tp23/antinstaller/runtime/Logger.java.html">Logger</A> logger) {
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>        <FONT CLASS="This">this</FONT>.logger = logger;
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>    }
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>
+<FONT CLASS="LN">13</FONT><A NAME="213"></A>    <FONT CLASS="Public">public</FONT> <A HREF="../../../org/tp23/antinstaller/runtime/Runner.java.html">Runner</A> getRunner() {
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>        <FONT CLASS="Return">return</FONT> runner;
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>    }
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setRunner(<A HREF="../../../org/tp23/antinstaller/runtime/Runner.java.html">Runner</A> runner) {
+<FONT CLASS="LN">18</FONT><A NAME="218"></A>        <FONT CLASS="This">this</FONT>.runner = runner;
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>    }
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setInstaller(<A HREF="../../../org/tp23/antinstaller/Installer.java.html">Installer</A> installer) {
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>        <FONT CLASS="This">this</FONT>.installer = installer;
+<FONT CLASS="LN">23</FONT><A NAME="223"></A>    }
+<FONT CLASS="LN">24</FONT><A NAME="224"></A>
+<FONT CLASS="LN">25</FONT><A NAME="225"></A>    <FONT CLASS="Public">public</FONT> String getUIOverride() {
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>        <FONT CLASS="Return">return</FONT> uIOverride;
+<FONT CLASS="LN">27</FONT><A NAME="227"></A>    }
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>
+<FONT CLASS="LN">29</FONT><A NAME="229"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setUIOverride(String override) {
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>        uIOverride = override;
+<FONT CLASS="LN">31</FONT><A NAME="231"></A>    }
+<FONT CLASS="LN">32</FONT><A NAME="232"></A>    
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> isAutoBuild(){
+<FONT CLASS="LN">34</FONT><A NAME="234"></A>        <FONT CLASS="Return">return</FONT> uIOverride != <FONT CLASS="Null">null</FONT> &amp;&amp; uIOverride.indexOf(<FONT CLASS="StringLiteral">"-auto"</FONT>) &gt; -<FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">35</FONT><A NAME="235"></A>    }
+<FONT CLASS="LN">36</FONT><A NAME="236"></A>
+<FONT CLASS="LN">37</FONT><A NAME="237"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">38</FONT><A NAME="238"></A>     * RFE 1569628, the antinstaller config file to use, defaults to antinstall-config.xml
+<FONT CLASS="LN">39</FONT><A NAME="239"></A>     * @return
+<FONT CLASS="LN">40</FONT><A NAME="240"></A>     */</FONT>
+<FONT CLASS="LN">41</FONT><A NAME="241"></A>    <FONT CLASS="Public">public</FONT> String getInstallerConfigFile() {
+<FONT CLASS="LN">42</FONT><A NAME="242"></A>        <FONT CLASS="Return">return</FONT> installerConfigFile;
+<FONT CLASS="LN">43</FONT><A NAME="243"></A>    }
+<FONT CLASS="LN">44</FONT><A NAME="244"></A>
+<FONT CLASS="LN">45</FONT><A NAME="245"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setInstallerConfigFile(String installerConfigFile) {
+<FONT CLASS="LN">46</FONT><A NAME="246"></A>        <FONT CLASS="This">this</FONT>.installerConfigFile = installerConfigFile;
+<FONT CLASS="LN">47</FONT><A NAME="247"></A>    }
+<FONT CLASS="LN">48</FONT><A NAME="248"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">49</FONT><A NAME="249"></A>     * RFE 1569628, the build file to use, defaults to build.xml
+<FONT CLASS="LN">50</FONT><A NAME="250"></A>     * There should never be any path info, that is derived elsewhere
+<FONT CLASS="LN">51</FONT><A NAME="251"></A>     * @return
+<FONT CLASS="LN">52</FONT><A NAME="252"></A>     */</FONT>
+<FONT CLASS="LN">53</FONT><A NAME="253"></A>    <FONT CLASS="Public">public</FONT> String getAntBuildFile() {
+<FONT CLASS="LN">54</FONT><A NAME="254"></A>        <FONT CLASS="Return">return</FONT> antBuildFile;
+<FONT CLASS="LN">55</FONT><A NAME="255"></A>    }
+<FONT CLASS="LN">56</FONT><A NAME="256"></A>
+<FONT CLASS="LN">57</FONT><A NAME="257"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setAntBuildFile(String antBuildFile) {
+<FONT CLASS="LN">58</FONT><A NAME="258"></A>        <FONT CLASS="This">this</FONT>.antBuildFile = antBuildFile;
+<FONT CLASS="LN">59</FONT><A NAME="259"></A>    }
+<FONT CLASS="LN">60</FONT><A NAME="260"></A>
+<FONT CLASS="LN">61</FONT><A NAME="261"></A>    <FONT CLASS="Public">public</FONT> String getConfigResource() {
+<FONT CLASS="LN">62</FONT><A NAME="262"></A>        <FONT CLASS="Return">return</FONT> configResource;
+<FONT CLASS="LN">63</FONT><A NAME="263"></A>    }
+<FONT CLASS="LN">64</FONT><A NAME="264"></A>
+<FONT CLASS="LN">65</FONT><A NAME="265"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setConfigResource(String configResource) {
+<FONT CLASS="LN">66</FONT><A NAME="266"></A>        <FONT CLASS="This">this</FONT>.configResource = configResource;
+<FONT CLASS="LN">67</FONT><A NAME="267"></A>    }
+<FONT CLASS="LN">68</FONT><A NAME="268"></A>}
+<FONT CLASS="LN">69</FONT><A NAME="269"></A>
+<FONT CLASS="LN">70</FONT><A NAME="270"></A>
+<FONT CLASS="LN">71</FONT><A NAME="271"></A>
+<FONT CLASS="LN">72</FONT><A NAME="272"></A></pre>
+</BODY>
+</HTML>

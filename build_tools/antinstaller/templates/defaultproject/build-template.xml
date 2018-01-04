@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!--
+This is the build.xml run by AntInstaller for the installer
+-->
+
+<project name="Installation"  default=""  basedir="${basedir}">
+
+	<!-- this is required to pick up the properties generated during the install pages -->
+	<property file="${basedir}/ant.install.properties"/>
+
+
+	<target name="default" depends="">
+		<echo message="Createing Installation directory"/>
+		<mkdir dir="${installDir}"/>
+	
+		<!--Scripts
+		<echo message="Installing Scripts files"/>
+		<mkdir dir="${installDir}/bin"/>
+		<unzip src="${antinstaller.jar}" dest="${installDir}">
+			<patternset>
+				<include name="bin/*.sh"/>
+				<include name="bin/*.ksh"/>
+				<include name="bin/*.csh"/>
+				<include name="bin/*.cmd"/>
+				<include name="bin/*.bat"/>
+			</patternset>
+		</unzip>
+		<chmod file="${installDir}/bin/*.sh" perm="774"/>
+		<chmod file="${installDir}/bin/*.ksh" perm="774"/>
+		<chmod file="${installDir}/bin/*.csh" perm="774"/>
+		Scripts-->
+	
+		<!--Libraries
+		<echo message="Installing Libraries files"/>
+		<mkdir dir="${installDir}/lib"/>
+		<unzip src="${antinstaller.jar}" dest="${installDir}">
+			<patternset>
+				<include name="lib/*"/>
+			</patternset>
+		</unzip>
+		Libraries-->
+	
+		<!--Classes
+		<echo message="Installing Class files"/>
+		<mkdir dir="${installDir}/classes"/>
+		<unzip src="${antinstaller.jar}" dest="${installDir}">
+			<patternset>
+				<include name="classes/**/*"/>
+			</patternset>
+		</unzip>
+		Classes-->
+	</target>
+
+	<!--Documentation
+	<target name="tgdoc" depends="">
+		<echo message="Installing Documentation files"/>
+		<mkdir dir="${installDir}/doc"/>
+		<unzip src="${antinstaller.jar}" dest="${installDir}">
+			<patternset>
+				<include name="doc/**/*"/>
+			</patternset>
+		</unzip>
+	</target>
+	Documentation-->
+	
+	<!--SourceCode
+	<target name="tgsrc" depends="">
+		<echo message="Installing Source files"/>
+		<mkdir dir="${installDir}/src"/>
+		<unzip src="${antinstaller.jar}" dest="${installDir}">
+			<patternset>
+				<include name="src/**/*"/>
+			</patternset>
+		</unzip>
+	</target>
+	SourceCode-->
+
+	<target name="cleanuptarget" depends="">
+	</target>
+</project>

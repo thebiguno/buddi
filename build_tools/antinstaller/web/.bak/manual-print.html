@@ -1,0 +1,1238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Ant Installer</title>
+  <link href="style-print.css" type="text/css" rel="stylesheet">
+  <link rel="SHORTCUT ICON" href="images/antinstaller-icon.png">
+  <meta name="keywords"
+ content="Ant, installer, AntInstall, gui, console, input, parameters, properties, swing, user interface, valiation, configuration">
+</head>
+<body>
+<table cellspacing="0" width="100%">
+  <tbody>
+    <tr class="tpheader">
+      <th class="tpleft">
+      </th>
+      <th class="tptop" valign="bottom">
+				<img src="space.gif" height="1" width="440"><br>
+				
+				<table>
+					<tr>
+						<td valign="top">
+							<div class="tpheadertitle">AntInstaller</div>
+							<!--img src="images/ant-install-title.png" alt="AntInstaller"/-->
+						</td>
+						<td width="100%" align="right" valign="bottom" nowrap="true">
+				<div class="tpraised">
+				<a class="tpbutton" href="index.html">home</a>
+				<a class="tpbutton" href="http://sourceforge.net/project/showfiles.php?group_id=123466&amp;package_id=134917">download</a>
+				<a class="tpbutton" href="http://sf.net">sourceforge</a> 
+				<a class="tpbutton" href="manual/manual/index.html">antmanual</a> 
+				<a class="tpbutton" href="http://sourceforge.net/tracker/?group_id=123466&amp;atid=696615">RFEs</a> 
+				<a class="tpbutton" href="http://sourceforge.net/tracker/?group_id=123466&amp;atid=696612">Bugs</a></div>
+						</td>
+					</tr>
+				</table>
+      </th>
+    </tr>
+    <tr class="tpbody">
+      <td valign="bottom">
+			<br/>
+			<br/><br/></td>
+      <td class="tpright" valign="top">
+      <div class="tpcontent">
+			<!--[segment-content] page content start -->
+      			<div align="right"><a href="manual-print.html">Printable version</a></div>
+                           <h2>Manual</h2>
+To set up an AntInstall there are a few requirements.
+      <ul>
+        <li>The <a href="#config"><code>antinstall-config.xml</code></a> file to describe
+the installation</li>
+        <li>The <code>build.xml</code> ant script to run, with targets
+that should match values in <code>antinstall-config.xml</code> </li>
+        <li>The resources to run the installer e.g. antinstaller.jar
+and ant.jar</li>
+        <li>The <a href="#scripts">scripts</a> to run the installer e.g. <code>install.sh</code></li>
+        <li>The resources to install</li>
+			</ul>
+      <ul>
+				<li>The installer can be delivered as a <a href="#extractor">self extracting JAR</a></li>
+				<li>The installer can be run directly form the Jar see <a href="#non-extractor">non extracting JAR</a>
+				Resources are extracted from the Jar during the Ant build.</li>
+				<li>Since version beta0.5 <a href="#refs">dynamic references</a> can be used in default values.</li>
+				<li>Displaying pages based on user selections on previous pages. <a href="#pagedisplay">Page displaying</a></li>
+			</ul>
+			<a name="config"></a>
+			      <h3><code>antinstall-config.xml</code></h3>
+
+This part of the guide is the reference manual for the
+configuration of <code>antinstall-config.xml</code>. The config file
+is a simple XML file that describes the pages to display to the user,
+and the input the user must enter. <br>
+A simple example might be a License page to show the license of the
+software, followed by a page asking the user for their name and email.
+The next page would allow the user to choose the components to install
+(binaries, source, documentation) and the progress page with an install
+button to perform the installation. <br>
+        <br>
+The config file must always have a root element installer with some
+requried attributes as follows. <br>
+        <br>
+        <pre>&lt;installer<br>	ui="swing,text"<br>	verbose="false"<br>	lookAndFeel="com.jgoodies.plaf.plastic.PlasticXPLookAndFeel"<br>	name="Test Installer"<br>	windowIcon="/resources/gkmain_inv.png"<br>	defaultImageResource="/resources/greens.png"<br>	minJavaVersion="1.4"&gt;<br>		<br>		...<br>			</pre>
+The file is then made up of <code>page</code> elements containing <code>input</code>
+elements. <br>
+        <br>
+        <ul>
+          <li><a href="#installer">Installer</a></li>
+          <li><a href="#page">Pages</a>
+						<ul>
+							<li><a href="#pagesplash">Splash Page</a></li>
+							<li><a href="#pagelicense">License Page</a></li>
+							<li><a href="#pageinput">Input Page</a></li>
+							<li><a href="#pageprogress">Progress Page</a></li>
+						</ul>
+					</li>
+          <li><a href="#inputtypes">Input types</a>
+						<ul>
+							<li><a href="#checkbox">Checkbox</a></li>
+							<li><a href="#comment">Comment</a></li>
+							<li><a href="#directory">Directory</a></li>
+							<li><a href="#app-root">Application Root</a></li>
+							<li><a href="#file">File</a></li>
+							<li><a href="#select">Select</a></li>
+							<li><a href="#target-select">Target Select</a></li>
+							<li><a href="#large-select">Large Select</a></li>
+							<li><a href="#target">Target</a></li>
+							<li><a href="#text">Unvalidated Text</a></li>
+							<li><a href="#validated">Validated Text</a></li>
+							<li><a href="#extvalidated">Externally Validated Text</a></li>
+							<li><a href="#date">Date</a></li>
+							<li><a href="#password">Password Text</a></li>
+						</ul>
+					</li>
+        </ul>
+        <br>
+        <br>
+        <table class="manual" cellspacing="0">
+          <tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="installer">&lt;installer&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">The <code>installer</code> element is
+the root element of the config and has the following attributes.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>ui</td>
+              <td>Indicates the supported installation modes</td>
+              <td>swing,text</td>
+            </tr>
+            <tr>
+              <td>verbose</td>
+              <td>Print more info the the install log file and more
+info in the <code>ant.install.properties</code> file. N.B. the properties file may not be written if the installer
+can not write to the current directory.</td>
+              <td>true</td>
+            </tr>
+            <tr>
+              <td>debug</td>
+              <td>Setting this flag prevents the temporary directory from being deleted on exit, this is useful for debugging
+							install scripts.  It should normally be set to false or ommited for a final installer. </td>
+              <td>false</td>
+            </tr>
+            <tr>
+              <td>lookAndFeel</td>
+              <td>The LookAndFeel class for the installer or one of the standard entries. The classes must be on the classpath in the installer start script or inside the installer Jar.  There are a few standarad entries for this 
+field to set default LookAndFeels.  
+<ul>
+<li><code>"null"</code> - The string "null" is used to set the default LookAndFeel determined by Java (no extra classes required)</li>
+<li><code>"jgoodies"</code> - Used to set the default LookAndFeel for AntInstaller org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel 
+(<code>jgoodies-edited-1_2_2.jar</code> or it contents must be on the classpath)</li>
+<li><code>"native"</code> - Used to set the native LookAndFeel for the runtime Operating System (no extra classes required)</li>
+<li><code>"greymetal"</code> - Used to set the cutdown MetalLookAndFeel included with AntInstaller.  This is the same as MetalLookAndFeel witha  grey theme and no bold fonts unless specified in the <code>antinstall-config.xml</code> file (no extra classes required)</li>
+</ul>
+If the lookAndFeel attribute is missing <code>jgoodies</code> is assumed.  If the LookAndFeel can not be loaded a message will be added to the log file and the install will continue with the Java default.
+							</td>
+              <td>
+							net.sourceforge.mlf.metouia.<br/>MetouiaLookAndFeel<br/><br/>
+							jgoodies</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>The name of the installer, this will appear in the
+title of the installer GUI window.</td>
+              <td>My Installer</td>
+            </tr>
+            <tr>
+              <td>windowIcon</td>
+              <td>This is the resource name of the icon for the
+installer window. It is a string that is used to load the resource from
+the classpath so the image must be in one of the jars on the classpath
+of the install start script.  In the self installer it must be in the correct directory
+of the Jar.</td>
+              <td>/resources/gkmain_inv.png</td>
+            </tr>
+            <tr>
+              <td>defaultImageResource</td>
+              <td>This is the resource image used for the top of the
+installer GUI by default, it can be overridden for individual pages.</td>
+              <td>/resources/greens.png</td>
+            </tr>
+            <tr>
+              <td>minJavaVersion</td>
+              <td>The minimum Java version for the installer, this is
+currently not supported, but will be in future versions.</td>
+              <td>1.4</td>
+            </tr>
+            <tr>
+              <td>finishButtonText</td>
+              <td>The text displayed on the install button. If not specified, the default is "Install".  This has been
+							added since Antinstaller can be used as a GUI for other Ant builds, in which case "Build" would
+							be more appropriate.</td>
+              <td>Install</td>
+            </tr>
+            <tr>
+              <td>antialiased</td>
+              <td>If this attribute is set to <code>true</code> and the LookAndFeel is <code>org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel</code> or <code>jgoodies</code> the Swing GUI will render using Java 2D antialiasing for the text.  This is resource intensive and may slow
+							the GUI down unacceptably on older PCs, but does look better.</td>
+              <td>false</td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        <br>
+        <table class="manual" cellspacing="0">
+          <tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="page">&lt;page&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">Pages entries in the XML file represent a
+single window in the installer moved through by the user by selecting
+"Next &gt;&gt;" (or pressing enter) all pages have the following
+atributes.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td><b>type</b></td>
+              <td>The type of page one of four options, progress,
+license, splash or input.</td>
+              <td>input</td>
+            </tr>
+            <tr>
+              <td>name</td>
+              <td>A unique name for the page.</td>
+              <td>User properties</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown at the top of the page.</td>
+              <td>Install Options</td>
+            </tr>
+            <tr>
+              <td>imageResource</td>
+              <td>The image to be shown at the top of the page, overriding the defaultImageResource defined
+							in the installer element.</td>
+              <td>Install Options</td>
+            </tr>
+            <tr>
+              <td>target</td>
+              <td>An ant target that will always be run from the <code>build.xml</code>
+file. This attribute is optional see the Target input type if you wish
+to show a targets that can be selected by the user.</td>
+              <td>clean</td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        <br>
+        <table class="manual" cellspacing="0">
+          <tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="splash">&lt;page
+type="splash"&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">Displays a graphical image page in the Swing GUI</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>splashResource</td>
+              <td>The image resource used for the splash image. The resource must be available on the classpath
+							at runtime.</td>
+              <td>/resources/large-logo-image.png</td>
+            </tr>
+            <tr>
+              <td>altText</td>
+              <td>Alternative text for the console mode</td>
+              <td>Welcome to the installer app</td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        <br>
+        <table class="manual" cellspacing="0">
+          <tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="pagelicense">&lt;page
+type="license"&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">Shows a single license file in a
+scrollable window to the user.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>resource</td>
+              <td>The license text file resource, must be on the
+classpath.</td>
+              <td>/resources/GPL.txt</td>
+            </tr>
+            <tr>
+              <td>usePaging</td>
+              <td>In text mode this parameter stops the scrolling of the license text at 20 lines,
+							and provides options to view the next page or skip to the end.  The default is false.</td>
+              <td>true</td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        <br>
+        <table class="manual" cellspacing="0">
+          <tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="pageinput">&lt;page
+type="input"&gt;</a>
+							</th>
+            <tr>
+              <td colspan="3">A page for adding input types listed
+below. An installer can have as many input pages as desired. </td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>ifTarget</td>
+              <td>This page will be show if the named target has previously been selected.  This can be used to 
+							conditionally show installation pages when certain parts of the <code>build.xml</code> script are to be run and not
+							if they are to be omitted.</td>
+              <td>documentation</td>
+            </tr>
+            <tr>
+              <td>ifProperty</td>
+              <td>This page will be shown if the property has the correct value.  This can be used to 
+		conditionally show installation pages when certain properties match
+		The format of the property is simple <code>${name}=value</code>.  There must be no spaces
+		and both the property and value are case sensitive.  It is a good idea to use a <code>select</code> input type
+		for the value since free text entered by the user is unlikely to match exactly in case and whitespace or use validated
+		text fields.  
+N.B. to run tasks based on properties consider the <a href="http://ant-contrib.sourceforge.net">ant-contrib</a> packages. <br/>
+		The new syntax allows for environment variable checks such as <code>${env.DISPLAY}=:0.0</code>
+		<br/><br/>
+		<b>N.B. the old syntax <code>name=value</code> is deprecated.</b> Until the old syntax is removed it is <b>not</b> possible to 
+		place and = sign as a property name.<br/>
+		e.g. <code>${prop.col=back}=#0000FF</code> will break the simple parser.
+		<br/><br/>
+		The following operators are supported
+		<ul>
+								<li> = equals. not assignment as in Java</li>
+								<li> == equals same as above for those that wish to be specific</li>
+								<li> != not equals or null</li>
+								<li> $= ends with, the $ is used from regex for end of line</li>
+								<li> ^= starts with, again ^from regular expressions</li>
+								<li> += greater than, only for numbers</li>
+								<li> -= less than, only for numbers. The installer should validate to ensure the property is a valid number 
+								or exceptions will be thrown.  The rather strange -=  and += syntax is used because &gt; and &lt;
+								must be escaped to &amp;gt; and &amp;lt; in XML attributes and the legibility
+								of the configuration files would be impared.</li>
+								<li> !=null not null, the property must be specified. This is usefull for testing the existence of environment variable for example ${env.ANT_HOME}!=null.  N.B. the empty string "" also tests to null, if a property exists
+								in the config file it <b>is</b> possible for the user to set the value to null by erasing the text in
+								a text entry type</li>
+								<li> ==null is null or empty</li>
+							</ul>
+							It is probably a bad idea to use any character that is not a letter or number in a property name
+							because these operators may be extended in the future
+							</td>
+              <td>${myProperty}=value23</td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        <br>
+        <table class="manual" cellspacing="0">
+          <tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="pageprogress">&lt;page
+type="progress"&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">A page for showing the user the progress
+of the installation. This page contains the "Install" Button, so all
+installers should end with a progress page. Currently it is not checked
+that an installer ends with a progress page so the creator of the <code>antinstall-config.xml</code>
+should ensure it does.</td>
+            </tr>
+            <tr>
+              <td>showTargets</td>
+              <td>When this flag is true, in the Swing GUI, a graphical representation of 
+              the targets being run and the dependent targets found is displayed.</td>
+              <td>true</td>
+            </tr>
+          </tbody>
+        </table>
+<br><a name="inputtypes"></a><h3>Input Types</h3>
+Input types represent fields in which users can input values or make selections. <br>
+The input type element is
+also used to display text to the user.  While there is no limit to the number of comments or text you can add in the
+config file, the GUI only has a limited amount of space.  Check your config with your choosen Look And Feel to ensure
+that instructions are not cropped.<br>
+All input types accept the <code>explanatoryText</code> attribute, where multi-line comments can be added.
+The GUI has a fixed width available for the <code>displayText</code> attribute which often does not provide much space.
+Single line comments can be added with the <code>comment</code> type.<br>
+If anyone has a serious requirement to include more text that is currently possible post an RFE and I will look into 
+tool tip popups or a scrollable text box or perhaps instructions that can launch in a help window.  This has not been added yet
+since it is much more difficult to implement in the command line UI, and as yet we have no requirement.
+<br><br>
+				<table class="manual" cellspacing="0">
+          <tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="checkbox">&lt;checkbox&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">The check box input is used for boolean
+input, a check box in the gui and a true false option on the command
+line.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>property</td>
+              <td>The name of the property to be set in the <code>ant.install.properties</code>
+file the value will be true or false.</td>
+              <td>my.property</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the option.</td>
+              <td>Enable all security options</td>
+            </tr>
+            <tr>
+              <td>defaultValue</td>
+              <td>The default for the check box.</td>
+              <td>true</td>
+            </tr>
+            <tr>
+              <td>force</td>
+              <td>Force the option selected to be the default value.
+This can be used to indicate that the option is required. For example,
+an installer could be delivered where "Enable all security options" is
+always selected.</td>
+              <td>false</td>
+            </tr>
+					</tbody>
+				</table>
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="comment">&lt;comment&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">The comment input displays text to the
+user and does not accept any type of input.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the option.</td>
+              <td>W</td>
+            </tr>
+            <tr>
+              <td>bold</td>
+              <td>Display the comment in bold, in the GUI version.</td>
+              <td>true</td>
+            </tr>
+            <tr>
+              <td>title</td>
+              <td>Display the comment in a larger font in the GUI or in
+capitals in the command line.</td>
+              <td>false</td>
+            </tr>
+					</tbody>
+				</table>
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="directory">&lt;directory&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">The directory input allows the user to
+select a directory.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>property</td>
+              <td>The name of the property to be set in the <code>ant.install.properties</code>
+file the value will be the absolute path to the directory.</td>
+              <td>file.property</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the option.</td>
+              <td>Select an installation directory</td>
+            </tr>
+            <tr>
+              <td>defaultValue</td>
+              <td>The default for the directory.</td>
+              <td>/var/log</td>
+            </tr>
+            <tr>
+              <td>defaultValueWin</td>
+              <td>The default for the directory for windows installations.</td>
+              <td>C:\Program Files\myapp</td>
+            </tr>
+            <tr>
+              <td>create</td>
+              <td>If this is true and the directory entered does not
+exist the user will be asked if the directory should be created.</td>
+              <td>true</td>
+            </tr>
+            <tr>
+              <td>checkExists</td>
+              <td>If true the installation will not continue unless the
+directory selected exists. The user will have to select a directory
+that does exist, create it or cancel the install. If create is true and
+the directory does not exist the user simply has to agree to have the
+directory created.</td>
+              <td>false</td>
+            </tr>
+					</tbody>
+				</table>
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="app-root">&lt;app-root&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">The directory input allows the user to
+select a directory. The existence of files is then checked during
+validation to ensure the user has selected the correct directory. This
+can be used so a user can select the installation directory of a
+previously installed application. The directory can then be validated
+against 2 known files and 2 known directories that should exist.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>property</td>
+              <td>The name of the property to be set in the <code>ant.install.properties</code>
+file the value will be the absolute path to the directory.</td>
+              <td>file.property</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the option.</td>
+              <td>Select an installation directory</td>
+            </tr>
+            <tr>
+              <td>defaultValue</td>
+              <td>The default for the directory.</td>
+              <td>/usr/local/jakarta-tomcat-4.0.1</td>
+            </tr>
+            <tr>
+              <td>defaultValueWin</td>
+              <td>The default for the directory for windows installations.</td>
+              <td>C:\Program Files\Existing Application</td>
+            </tr>
+            <tr>
+              <td>checkFile1</td>
+              <td>The relative path of a file based on the user
+selected directory. When the installer is run this file will be checked
+to see if it exists (optional).</td>
+              <td>conf/server.xml</td>
+            </tr>
+            <tr>
+              <td>checkFile2</td>
+              <td>A second file to check (optional).</td>
+              <td>conf/server.xml</td>
+            </tr>
+            <tr>
+              <td>checkDir1</td>
+              <td>The relative path of a directory based on the user
+selected directory (optional).</td>
+              <td>webapps</td>
+            </tr>
+            <tr>
+              <td>checkDir2</td>
+              <td>A second directory to check (optional).</td>
+              <td>conf</td>
+            </tr>
+					</tbody>
+				</table>
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="file">&lt;file&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">The file input allows the user to select
+a file</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>property</td>
+              <td>The name of the property to be set in the <code>ant.install.properties</code>
+file the value will be the absolute path to the file.</td>
+              <td>file.property</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the option.</td>
+              <td>Select the weblogic configuration file</td>
+            </tr>
+            <tr>
+              <td>defaultValue</td>
+              <td>The default for the file.</td>
+              <td>/var/log</td>
+            </tr>
+            <tr>
+              <td>defaultValueWin</td>
+              <td>The default for the file when installing on windows.</td>
+              <td>C:\log</td>
+            </tr>
+            <tr>
+              <td>checkExists</td>
+              <td>If true the installation will not continue unless the
+file selected exists. The user will have to select a file that does
+exist, create the file or cancel the install. If you want to create the
+file during the install if it does not exist use Ant.</td>
+              <td>false</td>
+            </tr>
+					</tbody>
+				</table>
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="select">&lt;select&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">The select input allows the user to
+select from a list of options. This will be represented as a group of
+radio buttons or a numbered list on the command line. An input type of
+select should have at least two child elements called <code>&lt;option&gt;</code> with the
+attributes <code>text</code> and <code>value</code>. The text is displayed next to the option and
+the value is the value set into the property. <br/>
+N.B. the defaultValue
+should be blank or one of the values in one of the options.  This is not checked by AntInstaller
+but is a requirement, there are no guarantees if you don't RTFM.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>property</td>
+              <td>The name of the property to be set in the <code>ant.install.properties</code>
+file. The value will be the text of one of the option value attributes.</td>
+              <td>file.property</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the options available.</td>
+              <td>Select your favorite colour</td>
+            </tr>
+            <tr>
+              <td>defaultValue</td>
+              <td>The default for the option this should match one of
+the options values.</td>
+              <td>#FF0000</td>
+            </tr>
+					</tbody>
+				</table>
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="target-select">&lt;target-select&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">The target-select input allows the user to
+select targets from a list of options. This will be represented as a group of
+radio buttons or a numbered list on the command line. This input type is almost identical to the select
+input type but the value as well as being recorded as a property is set as a target.<br/>
+An input type of target-select should have at least two child elements called <code>&lt;option&gt;</code> with the
+attributes <code>text</code> and <code>value</code>. The text is displayed next to the option and
+the value is the target to be run (and the value set into the property).
+N.B. the defaultValue
+should be blank or one of the values in one of the options.  This is not checked by AntInstaller at runtime
+but is a requirement, there are no guarantees if you don't RTFM.  You should use the checkConfig script to validate the config.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>property</td>
+              <td>The name of the property to be set in the <code>ant.install.properties</code>
+file. The value will be the text of one of the option value attributes and will be the target that is run.</td>
+              <td>target.property</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the options available.</td>
+              <td>Select your favorite colour</td>
+            </tr>
+            <tr>
+              <td>defaultValue</td>
+              <td>The default for the option this should match one of
+the options values.</td>
+              <td>fulldocs</td>
+            </tr>
+					</tbody>
+				</table>
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="large-select">&lt;large-select&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">The large select has identical options to the <code>select</code> input above. 
+							Large select enables the list of options to be greater and is displayed differently.
+							In the Swing GUI the options are rendered as a drop-down list. In the text/console UI
+							the options are shown to the user 20 lines at a time.</td>
+            </tr>
+					</tbody>
+				</table>
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="target">&lt;target&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">The target input shows a check box, if
+the user selects the target the Ant target will be run when the
+installation starts. The order of the targets in the list is
+significant, and the targets will be run in that order. If there is
+more than one Page with target entry types or there is a page with a
+target attribute the targets will be run in the order they appear in
+the config file.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>target</td>
+              <td>The name of the target to be run it must exist in the
+build.xml file delivered with the install.</td>
+              <td>installSource</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the options available.</td>
+              <td>Do you want to install the source code.</td>
+            </tr>
+            <tr>
+              <td>defaultValue</td>
+              <td>true or false, determines if the check box is
+selected by default.</td>
+              <td>true</td>
+            </tr>
+            <tr>
+              <td>force</td>
+              <td>If true the checkbox will not be editable and will be
+set to the value in the defaultValue attribute.  This can be used to indicate that installing
+this component is not optional.</td>
+              <td>false</td>
+            </tr>
+            <tr>
+              <td>osSpecific</td>
+              <td>If the osSpecific flag is set the Operating System of the current system will
+be appended to the name of the target actually run by Ant so that different
+targets can be run according to the final deployment platform.
+This feature goes against the principles of
+building cross platform installers, but is provided so that common installer
+tasks such as creating icons and shortcuts can be run using the platform specific executables.
+</td>
+              <td>false</td>
+            </tr>
+            <tr>
+              <td>strict</td>
+              <td>Currently there are two modes for OS specific targets strict and not strict (lax). <br/>
+Strict target will return the target name plus the exact String in the
+System Property "os.name" this means you will have to provide targets for
+every possible OS version. See
+<a href="http://lopica.sourceforge.net/os.html">this page</a> for a list of possible values.
+There are a great many but you may not want to consider some of the options.<br/><br/>
+Lax target will return one of the following strings only
+<ul>
+	<li>"[target-name]-linux" - Linux </li>
+	<li>"[target-name]-mac" - Mac OS and Mac OS X</li>
+	<li>"[target-name]-sun" - SunOS and Solaris</li>
+	<li>"[target-name]-win" - Windows</li>
+	<li>"[target-name]-other" - any thing else</li>
+</ul> 
+so you only have to create 5 ant targets to support all the cases.  It is pretty hard
+to support windows bit with this system, if anyone needs to specifically support this and does not
+want to use the existing strict mechanism, get in touch.  JDK1.4 on Win16 boxes strikes me as
+an unlikely combination ;)
+							</td>
+              <td>false</td>
+            </tr>
+					</tbody>
+				</table>
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="text">&lt;text&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">An text input entry is a field into which
+the user can write any text (or no text).</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>property</td>
+              <td>The name of the property to be set in the <code>ant.install.properties</code>
+file, the value will be the text entered by the user.</td>
+              <td>name.property</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the text to be
+entered.</td>
+              <td>Enter your name</td>
+            </tr>
+            <tr>
+              <td>defaultValue</td>
+              <td>The default value if the user enters no text or displayed as a default in the GUI.</td>
+              <td>${java.user.name}</td>
+            </tr>
+					</tbody>
+				</table>
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="validated">&lt;validated&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">A validated text input entry is a text
+field into which the user can write any text but the installation will
+not continue unless the text entered matches a regular expression
+provided.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>property</td>
+              <td>The name of the property to be set in the <code>ant.install.properties</code>
+file, the value will be the text entered by the user.</td>
+              <td>server.url</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the text to be
+entered.</td>
+              <td>Enter your name</td>
+            </tr>
+            <tr>
+              <td>defaultValue</td>
+              <td>The default value if the user enters no text, this
+should be valid according to the regular expression.</td>
+              <td>true</td>
+            </tr>
+            <tr>
+              <td>regex</td>
+              <td>The regular expression used to validate the text, the
+whole regex should match the text entered.</td>
+              <td>^[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]$</td>
+            </tr>
+					</tbody>
+				</table>
+				
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="extvalidated">&lt;ext-validated&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">An externally validated text input entry is a text
+field into which the user can write any text but the installation will
+not continue unless the text entered passes a validation function.  The validation function is not part
+of AntInstaller, a fully qualified classname (that is on the classpath at runtime) is specified which AntInstaller
+executes to validate.  One instance will be created per input element which should conform to the interface
+<code>org.tp23.antinstaller.input.Validator</code>. <br/>  
+This feature is not tested but does provide flexibility in validating input, if you use this feature please
+report back you results (success or failures) to the AntInstaller project pages.  We wish to discuss
+integrating external validation into the Localization of the installers (when it happens) with 
+active users of this feature.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>property</td>
+              <td>The name of the property to be set in the <code>ant.install.properties</code>
+file, the value will be the text entered by the user.</td>
+              <td>server.url</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the text to be entered.</td>
+              <td>Choose an open network port</td>
+            </tr>
+            <tr>
+              <td>defaultValue</td>
+              <td>The default value if the user enters no text, this
+should be valid according to the external validator.</td>
+              <td>true</td>
+            </tr>
+            <tr>
+              <td>validationClass</td>
+              <td>The class used as a Validator</td>
+              <td>com.me.val.PortOpenValidator</td>
+            </tr>
+					</tbody>
+				</table>
+				
+				
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="date">&lt;date&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">A text input entry that must be a valid
+date. The dateformat string must be compatible with <code>java.text.SimpleDateformat</code>
+By default the format is english dates <code>dd/MM/yyyy</code> but can be
+changed to any valid format. If the date field is used in an installer it is not possible to enter blank dates.</td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>property</td>
+              <td>The name of the property to be set in the <code>ant.install.properties</code>
+file, the value will be the date entered by the user.</td>
+              <td>mydate.property</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the date to be
+entered.</td>
+              <td>Enter your name</td>
+            </tr>
+            <tr>
+              <td>defaultValue</td>
+              <td>The default value if the user enters no text, this
+should be valid according to the date format. Alternatively the String <code>TODAY</code>
+may be entered and the default value will be the time the installer is
+run.</td>
+              <td>true</td>
+            </tr>
+            <tr>
+              <td>dateFormat</td>
+              <td>The expression used to create the DateFormat.</td>
+              <td>dd-MM-yy</td>
+            </tr>
+					</tbody>
+				</table>
+				<br/>
+				<table class="manual" cellspacing="0">
+					<tbody>
+            <tr class="tpheader">
+              <th class="manual" colspan="3"><a name="password">&lt;password&gt;</a></th>
+            </tr>
+            <tr>
+              <td colspan="3">A password text input is identical to a
+validated text input except that the display does not echo in the Swing
+Version (If anyone knows how to prevent the console echoing please get
+in touch) This password field is VERY INSECURE so dont blame me. </td>
+            </tr>
+            <tr class="tpheader">
+              <th class="manual2">Attribute</th>
+              <th class="manual2">Description</th>
+              <th class="manual2">Example</th>
+            </tr>
+            <tr>
+              <td>property</td>
+              <td>The name of the property to be sent to Ant the
+password will not feature in <code>ant.install.properties</code> file,
+the value will be the text entered by the user. If the installer is in
+verbose mode the properties file will contain the property name but not
+the value entered by the user.</td>
+              <td>password.property</td>
+            </tr>
+            <tr>
+              <td>displayText</td>
+              <td>The text to be shown describing the password to be
+entered.</td>
+              <td>Enter your name</td>
+            </tr>
+            <tr>
+              <td>defaultValue</td>
+              <td>The default value if the user enters no text, this
+should be valid according to the regular expression. This will be shown
+as an example if the user enters an invalid password.</td>
+              <td>pa55word</td>
+            </tr>
+            <tr>
+              <td>regex</td>
+              <td>The regular expression used to validate the text, the
+whole regex should match the text entered.</td>
+              <td>^[a-zA-Z_0-9]{8}$</td>
+            </tr>
+						<tr>
+							<td>textMask</td>
+              <td>When set to <code>true</code> an attempt is made to hide the password on the command line.
+							This feature is optional and has not been tested on different platforms.   
+							It is a pure Java solution using a masking thread so there 
+							is a theoretical requirement for some CPU head room to function correctly.
+							It does not work where \r is not supported for example the eclipse console.<br/><br/>
+							see SUN's proposed solution
+							<a href="http://java.sun.com/features/2002/09/pword_mask.html"
+							>http://java.sun.com/features/2002/09/pword_mask.html</a><br/>
+							see also, the embarrasing bug report on SUNs site
+							<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4050435"
+							>http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4050435</a><br/>
+							see also, Ant's bug report
+							<a href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6687"
+							>http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6687</a><br/>
+							</td>
+							<td>true</td>
+						</tr>
+          </tbody>
+        </table>
+        <br>
+        <br>
+To edit the file with the above properties a good XML editor is
+recommended.  A DTD exists to aid debugging this file.  If you find errors in the DTD please <a href="http://sourceforge.net/tracker/?group_id=123466">report them</a>.<br>
+        <br><a name="configbuild"></a>
+			      <h3><code>build.xml</code></h3>
+
+Once the <code>antinstall-config.xml</code> file is created you need
+to create an Ant <code>build.xml</code> file with targets that match
+the targets available in the install config. There are tools to help
+you create these files.<br>
+
+        <br><a name="scripts"></a>
+			      <h3><code>install.sh</code> Start scripts</h3>
+
+With the two XML scripts ready you need to package the components you want
+to install. Create a new directory and prepare the files as you would
+for a normal Ant build. You can include the <code>install.sh</code>
+and <code>install.cmd</code> files from the demo app to launch the
+installer. These scripts can be launched in a GUI by double clicking on
+them, but they will requrie editing to set you classpath and resources correctly.<br>
+The main class (<code>org.tp23.antinstaller.runtime.ExecInstall</code>) that starts the installer takes two, and only two, parameters 
+on the command line which should be set in the start script.<br>
+The first is the default
+GUI mode (either swing or text).  If swing is selected and there is no X environment or Windows
+the system will default back to text mode.<br>
+The second is the Ant basedir and typically it should be just "." the current directory.  
+This directory will be the basedir of the ant script no matter what it says in the <code>build.xml</code> file.
+        <br>
+The Ant runner currently passes the directory called <code>antlib</code>
+in which
+you can add any Ant optional jars to get them to auto load. You
+can also load them on classpath of the install scripts.<br>
+        <br>
+There are other tools to create binary executables that launch Java
+Apps, JBuilder has one built in. If you are deploying to Unix consider
+a tar.gz for the installer package to save the user the task of
+chmodding the executable. 
+        <br><a name="extractor"></a>
+			      <h3>Self Extracting Jars</h3>
+	See <a href="installertask.html">Installer Ant Task</a> to script creation of SelfExtracting jars. <br/><br/>
+ There is a mechanism to create a self extracting Jar where the entire installer,
+  all requried Java code, and the resources to install can be packaged into a single Jar.
+	The Jar is launched by double clicking on it (if the <code>.jar</code> extension is registered properly by Java) or by calling
+	the command <code>java -jar [jar_name].jar</code>.<br>
+	In windows if the extension <code>.jar</code> has been re-registered (e.g. to open with winzip) right clicking on the jar
+	and selecting <code>Open With</code> then <code>javaw</code> will also run the installer.<br>
+	Packaging a self extracting jar is more difficult, since all the included libraries need to be first expanded into files
+	and then repackaged back into a single Jar.  This can be achieved with Ant, and there are Maven tasks to make creating
+	executable Jars easy if you already have a Maven build.
+	The build file should not include any relative file references.  The <code>${basedir}</code> property is required since
+	the file is excracted a new empty temporary directory that is not know when 
+	the <code>build.xml</code> file is being written.  This directory will be the value of <code>${basedir}</code>
+	when the installer is run. There will be more instructions for this when the system is more
+	stable. One thing to remember is that the main class changes for a self extracting Jar.  <br>
+	Here is an example <code>MANIFEST.MF</code> file.<br>
+	<pre>
+Manifest-Version: 1.0 
+Main-Class: org.tp23.antinstaller.selfextract.SelfExtractor
+Look-And-Feel: org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel
+	</pre>
+	The Look And Feel is also required in the <code>MANIFEST.MF</code> file since the autoextract code shows a progress bar using Swing.
+	The value should be the same Look And Feel used in the main Swing GUI specified in the installer element of <code>antinstall-config.xml</code>.  If not, ensure the main Look And Feel fully supports updateing the UI, not LAFs
+	all do.  
+	<br>
+	<br>If a resource is included called <code>/resources/extract-image.png</code> it will be displayed during the 
+	extraction process.  You can remove the image from the classpath if you don't like it or change it to any other
+	png image of the same size.<br>
+	<img src="images/extract-image-example.png" alt="example extract image"/>
+ <br>
+	<br>
+        <br><a name="non-extractor"></a>
+			      <h3>Non Extracting Jars</h3>
+	See <a href="installertask.html">Installer Ant Task</a> to script creation of NonExtracting jars. <br/><br/>
+	As of version 0.7.2 a new feature has been added to load the installer without having to extract any files untill the 
+	Ant build is run.  This has the advantage of not having to unjar AntInstaller itself or its dependencies such as Ant, Xerces
+	and the look and feel.
+	In order to specify that the NonExtractor should be used the Jar <code>META-INF/MANIFEST.MF</code> file should specify
+	<code>org.tp23.antinstaller.selfextract.Nonextractor</code>.  Since the NonExtractor does not need to show 
+	the progress bar for the extraction no look and feel is required in the manifest.
+	An example <code>META-INF/MANIFEST.MF</code>
+	<pre>
+Manifest-Version: 1.0
+Main-Class: org.tp23.antinstaller.selfextract.NonExtractor
+	</pre>
+	The NonExctractor still creates temporary space on the deployment system and still sets the <code>${basedir}</code>
+	to this space.
+	The <code>build.xml</code> file and the <code>antinstall-config.xml</code> are read from inside the Jar and all 
+	properties are passed directly 
+	to Ant.  The properties file is still readable for debuging installers.  In order to access resources inside the Jar 
+	alternative Ant tasks are required. instead of moving files they must be un-jared from the install archive.  In order 
+	to identify the Jar file a new property has been added to the Ant build <code>${antinstaller.jar}</code>.  
+	The following example
+	extracts a file called <code>myresource.zip</code> into the temporary directory (from there it could be unzipped 
+	to the deployment directory)
+	<pre>
+&lt;unzip src="${antinstaller.jar}" dest="${basedir}"&gt;
+	&lt;patternset&gt;
+		&lt;include name="myresource.zip"/&gt;
+	&lt;/patternset&gt;
+&lt;/unzip&gt;</pre>
+	A more likely example is to unzip all the files in your application to the installation directory selected by the user.
+	<pre>
+&lt;unzip src="${antinstaller.jar}" dest="${my.installation.dir}"&gt;
+	&lt;patternset&gt;
+		&lt;include name="bin/*"/&gt;
+		&lt;include name="classes/*"/&gt;
+		&lt;include name="help/*"/&gt;
+		&lt;include name="doc/*"/&gt;
+	&lt;/patternset&gt;
+&lt;/unzip&gt;</pre>
+	Remember all the classes for AntInstaller need to be in the root of the Jar for the JVM to find them when the 
+	Jar is first loaded so it is probably best to put all the deployable resources in a subdirectory inside the Jar 
+	and move them on the target system with Ant if required.  Moving files on the same filesystem is not time consuming. <br/> 
+	
+	<a name="refs"></a>
+			<h3>Dynamic References</h3>
+	As of version beta 0.5 in certain circumstances the default values of input fields can be based on existing properties.  To reference collected input values use the Ant property syntax <code>${property.reference}</code>.
+	References can be mixed with normal text as in Ant. <br>
+	 For example, <br>
+<pre>
+&lt;text
+  property="new.property"
+  displayText="Enter the installation directory"
+  defaulValue="/usr/local/${project.short.name}"
+  defaultValueWin="C:\Program Files\${project.short.name}"
+  create="true"
+/&gt;
+</pre>
+		As of version beta 0.7 the default values of input fields can be based on environment variables.  To reference collected input values use the normal Ant syntax <code>${env.ENVIRONMENT_VARIABLE}</code>.<br>
+	  The prefix is always <code>env.</code> since this is not set with an Ant <code>&lt;property&gt;</code> task, it is part of the AntInstaller runtime.  The results will be identical to <code>&lt;property environment="env."&gt;</code> since AntInstaller make direct calls to the Ant APIs.<br>
+		The environment is NOT added by default to the build.xml or the installer when Ant runs, if you need the environment
+		in the <code>build.xml</code> file call it in the usual way
+		Also the java system properties are included prefixed by "java.". For example, <code>${java.user.name}</code> returns the user currently running the installer.
+<br><br>
+	Dynamic references have the following limitations<br>
+	<br>
+	<ul>
+		<li>Dynamic references can only be added to <code>defaultValue</code> and <code>defaultValueWin</code> (currently)</li>
+		<li>The properties must have been set in previous pages not in the current page (or future pages)</li>
+		<li>Unlike Ant if the property has not been evalutated a blank string "" will be inserted instead of the reference.
+		    This means accidents like <code>/usr/local/${non.prop}</code> should not happen but will use <code>/usr/local</code>, generally neither case
+				is desired, so as with Ant check the effects of absent properties before releasing your installer.  Alternativly use a validated text field and specify a minimum length in the regular expression to ensure that blank values do not
+				get accepted.</li>
+		<li>Once a user has edited a field the evaluation stops.<br>
+		For example, on the first page <code>${proj.short.name}</code> is set
+		and on a subsequent page <code>${proj.short.name}/lib</code> and <code>${proj.short.name}/classes</code>. If the user changes one field to
+		<code>[value of ${proj.short.name}]/myclasses</code> and then goes back and changes the first page when the subsequent pages are shown the value will <b>not</b> update to <code>[new value of ${proj.short.name}]/myclasses</code>.  This only applies to the Swing GUI since in the command line the user can not go back.</li>
+	</ul>
+	
+ <br>
+	<br>
+	<a name="pagedisplay"></a>
+	<h3>Page Displaying</h3>
+	It is a common requirement to have a few options at the start of the installer and only show certain other pages if the user selected one of the initial options.  For example,  an option to install the source code, if the user is going to install the source code show a page with options to decide where to put the code, the documents and perhaps a checkbox if icons for the documents should be created.  This page should not be shown to people who are not installing the source code. This feature has been available from the start but it seems some people have missed this bit of the documents.  The trick is to use a <code>target</code> input and then add <code>ifTarget</code> attributes to the subsequent page elements.
+	<br><br>
+	As of beta0.7 it is possible to base pages on the existence of properties. Since both the System Properties from Java and the users environment variables are available as properties it is now possible to base pages on the existence of certain properties for example if CATALINA_HOME is set it is a safe bet the user already has tomcat installed.  Also if ProgramFiles is present it is probably a windows system.  N.B.  for more a more accurate way to run tasks based on the operating system of the user the target tag has been enhanced to run osSpecific targets.
+	
+	Later versions can also base the decision to display pages on the existence of or values in properties. see the ifProperty attribute of the <a href="#pageinput">InputPage</a> type. 
+	
+	<br><br>
+
+	<a href="index.html"><img class="but" src="images/ant-install-small.png"></a>
+		<!-- content end [segment-end]-->
+
+		 	</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

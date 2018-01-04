@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.7.dtd">
+
+
+<!-- defaultImageResource,windowIcon,resource and imageResource load from the classpath
+the installer script should put the locations of these resources no the classpath -->
+<installer
+			ui="swing,text"
+			verbose="true"
+			debug="true"
+			lookAndFeel="greymetal"
+			antialiased="true"
+			name="Test Installer"
+			windowIcon="/resources/gkmain_inv.png"
+			defaultImageResource="/resources/antbar.png"
+			minJavaVersion="1.4"
+			finishButtonText="Build">
+	<page
+			type="input"
+			name="selector"
+			displayText="Select components to install">
+		<comment
+				displayText="Choose the components you want to install"
+				bold="true"/>
+		<target
+			displayText="Core components"
+			target="default"
+			defaultValue="true"
+			force="true"/>
+		<target
+					 displayText="Source code"
+					 target="tgsrc"
+					 defaultValue="true"
+					 force="false"/>
+		<target
+					 displayText="binary code"
+					 target="tgbin"
+					 defaultValue="true"
+					 force="false"/>
+		<target
+			displayText="OS Specific target"
+			osSpecific="true"
+			target="myOsSpecific"
+			defaultValue="true"
+			force="false"/>
+	</page>
+	<page
+			type="input"
+			name="contrib"
+			displayText="Contributions">
+		<target-select
+				property="colourtarget"
+				defaultValue="tgt1"
+				displayText="Select a target"
+				explanatoryText="only one target available">
+			<option text="target-one" value="tgt1"/>
+			<option text="target-two" value="tgt2"/>
+			<option text="target-three" value="tgt3"/>
+		</target-select>
+	</page>
+	<page
+			type="progress"
+			name="progress"
+			displayText="Installation progress"
+			showTargets="true"
+			target="cleanuptarget">
+	</page>
+</installer>
+
+

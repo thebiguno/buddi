@@ -1,0 +1,28 @@
+TO mod
+
+toc.html  make Ant Tasks link bold
+anttaskslist.html  make Core Takss link bold
+cover.html  front page 
+
+TO clean
+regexs
+<font[^>]+>  	:replace with nowt
+</font>  		:replace with nowt
+ bgcolor[^>]+  	:replace with nowt
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/CoreTasks/makeurl.html
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/CoreTasks/subant.html
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/CoreTasks/tempfile.html
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/CoreTasks/whichresource.html
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/sysclasspath.html
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/base_task_classes.html
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/tutorial-writing-tasks.html
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/tutorial-HelloWorldWithAnt.html
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/credits.html
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/install.html
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/OptionalTasks/setproxy.html
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/OptionalTasks/serverdeploy.html
+file:///home/teknopaul/workspace/apache-ant-1.7.0/docs/manual/OptionalTasks/ejb.html
+
+to change <body up to next > needs blanking
+<body bgcolor="#ffffff" text="#000000" link="#525D76"
+      alink="#525D76" vlink="#525D76">

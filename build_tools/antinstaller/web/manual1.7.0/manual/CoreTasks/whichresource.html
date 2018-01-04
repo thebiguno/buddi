@@ -1,0 +1,147 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+    
+<html>
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <title>Whichresource
+ Task</title>
+ <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+</head>
+
+<body>
+
+  <!-- PAGE HEADER -->
+
+            <h2><a name="whichresource">Whichresource Task</a></h2>
+  
+  <!-- START RIGHT SIDE MAIN BODY -->
+
+          
+          <h3><a name="description">Description</a></h3>
+<p>
+        Find a class or resource on the supplied classpath, or the system classpath if none is supplied. The named property is set if the item can be found. For example <pre> &lt;whichresource resource="/log4j.properties" property="log4j.url" &gt; </pre>
+</p>
+    <!-- End Description -->
+
+ <!-- Ignore -->
+
+
+
+    <!-- Start Attributes -->
+          
+          <h3><a name="attributes">Parameters</a></h3>
+
+
+        <table border="1" cellpadding="2" cellspacing="0">
+          <tr>
+        <td>
+          <b>Attribute</b>
+        </td>
+        <td>
+          <b>Description</b>
+        </td>
+        <td>
+          <b>Type</b>
+        </td>
+        <td>
+          <b>Requirement</b>
+        </td>
+          </tr>
+    <!-- Attribute Group -->    
+        <!-- Attribute -->
+    <tr>
+        <td>
+          property
+        </td>
+        <td>
+          the property to fill with the URL of the resource or class
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          Required
+        </td>
+    </tr>
+
+    <!-- Attribute Group -->    
+        <!-- Attribute -->
+    <tr>
+        <td>
+          class
+        </td>
+        <td>
+          name the class to look for
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          Exactly one of these two
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          resource
+        </td>
+        <td>
+          name the resource to look for
+        </td>
+        <td>
+          String
+        </td>
+    </tr>
+
+    <!-- Attribute Group -->    
+        <!-- Attribute -->
+    <tr>
+        <td>
+          classpath
+        </td>
+        <td>
+          Set the classpath to be used for this compilation.
+        </td>
+        <td>
+          Path
+        </td>
+        <td>
+          Optional
+        </td>
+    </tr>
+
+
+        </table>
+      </blockquote>
+    <!-- End Attributes -->
+
+    <!-- Start Elements -->
+
+          
+          <h3><a name="elements">Parameters as nested elements</a></h3>
+
+    <!-- Start Element -->
+          <h4>classpath</h4> (org.apache.tools.ant.types.Path)
+<p>
+        Adds a path to the classpath.
+</p>
+    <!-- End Element -->
+
+
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.page.Page (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">Page.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.page.index.html" target="packageFrame">org.tp23.antinstaller.page</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.util.ArrayList;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.util.Iterator;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.util.List;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.util.MissingResourceException;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.util.ResourceBundle;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> java.util.Set;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> java.util.StringTokenizer;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> java.util.TreeSet;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A>
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">org.tp23.antinstaller.InstallException</A>;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">org.tp23.antinstaller.InstallerContext</A>;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/input/OutputField.java.html">org.tp23.antinstaller.input.OutputField</A>;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/input/TargetInput.java.html">org.tp23.antinstaller.input.TargetInput</A>;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/IfPropertyHelper.java.html">org.tp23.antinstaller.runtime.IfPropertyHelper</A>;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">33</FONT><A NAME="33"></A> *
+<FONT CLASS="LN">34</FONT><A NAME="34"></A> * &lt;p&gt;Represents a page in the installer. &lt;/p&gt;
+<FONT CLASS="LN">35</FONT><A NAME="35"></A> * &lt;p&gt;This object maintians an ordered list of targets that have been selected
+<FONT CLASS="LN">36</FONT><A NAME="36"></A>* so that when ant is run the targets are run in the correct order.  If
+<FONT CLASS="LN">37</FONT><A NAME="37"></A>* Targets exist in multiple pages they are run in the order they appear in the config file.  &lt;/p&gt;
+<FONT CLASS="LN">38</FONT><A NAME="38"></A> * &lt;p&gt;Copyright: Copyright (c) 2004&lt;/p&gt;
+<FONT CLASS="LN">39</FONT><A NAME="39"></A> * &lt;p&gt;Company: tp23&lt;/p&gt;
+<FONT CLASS="LN">40</FONT><A NAME="40"></A> * @author Paul Hinds
+<FONT CLASS="LN">41</FONT><A NAME="41"></A> * @version $Id: Page.java,v 1.10 2007/01/19 00:24:36 teknopaul Exp $
+<FONT CLASS="LN">42</FONT><A NAME="42"></A> */</FONT>
+<FONT CLASS="LN">43</FONT><A NAME="43"></A>
+<FONT CLASS="LN">44</FONT><A NAME="44"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Abstract">abstract</FONT> <FONT CLASS="Class">class</FONT> Page {
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>
+<FONT CLASS="LN">46</FONT><A NAME="46"></A><FONT CLASS="SingleLineComment">//   i18n support
+<FONT CLASS="LN">47</FONT><A NAME="47"></A></FONT>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> ResourceBundle langPack = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>    <FONT CLASS="Static">static</FONT>{
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>            langPack = ResourceBundle.getBundle(<FONT CLASS="StringLiteral">"LanguagePack"</FONT>);
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>        } <FONT CLASS="Catch">catch</FONT> (MissingResourceException e) {
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>            <FONT CLASS="SingleLineComment">// ignore, signifies no lang packs installed  
+<FONT CLASS="LN">53</FONT><A NAME="53"></A></FONT>        }
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>    }
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>    
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>    <FONT CLASS="SingleLineComment">//private static final int MAX_TARGETS = 10;
+<FONT CLASS="LN">57</FONT><A NAME="57"></A></FONT>    <FONT CLASS="Private">private</FONT> String name;
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>    <FONT CLASS="Private">private</FONT> String displayText;
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>    <FONT CLASS="Private">private</FONT> String imageResource;
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../../org/tp23/antinstaller/input/OutputField.java.html">OutputField</A>[] outputField;
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> abort;
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>     *  target to be called as the installer is running
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>     */</FONT>
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>    <FONT CLASS="Private">private</FONT> String postDisplayTarget;
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>    <FONT CLASS="Private">private</FONT> Set targets = <FONT CLASS="New">new</FONT> TreeSet();
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>    <FONT CLASS="Public">public</FONT> Page() {
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>    }
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>    <FONT CLASS="Public">public</FONT> String getName() {
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>        <FONT CLASS="Return">return</FONT> name;
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>    }
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setName(String name) {
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>        <FONT CLASS="This">this</FONT>.name = name;
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>    }
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>    <FONT CLASS="Public">public</FONT> String getDisplayText() {
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>        <FONT CLASS="If">if</FONT>(langPack != <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>            <FONT CLASS="Return">return</FONT> langPack.getString(<FONT CLASS="StringLiteral">"page."</FONT> + getName() + <FONT CLASS="StringLiteral">".displayText"</FONT>);
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>        }
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>        <FONT CLASS="Return">return</FONT> displayText;
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>    }
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setDisplayText(String displayText) {
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>        <FONT CLASS="This">this</FONT>.displayText = displayText;
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>    }
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>    <FONT CLASS="Public">public</FONT> String getImageResource() {
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>        <FONT CLASS="Return">return</FONT> imageResource;
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>    }
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setImageResource(String imageResource) {
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>        <FONT CLASS="This">this</FONT>.imageResource = imageResource;
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>    }
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>    <FONT CLASS="Public">public</FONT> <A HREF="../../../../org/tp23/antinstaller/input/OutputField.java.html">OutputField</A>[] getOutputField() {
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>        <FONT CLASS="Return">return</FONT> outputField;
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>    }
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setOutputField(<A HREF="../../../../org/tp23/antinstaller/input/OutputField.java.html">OutputField</A>[] outputField) {
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>        <FONT CLASS="This">this</FONT>.outputField = outputField;
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>    }
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>    <FONT CLASS="Public">public</FONT> String getPostDisplayTarget() {
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>        <FONT CLASS="Return">return</FONT> postDisplayTarget;
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>    }
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setPostDisplayTarget(String runtimeTarget) {
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>        <FONT CLASS="This">this</FONT>.postDisplayTarget = runtimeTarget;
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>    }
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>     * These are the ant targets that will be run, this is decided after
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>     * the Page has been displayed.  For example if the user chooses not
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>     * to enter a field that may signify that a target should not be run
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>     * @return A sorted List a list of Ant targets as Strings;
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>     * @throws InstallException 
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>     */</FONT>
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>    <FONT CLASS="Public">public</FONT> List getTargets(<A HREF="../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx) {
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>        List results = <FONT CLASS="New">new</FONT> ArrayList(targets.size());
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>            Iterator iter = targets.iterator();
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>            <A HREF="../../../../org/tp23/antinstaller/runtime/IfPropertyHelper.java.html">IfPropertyHelper</A> helper = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/IfPropertyHelper.java.html">IfPropertyHelper</A>(ctx);
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>            <FONT CLASS="While">while</FONT>(iter.hasNext()){
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>                IndexedTarget idxTarget = (IndexedTarget)iter.next();
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>                <FONT CLASS="If">if</FONT>( IndexedTarget.PAGE.equals(idxTarget.getTargetType()) ){
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>                    <FONT CLASS="If">if</FONT>( helper.ifProperty(<FONT CLASS="This">this</FONT>) || helper.ifTarget(<FONT CLASS="This">this</FONT>, ctx.getInstaller().getPages() ) ){
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>                        results.add(idxTarget.target);
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>                    }
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>                }
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>                <FONT CLASS="Else">else</FONT>{
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>                    results.add(idxTarget.target);
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>                }
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>            }
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>        } <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> e) {
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>            <FONT CLASS="SingleLineComment">// should not happen at runtime if ifProperty has been validated
+<FONT CLASS="LN">40</FONT><A NAME="140"></A></FONT>            e.printStackTrace();
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>            ctx.log(ctx.getInstaller().isVerbose(), e);
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> RuntimeException();
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>        }
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>        <FONT CLASS="Return">return</FONT> results;
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>    }
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>     * get input targets that are selected and all page targets, independent of
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>     * the ifProperty value 
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>     * @return
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>     */</FONT>
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>    <FONT CLASS="Public">public</FONT> List getAllTargets() {
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>        List results = <FONT CLASS="New">new</FONT> ArrayList(targets.size());
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>        Iterator iter = targets.iterator();
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>        <FONT CLASS="While">while</FONT>(iter.hasNext()){
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>            IndexedTarget idxTarget = (IndexedTarget)iter.next();
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>            results.add(idxTarget.target);
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>        }
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>        <FONT CLASS="Return">return</FONT> results;
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>    }
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>     * Comma separated list of targets for this page, called when parsing the
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>     * config file
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>     * @param target String
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>     */</FONT>
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setTarget(String targetList) {
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>        StringTokenizer st = <FONT CLASS="New">new</FONT> StringTokenizer(targetList, <FONT CLASS="StringLiteral">","</FONT>);
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>        <FONT CLASS="While">while</FONT> (st.hasMoreTokens()) {
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>            targets.add(<FONT CLASS="New">new</FONT> IndexedTarget(TargetInput.getGlobalIdx(), 
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>                    st.nextToken(),
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>                    IndexedTarget.PAGE));
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>        }
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>    }
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>     * Adds an INPUT target to the Page config
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>     * @param idx
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>     * @param target
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>     */</FONT>
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> addTarget(<FONT CLASS="Int">int</FONT> idx, String target) {
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>        <FONT CLASS="This">this</FONT>.targets.add(<FONT CLASS="New">new</FONT> IndexedTarget(idx, target, IndexedTarget.INPUT));
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>    }
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> removeTarget(<FONT CLASS="Int">int</FONT> idx) {
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>        <FONT CLASS="This">this</FONT>.targets.remove(<FONT CLASS="New">new</FONT> IndexedTarget(idx, <FONT CLASS="Null">null</FONT>));
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>    }
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>     * returns true if the page has the current target set
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>     * @param target String
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>     * @return boolean
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>     */</FONT>
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> isTarget(String target) {
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>        <FONT CLASS="If">if</FONT>(target == <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>        }
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>        Iterator iter = targets.iterator();
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>        <FONT CLASS="While">while</FONT>(iter.hasNext()) {
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>            IndexedTarget idxTarget = (IndexedTarget)iter.next();
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>            <FONT CLASS="If">if</FONT>(idxTarget.target.equals(target)){
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>            }
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>        }
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>    }
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>     * @return a List of IndexedTarget objects
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>     */</FONT>
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>    <FONT CLASS="Public">public</FONT> List getPageTargets(){
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>        List toReturn = <FONT CLASS="New">new</FONT> ArrayList(targets.size());
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>        Iterator iter = targets.iterator();
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>        <FONT CLASS="While">while</FONT>(iter.hasNext()) {
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>            IndexedTarget idxTarget = (IndexedTarget)iter.next();
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>            <FONT CLASS="If">if</FONT>( IndexedTarget.PAGE.equals(idxTarget.targetType) ){
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>                toReturn.add(idxTarget);
+<FONT CLASS="LN">13</FONT><A NAME="213"></A>            }
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>        }
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>        <FONT CLASS="Return">return</FONT> toReturn;
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>    }
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>
+<FONT CLASS="LN">18</FONT><A NAME="218"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>     * @return a List of IndexedTarget objects
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>     */</FONT>
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>    <FONT CLASS="Public">public</FONT> List getElementTargets(){
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>        List toReturn = <FONT CLASS="New">new</FONT> ArrayList(targets.size());
+<FONT CLASS="LN">23</FONT><A NAME="223"></A>        Iterator iter = targets.iterator();
+<FONT CLASS="LN">24</FONT><A NAME="224"></A>        <FONT CLASS="While">while</FONT>(iter.hasNext()) {
+<FONT CLASS="LN">25</FONT><A NAME="225"></A>            IndexedTarget idxTarget = (IndexedTarget)iter.next();
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>            <FONT CLASS="If">if</FONT>( IndexedTarget.INPUT.equals(idxTarget.targetType) ){
+<FONT CLASS="LN">27</FONT><A NAME="227"></A>                toReturn.add(idxTarget);
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>            }
+<FONT CLASS="LN">29</FONT><A NAME="229"></A>        }
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>        <FONT CLASS="Return">return</FONT> toReturn;
+<FONT CLASS="LN">31</FONT><A NAME="231"></A>    }
+<FONT CLASS="LN">32</FONT><A NAME="232"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>     * This is called after the page is displayed, a page can return false to indicate
+<FONT CLASS="LN">34</FONT><A NAME="234"></A>     * that the installation should abort.  Should be false if the cancel button is pressed.
+<FONT CLASS="LN">35</FONT><A NAME="235"></A>     * System.exit is not called to allow the installer to clean up temporary files.
+<FONT CLASS="LN">36</FONT><A NAME="236"></A>     * @return boolean
+<FONT CLASS="LN">37</FONT><A NAME="237"></A>     */</FONT>
+<FONT CLASS="LN">38</FONT><A NAME="238"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> isAbort() {
+<FONT CLASS="LN">39</FONT><A NAME="239"></A>        <FONT CLASS="Return">return</FONT> abort;
+<FONT CLASS="LN">40</FONT><A NAME="240"></A>    }
+<FONT CLASS="LN">41</FONT><A NAME="241"></A>
+<FONT CLASS="LN">42</FONT><A NAME="242"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setAbort(<FONT CLASS="Boolean">boolean</FONT> abort) {
+<FONT CLASS="LN">43</FONT><A NAME="243"></A>        <FONT CLASS="This">this</FONT>.abort = abort;
+<FONT CLASS="LN">44</FONT><A NAME="244"></A>    }
+<FONT CLASS="LN">45</FONT><A NAME="245"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Class">class</FONT> IndexedTarget <FONT CLASS="Implements">implements</FONT> Comparable{
+<FONT CLASS="LN">46</FONT><A NAME="246"></A>        
+<FONT CLASS="LN">47</FONT><A NAME="247"></A>        <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String PAGE = <FONT CLASS="StringLiteral">"page"</FONT>;
+<FONT CLASS="LN">48</FONT><A NAME="248"></A>        <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String INPUT = <FONT CLASS="StringLiteral">"input"</FONT>;
+<FONT CLASS="LN">49</FONT><A NAME="249"></A>        
+<FONT CLASS="LN">50</FONT><A NAME="250"></A>        <FONT CLASS="Int">int</FONT> idx;
+<FONT CLASS="LN">51</FONT><A NAME="251"></A>        String target;
+<FONT CLASS="LN">52</FONT><A NAME="252"></A>        String targetType = INPUT;
+<FONT CLASS="LN">53</FONT><A NAME="253"></A>        
+<FONT CLASS="LN">54</FONT><A NAME="254"></A>        IndexedTarget(<FONT CLASS="Int">int</FONT> idx, String target){
+<FONT CLASS="LN">55</FONT><A NAME="255"></A>            <FONT CLASS="This">this</FONT>.idx = idx;
+<FONT CLASS="LN">56</FONT><A NAME="256"></A>            <FONT CLASS="This">this</FONT>.target = target;
+<FONT CLASS="LN">57</FONT><A NAME="257"></A>        }
+<FONT CLASS="LN">58</FONT><A NAME="258"></A>        IndexedTarget(<FONT CLASS="Int">int</FONT> idx, String target, String targetType){
+<FONT CLASS="LN">59</FONT><A NAME="259"></A>            <FONT CLASS="This">this</FONT>.idx = idx;
+<FONT CLASS="LN">60</FONT><A NAME="260"></A>            <FONT CLASS="This">this</FONT>.target = target;
+<FONT CLASS="LN">61</FONT><A NAME="261"></A>            <FONT CLASS="This">this</FONT>.targetType = targetType;
+<FONT CLASS="LN">62</FONT><A NAME="262"></A>        }
+<FONT CLASS="LN">63</FONT><A NAME="263"></A>        
+<FONT CLASS="LN">64</FONT><A NAME="264"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> equals(Object target){
+<FONT CLASS="LN">65</FONT><A NAME="265"></A>            IndexedTarget test = (IndexedTarget)target;
+<FONT CLASS="LN">66</FONT><A NAME="266"></A>            <FONT CLASS="Return">return</FONT> test.idx == idx;
+<FONT CLASS="LN">67</FONT><A NAME="267"></A>        }
+<FONT CLASS="LN">68</FONT><A NAME="268"></A>        <FONT CLASS="SingleLineComment">// FindBugs - part of equals() contract
+<FONT CLASS="LN">69</FONT><A NAME="269"></A></FONT>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Int">int</FONT> hashCode(){
+<FONT CLASS="LN">70</FONT><A NAME="270"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="This">this</FONT>.idx;
+<FONT CLASS="LN">71</FONT><A NAME="271"></A>        }
+<FONT CLASS="LN">72</FONT><A NAME="272"></A>        <FONT CLASS="Public">public</FONT> <FONT CLASS="Int">int</FONT> compareTo(Object o) {
+<FONT CLASS="LN">73</FONT><A NAME="273"></A>            IndexedTarget test = (IndexedTarget)o;
+<FONT CLASS="LN">74</FONT><A NAME="274"></A>            <FONT CLASS="Return">return</FONT> idx - test.idx;
+<FONT CLASS="LN">75</FONT><A NAME="275"></A>        }
+<FONT CLASS="LN">76</FONT><A NAME="276"></A>        <FONT CLASS="Public">public</FONT> String getTarget() {
+<FONT CLASS="LN">77</FONT><A NAME="277"></A>            <FONT CLASS="Return">return</FONT> target;
+<FONT CLASS="LN">78</FONT><A NAME="278"></A>        }
+<FONT CLASS="LN">79</FONT><A NAME="279"></A>        <FONT CLASS="Public">public</FONT> String getTargetType() {
+<FONT CLASS="LN">80</FONT><A NAME="280"></A>            <FONT CLASS="Return">return</FONT> targetType;
+<FONT CLASS="LN">81</FONT><A NAME="281"></A>        }
+<FONT CLASS="LN">82</FONT><A NAME="282"></A>
+<FONT CLASS="LN">83</FONT><A NAME="283"></A>    }
+<FONT CLASS="LN">84</FONT><A NAME="284"></A>}
+<FONT CLASS="LN">85</FONT><A NAME="285"></A></pre>
+</BODY>
+</HTML>

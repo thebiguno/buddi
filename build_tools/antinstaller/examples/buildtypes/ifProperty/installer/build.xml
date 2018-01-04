@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+
+<project name="Installation Build"  default=""  basedir=".">
+
+	<property file="ant.install.properties"/>
+
+
+		<target name="default" depends="">
+		</target>
+		<target name="tgsrc" depends="">
+			<echo message="Installing Source files"/>
+		</target>
+		
+		<!--
+			this is an example of the "funnies" of property and <target if=""/> 
+		-->
+		<target name="runifpagerunornot" depends="tasksrunifpagerun">
+			<echo message="Independent of ifProperty"/>
+		</target>
+
+		<!--
+			N.B. the property is set if use user passes the page and goes back and
+			changes the property, its too late the property is set
+		-->
+		<target name="antinstaller-setcondprop">
+			<antinstaller-property name="conditional.property" value="true"/>
+			<antinstaller-log message="***************setting property*****************"/>
+			<antinstaller-message message="setting property"/>
+		</target>
+		<target name="tasksrunifpagerun" if="conditional.property">
+			<!-- N.B. the target starts but the tasks are not run -->
+			<echo message="Dependent of ${test.number}-=2 : ${coditional.property}"/>
+		</target>
+
+		<!-- simpler example that works -->
+		<target name="calledanyway" if="coditional.property">
+			<!-- N.B. the target starts but the tasks are not run -->
+			<echo message="Dependent of ${test.number}-=2 : ${coditional.property}"/>
+		</target>
+		
+		<target name="cleanuptarget" depends="">
+			<echo message="Clean up run at end it is added to the last page (the progress page)"/>
+		</target>
+
+		<!-- Operating System Specific targets -->
+		<property environment="env."/>
+		<target name="myOsSpecific-linux" depends="">
+			<echo message="Should only run on Linux"/>
+		</target>
+		<target name="myOsSpecific-mac" depends="">
+			<echo message="Should only run on Apple Mac"/>
+		</target>
+		<target name="myOsSpecific-sun" depends="">
+			<echo message="Should only run on Sun OS or Solaris"/>
+		</target>
+		<target name="myOsSpecific-win" depends="">
+			<echo message="Should only run on Windoze"/>
+		</target>
+		<target name="myOsSpecific-other" depends="">
+			<echo message="Should run if none of the others run"/>
+		</target>
+	<target name="#FF0000" depends="">
+		<echo message="TARGET #FF0000 selected"/>
+	</target>
+	<target name="#00FF00" depends="">
+		<echo message="TARGET #00FF00 selected"/>
+	</target>
+	<target name="#0000FF" depends="">
+		<echo message="TARGET #0000FF selected"/>
+	</target>
+
+
+</project>

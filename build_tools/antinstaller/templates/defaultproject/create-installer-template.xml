@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!--
+this ant build file can be re-run with the following command if Ant is installer locally
+> ant -buildfile create-installer.xml
+or by running the script @PROJECT_ROOT@/@PROJECT_SHORT_NAME@/build-self-extractor.sh
+-->
+<!--  this file is creates an installer for the Project @PROJECT_NAME@ -->
+<project name="Create @PROJECT_NAME@ Installer"  default="MakeNonExtractor"  basedir=".">
+
+	<path id="taskdef.cp" path="@ANT_INSTALL_ROOT@/lib/ant-installer-ext.jar"/>
+	<taskdef 
+		name="installer" 
+		classname="org.tp23.antinstaller.taskdefs.Installer"
+		classpathref="taskdef.cp"/>
+
+
+		<property name="ANT_INSTALL_ROOT" value="@ANT_INSTALL_ROOT@"/>
+		<property name="PROJECT_NAME"     value="@PROJECT_NAME@"/>
+		<property name="PROJECT_SHORT_NAME"     value="@PROJECT_SHORT_NAME@"/>
+		<property name="PROJECT_ROOT"     value="@PROJECT_ROOT@"/>
+		<property name="PROJECT_SRC"      value="@PROJECT_SRC@"/>
+		<property name="PROJECT_LIB"      value="@PROJECT_LIB@"/>
+		<property name="PROJECT_LIC"      value="@PROJECT_LIC@"/>
+		<property name="PROJECT_BIN"      value="@PROJECT_BIN@"/>
+		<property name="PROJECT_DOC"      value="@PROJECT_DOC@"/>
+		<property name="PROJECT_CLASSES"  value="@PROJECT_CLASSES@"/>
+		
+		<property name="THIS_PROJECT_ROOT"     value="${PROJECT_ROOT}/${PROJECT_SHORT_NAME}"/>
+
+		<!-- This task only needs to run once it can be deleted once the self-extract files exist on the build host  -->
+	<target name="Base">
+			<echo message="Building NonExtractor runnable jar file"/>
+	</target>
+
+
+	<target name="MakeNonExtractor" depends="Base">
+		
+		<installer file="${THIS_PROJECT_ROOT}/${PROJECT_SHORT_NAME}-installer.jar" compress="true"
+				extractType="NonExtractor"
+				installConfig="${THIS_PROJECT_ROOT}/antinstall-config.xml"
+				buildFile="${THIS_PROJECT_ROOT}/build.xml"
+				antInstallLib="${ANT_INSTALL_ROOT}/lib"
+				antLib="${ANT_INSTALL_ROOT}/antlib"
+				validateConfig="true"
+				icons="bluecurve">
+			<zipfileset fullpath="resources/License.txt" file="${PROJECT_LIC}"/>
+			<zipfileset dir="cp" includes="resources/*"/>
+		<!--SourceCode
+			<zipfileset dir="${PROJECT_SRC}" prefix="src">
+				<include name="**/*"/>
+			</zipfileset>
+		SourceCode-->
+		<!--Libraries
+			<zipfileset dir="${PROJECT_LIB}" prefix="lib">
+				<include name="**/*.jar"/>
+			</zipfileset>
+		Libraries-->
+		<!--Documentation
+			<zipfileset dir="${PROJECT_DOC}" prefix="docs">
+				<include name="**/*"/>
+			</zipfileset>
+		Documentation-->
+		<!--Classes
+			<zipfileset dir="${PROJECT_CLASSES}" prefix="classes">
+				<include name="**/*"/>
+			</zipfileset>
+		Classes-->
+		<!--Scripts
+			<zipfileset dir="${PROJECT_BIN}" prefix="bin" >
+				<include name="**/*.sh"/>
+				<include name="**/*.ksh"/>
+				<include name="**/*.csh"/>
+				<include name="**/*.cmd"/>
+				<include name="**/*.bat"/>
+			</zipfileset>
+		Scripts-->
+		</installer>
+	</target>
+
+
+</project>

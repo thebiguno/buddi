@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
+<installer
+			ui="swing,text"
+			verbose="true"
+			lookAndFeel="org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel"
+			name="Installer Wizard"
+			windowIcon="/resources/gkmain_inv.png"
+			defaultImageResource="/resources/makewavesdawn.png"
+			minJavaVersion="1.4"
+			finishButtonText="Create Project">
+	<!--  each page element represents a page of the installer -->
+	<page
+			type="input"
+			name="intro"
+			displayText="Welcome to the Default Installer Wizard"
+			target="Base">
+			<comment
+			displayText="This tool creates a default installer project"/>
+	</page>
+	<!--  type="input" shows a list of editable options for the installer -->
+	<page
+			type="input"
+			name="properties"
+			displayText="Project Options">
+		<text
+			property="PROJECT_NAME"
+			displayText="Project name"
+			defaultValue="My Project"/>
+		<directory
+				property="PROJECT_ROOT"
+				defaultValue="${java.user.home}/installers"
+				defaultValueWin="${java.user.home}\installers"
+				explanatoryText="The build directory is used to create the installer and some temporary files, it should be empty"
+				displayText="Select your build directory"
+				checkExists="true"
+				create="true"/>
+		<validated
+			property="PROJECT_SHORT_NAME"
+			displayText="Short name (no spaces)"
+			explanatoryText="The short name is generally the module name in CVS or the name used in Eclipse"
+			defaultValue="MyProject"
+			regex="^[a-zA-Z][_a-zA-Z0-9]+$"/>
+		<directory
+				property="RESOURCE_ROOT"
+				defaultValue="${java.user.home}/projects"
+				defaultValueWin="C:\projects"
+				displayText="Select your projects root"
+				explanatoryText="The projects root is the root directory where you keep your projects, for 
+example this might be the eclipse workspace or CVS root"
+				checkExists="true"
+				create="true"/>
+		<app-root
+				property="ANT_INSTALL_ROOT"
+				defaultValue="${env.ANT_INSTALL_HOME}"
+				displayText="Confirm the AntInstall directory"
+				checkFile1="antlib/ant.jar"
+				checkFile2="lib/ant-installer.jar"
+				checkDir1="lib"
+				checkDir2="antlib"
+				/>
+		<file
+				property="PROJECT_LIC"
+				defaultValue="${env.ANT_INSTALL_HOME}/lib/LICENSE-ant-install.txt"
+				defaultValueWin="${env.ANT_INSTALL_HOME}\lib\LICENSE-ant-install.txt"
+				displayText="Choose a License File"
+				checkExists="true"/>
+	</page>
+	<page
+			type="input"
+			name="targets"
+			displayText="Select resources to include in the installer">
+		<target 
+			target="SourceCode"
+			displayText="Include Source Code"
+			defaultValue="true"/>
+		<target 
+			target="Libraries"
+			displayText="Include Libraries (Jars)"
+			defaultValue="true"/>
+		<target 
+			target="Scripts"
+			displayText="Include Scripts"
+			defaultValue="true"/>
+		<target 
+			target="Documentation"
+			displayText="Include Documents"
+			defaultValue="true"/>
+		<target 
+			target="Classes"
+			displayText="Include Classes"
+			defaultValue="true"/>
+	</page>
+	<page
+			type="input"
+			name="resources"
+			displayText="Source Code"
+			ifTarget="SourceCode">
+		<directory
+				property="PROJECT_SRC"
+				defaultValue="${RESOURCE_ROOT}/${PROJECT_SHORT_NAME}/src"
+				defaultValueWin="${RESOURCE_ROOT}\${PROJECT_SHORT_NAME}\src"
+				displayText="Select the source code"
+				checkExists="true"
+				create="false"/>
+	</page>
+	<page
+			type="input"
+			name="resources"
+			displayText="Libraries"
+			ifTarget="Libraries">
+		<directory
+				property="PROJECT_LIB"
+				defaultValue="${RESOURCE_ROOT}/${PROJECT_SHORT_NAME}/lib"
+				defaultValueWin="${RESOURCE_ROOT}\${PROJECT_SHORT_NAME}\lib"
+				displayText="Select the libraries"
+				checkExists="true"
+				create="false"/>
+	</page>
+	<page
+			type="input"
+			name="resources"
+			displayText="Scripts"
+			ifTarget="Scripts">
+		<directory
+				property="PROJECT_BIN"
+				defaultValue="${RESOURCE_ROOT}/${PROJECT_SHORT_NAME}/bin"
+				defaultValueWin="${RESOURCE_ROOT}\${PROJECT_SHORT_NAME}\bin"
+				displayText="Select the scripts"
+				checkExists="true"
+				create="false"/>
+	</page>
+	<page
+			type="input"
+			name="resources"
+			displayText="Documentation"
+			ifTarget="Documentation">
+		<directory
+				property="PROJECT_DOC"
+				defaultValue="${RESOURCE_ROOT}/${PROJECT_SHORT_NAME}/doc"
+				defaultValueWin="${RESOURCE_ROOT}\${PROJECT_SHORT_NAME}\doc"
+				displayText="Select the documentation"
+				checkExists="true"
+				create="false"/>
+	</page>
+	<page
+			type="input"
+			name="resources"
+			displayText="Classes"
+			ifTarget="Classes">
+		<directory
+				property="PROJECT_CLASSES"
+				defaultValue="${RESOURCE_ROOT}/${PROJECT_SHORT_NAME}/classes"
+				defaultValueWin="${RESOURCE_ROOT}\${PROJECT_SHORT_NAME}\classes"
+				displayText="Select the classes"
+				checkExists="true"
+				create="false"/>
+	</page>
+	<page
+			type="input"
+			name="createinstaller"
+			displayText="Create Installer">
+		<target
+				target="CreateInstaller"
+				defaultValue="true"
+				explanatoryText="You may wish to edit the project files this tool will create. If not, select 'Create the installer' to create a selfextracting jar file from the resources previously chosen"
+				displayText="Create the installer"/>
+	</page>
+	<page
+			type="progress"
+			name="progress"
+			displayText="Build progress"
+			showTargets="false">
+	</page>
+</installer>
+
+

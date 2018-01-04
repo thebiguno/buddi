@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.7.dtd">
+<!--
+
+This is an example installer from which you can start a project
+Edit this file to select the properties you want decided, at the end
+of the installation screen the properties will be available in a file
+in the current directory for your ant script
+
+
+lookAndFeel="com.jgoodies.plaf.windows.ExtWindowsLookAndFeel"  - not recommended since it is not linux compatible due to Micro$oft License restrictions
+
+lookAndFeel="net.sourceforge.mlf.metouia.MetouiaLookAndFeel"  - good, and cross platform
+lookAndFeel="com.jgoodies.plaf.plastic.Plastic3DLookAndFeel"  - good, and cross platform
+lookAndFeel="com.jgoodies.plaf.plastic.PlasticXPLookAndFeel"  - good, and cross platform
+lookAndFeel="com.jgoodies.plaf.plastic.PlasticLookAndFeel" - good but flat, and cross platform
+lookAndFeel="jgoodies" - org.tp23.plaf.plastic.PlasticXPLookAndFeel
+lookAndFeel="greymetal" - Monochome metal LAF
+lookAndFeel="null" - do not call UIManager.setLookAndFeel
+lookAndFeel="native" - call UIManager.getSystemLookAndFeelClassName
+
+-->
+
+<installer
+			ui="swing,text"
+			verbose="true"
+			debug="true"
+			lookAndFeel="greymetal"
+			antialiased="false"
+			name="Test Installer"
+			windowIcon="/resources/gkmain_inv.png"
+			defaultImageResource="/resources/antbar.png"
+			minJavaVersion="1.4"
+			finishButtonText="Build">
+
+	<page
+			type="input"
+			name="intro"
+			displayText="Welcome to the new installer program"
+			imageResource="/resources/antbar.png">
+		<comment
+				displayText="This is a title comment"
+				title="true"/>
+		<comment
+				displayText="This is just a bold comment"
+				bold="true"/>
+		<comment
+				explanatoryText="This is a multi line comment with some random text that is just here to take up space and test out the overflowing text feature inside a comment."
+				displayText="This is just a comment"/>
+	</page>
+	<page
+			type="license"
+			name="license"
+			displayText="License conditions"
+			resource="/LICENSE-ant-install.txt"
+			usePaging="true"
+			imageResource="/resources/antbar.png">
+	</page>
+	<page
+			type="input"
+			name="properties"
+			displayText="Required install options"
+			overflow="true">
+		<text property="myProperty" defaultValue="blah blah" displayText="Enter a value"/>
+		<checkbox
+				property="isvalue"
+				explanatoryText="This is a multi line comment with some random text that is just here to take up space and test out the overflowing text feature inside a normal input type."
+				displayText="Do you want to do this"
+				defaultValue="true"
+				force="false"/>
+		<select
+				property="colour"
+				defaultValue="#FF0000"
+				displayText="Select your favorite colour">
+			<option text="Red" value="#FF0000"/>
+			<option text="Green" value="#00FF00"/>
+			<option text="Blue" value="#0000FF"/>
+		</select>
+		<directory
+				property="installDir"
+				defaultValue="/usr/local/demoapp"
+				defaultValueWin="${env.ProgramFiles}\demoapp"
+				displayText="Select an installation directory"
+				create="true"
+				checkExists="true"/>
+		<file
+				property="webxml"
+				defaultValue="/usr/tomcat/webapps/default/WEB-INF/web.xml"
+				defaultValueWin="C:\tomcat\webapps\default\WEB-INF\web.xml"
+				displayText="Select the web.xml file"
+				checkExists="false"/>
+		<target
+			displayText="Core components"
+			target="default"
+			defaultValue="true"
+			force="true"/>
+		<validated
+			property="validatedtext"
+			displayText="Validated Text Input"
+			defaultValue="23/10/2004"
+			regex="^[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]$"/>
+		<password
+			property="unsafepassword"
+			displayText="Enter a password"
+			defaultValue="pa55word"
+			regex="[0-9a-zA-Z_]{8}"/>
+		<large-select
+				property="lang"
+				defaultValue="uk"
+				displayText="Select your favorite language">
+			<option text="Spanish" value="es"/>
+			<option text="Catalan" value="ca"/>
+			<option text="English" value="uk"/>
+			<option text="French" value="fr"/>
+			<option text="Japanese" value="jp"/>
+			<option text="Persian" value="pe"/>
+			<option text="Urdu" value="ur"/>
+			<option text="Flemish" value="fl"/>
+			<option text="German" value="de"/>
+			<option text="Greek" value="gk"/>
+			<option text="Turkish" value="tk"/>
+			<option text="Slav" value="sv"/>
+			<option text="Euskera" value="ek"/>
+			<option text="Welsh" value="we"/>
+			<option text="Jamaican patoi" value="ra"/>
+			<option text="Mockney" value="??"/>
+			<option text="Giberish" value="¿¿"/>
+			<option text="Love" value="lv"/>
+			<option text="Sign" value=":)"/>
+			<option text="Java" value="jv"/>
+			<option text="C++" value="++"/>
+			<option text="American" value="us"/>
+		</large-select>
+		<date property="date.property" dateFormat="dd-MM-yy mm:ss" defaultValue="TODAY" displayText="Enter a date"/>
+		<target-select
+				property="colourtarget"
+				defaultValue="tgt1"
+				displayText="Select a target"
+				explanatoryText="only one target available">
+			<option text="target-one" value="tgt1"/>
+			<option text="target-two" value="tgt2"/>
+			<option text="target-three" value="tgt3"/>
+		</target-select>
+	</page>
+	<page
+			type="progress"
+			name="progress"
+			displayText="Installation progress"
+			imageResource="/resources/antbar.png"
+			showTargets="true"
+			target="cleanuptarget">
+	</page>
+</installer>
+
+

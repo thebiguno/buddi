@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<project name="Installation Build"  default=""  basedir=".">
+
+	<property file="ant.install.properties"/>
+
+
+		<target name="core" depends="">
+			<echo message="Entered Property [${myProperty}]"/>
+			<echo message="Checkbox Property [${isvalue}]"/>
+			<echo message="Colour selected 	[${colour}]"/>
+			<echo message="Installation Directory [${installDir}]"/>
+			<echo message="Web xml [${webxml}]"/>
+			<echo message="validated text [${validatedtext}]"/>
+			<echo message="unvalidated text [${unvalidatedtext}]"/>
+			<echo message="insecure password [${unsafepassword}]"/>
+			<echo message="lang [${lang}]"/>
+			<echo message="myProperty2 [${myProperty2}]"/>
+			<echo message="colour2 [${colour2}]"/>
+			<echo message="myProperty3 [${myProperty3}]"/>
+			<echo message="date.property [${date.property}]"/>
+			<echo message="colourtarget [${colourtarget}]"/>
+		</target>
+		<target name="tgsrc" depends="">
+			<echo message="Installing Source files"/>
+		</target>
+		<target name="cleanuptarget" depends="">
+			<echo message="Clean up run at end it is added to the last page (the progress page)"/>
+		</target>
+
+		<!-- Operating System Specific targets -->
+		<property environment="env."/>
+		<target name="myOsSpecific-linux" depends="">
+			<echo message="Should only run on Linux"/>
+		</target>
+		<target name="myOsSpecific-mac" depends="">
+			<echo message="Should only run on Apple Mac"/>
+		</target>
+		<target name="myOsSpecific-sun" depends="">
+			<echo message="Should only run on Sun OS or Solaris"/>
+		</target>
+		<target name="myOsSpecific-win" depends="">
+			<echo message="Should only run on Windoze"/>
+		</target>
+		<target name="myOsSpecific-other" depends="">
+			<echo message="Should run if none of the others run"/>
+		</target>
+	<target name="tgt1" depends="">
+		<echo message="TARGET ONE selected"/>
+	</target>
+	<target name="tgt2" depends="">
+		<echo message="TARGET TWO selected"/>
+	</target>
+	<target name="tgt3" depends="">
+		<echo message="TARGET THREE selected"/>
+	</target>
+
+
+</project>

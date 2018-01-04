@@ -1,0 +1,45 @@
+This is a text alternative to the HTML page with some properties
+
+username:${java.user.name}
+
+OS      :${java.os.name}
+
+Install dir:${installDir}
+
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+v
+lorum ipsum
+lorum ipsum
+v
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum
+lorum ipsum

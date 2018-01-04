@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.renderer.text.ValidatedTextInputRenderer (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">ValidatedTextInputRenderer.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../../org.tp23.antinstaller.renderer.text.index.html" target="packageFrame">org.tp23.antinstaller.renderer.text</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.io.BufferedReader;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.io.IOException;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.io.PrintStream;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.util.ResourceBundle;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A>
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">org.tp23.antinstaller.InstallerContext</A>;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/OutputField.java.html">org.tp23.antinstaller.input.OutputField</A>;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/ValidatedTextInput.java.html">org.tp23.antinstaller.input.ValidatedTextInput</A>;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A>
+<FONT CLASS="LN">27</FONT><A NAME="27"></A>
+<FONT CLASS="LN">28</FONT><A NAME="28"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> ValidatedTextInputRenderer
+<FONT CLASS="LN">29</FONT><A NAME="29"></A>    <FONT CLASS="Implements">implements</FONT> <A HREF="../../../../../org/tp23/antinstaller/renderer/text/TextOutputFieldRenderer.java.html">TextOutputFieldRenderer</A> {
+<FONT CLASS="LN">30</FONT><A NAME="30"></A>
+<FONT CLASS="LN">31</FONT><A NAME="31"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> ResourceBundle res = ResourceBundle.getBundle(<FONT CLASS="StringLiteral">"org.tp23.antinstaller.renderer.text.Res"</FONT>);
+<FONT CLASS="LN">32</FONT><A NAME="32"></A>
+<FONT CLASS="LN">33</FONT><A NAME="33"></A>    <FONT CLASS="Protected">protected</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx;
+<FONT CLASS="LN">34</FONT><A NAME="34"></A>    <FONT CLASS="Public">public</FONT> ValidatedTextInputRenderer() {
+<FONT CLASS="LN">35</FONT><A NAME="35"></A>    }
+<FONT CLASS="LN">36</FONT><A NAME="36"></A>
+<FONT CLASS="LN">37</FONT><A NAME="37"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setContext(<A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx) {
+<FONT CLASS="LN">38</FONT><A NAME="38"></A>        <FONT CLASS="This">this</FONT>.ctx = ctx;
+<FONT CLASS="LN">39</FONT><A NAME="39"></A>    }
+<FONT CLASS="LN">40</FONT><A NAME="40"></A>
+<FONT CLASS="LN">41</FONT><A NAME="41"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> renderOutput(<A HREF="../../../../../org/tp23/antinstaller/input/OutputField.java.html">OutputField</A> field, BufferedReader reader, PrintStream out) <FONT CLASS="Throws">throws</FONT> IOException {
+<FONT CLASS="LN">42</FONT><A NAME="42"></A>        <A HREF="../../../../../org/tp23/antinstaller/input/ValidatedTextInput.java.html">ValidatedTextInput</A> iField = (<A HREF="../../../../../org/tp23/antinstaller/input/ValidatedTextInput.java.html">ValidatedTextInput</A>) field;
+<FONT CLASS="LN">43</FONT><A NAME="43"></A>        out.print(field.getDisplayText());
+<FONT CLASS="LN">44</FONT><A NAME="44"></A>
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>        out.print(<FONT CLASS="StringLiteral">"   ["</FONT>);
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>        out.print(res.getString(<FONT CLASS="StringLiteral">"_default_"</FONT>));
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>        out.print(<FONT CLASS="StringLiteral">":"</FONT>);
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>        out.print(iField.getDefaultValue());
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>        out.println(<FONT CLASS="StringLiteral">"]"</FONT>);
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>        <FONT CLASS="SingleLineComment">//BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+<FONT CLASS="LN">53</FONT><A NAME="53"></A></FONT>        String input = reader.readLine();
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>        out.println();
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>        <FONT CLASS="If">if</FONT>(input==<FONT CLASS="Null">null</FONT> || input.equals(<FONT CLASS="StringLiteral">""</FONT>))input=iField.getDefaultValue();
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>        iField.setInputResult(input);
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>    }
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> renderError(<A HREF="../../../../../org/tp23/antinstaller/input/OutputField.java.html">OutputField</A> field, BufferedReader reader, PrintStream out) <FONT CLASS="Throws">throws</FONT> IOException{
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>        <FONT CLASS="SingleLineComment">//ValidatedTextInput iField = (ValidatedTextInput) field;
+<FONT CLASS="LN">60</FONT><A NAME="60"></A></FONT>        out.println(<FONT CLASS="StringLiteral">"The input is not of the correct format"</FONT>);
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>        renderOutput(field, reader, out);
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>    }
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> isAbort(){
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>    }
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>}
+<FONT CLASS="LN">67</FONT><A NAME="67"></A></pre>
+</BODY>
+</HTML>

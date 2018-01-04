@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Ant Installer</title>
+  <link href="style.css" type="text/css" rel="stylesheet">
+  <link href="css/nav.css" rel="stylesheet" type="text/css">
+  <link rel="SHORTCUT ICON" type="image/png" href="images/antinstaller-icon.png">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="keywords"
+ content="Ant, installer, AntInstall, gui, console, input, parameters, properties, swing, user interface, validation, configuration">
+ <script type="text/javascript" src="js/menu.js"></script>
+ <script type="text/javascript" src="js/sstree.js"></script>
+ <script type="text/javascript" src="js/winfix.js"></script>
+</head>
+<body onload="collapseAll('contents-panel', ['ol']); "><div id="tpallcontent">
+<table cellspacing="0" width="100%">
+  <tbody>
+    <tr class="tpheader">
+      <th class="tpleft">
+			<a target="_top" href="index.html" title="home"><img src="images/ant-install-small.png" alt="AntInstaller" id="logo" width="76" height="50"/></a>
+			<script type="text/javascript">winFix();</script>
+      </th>
+      <th class="tptop" valign="bottom">
+				<img src="space.gif" height="1" width="440" alt="spacer"/><br/>
+				
+				<table>
+					<tr>
+						<td valign="top">
+							<div class="tpheadertitle">AntInstaller</div>
+							<!--img src="images/ant-install-title.png" alt="AntInstaller"/-->
+						</td>
+						<td width="100%" align="right" valign="bottom" nowrap="NOWRAP">
+				<div class="tpraised">
+				<a class="tpbutton" target="_top" href="index.html">home</a>
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/project/showfiles.php?group_id=123466&amp;package_id=134917">download</a>
+				<a class="tpbutton" target="_top" href="http://sf.net">sourceforge</a> 
+				<a class="tpbutton" target="_top" href="manual-ant.html">antmanual</a> 
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/tracker/?group_id=123466&amp;atid=696615">RFEs</a> 
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/tracker/?group_id=123466&amp;atid=696612">Bugs</a></div>
+						</td>
+					</tr>
+				</table>
+      </th>
+    </tr>
+    <tr class="tpbody">
+		<td class="tpleft" valign="bottom">
+			<br/>
+			<div id="logoset">
+			<a target="_top" href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=123466&amp;type=2" alt="SourceForge.net Logo" border="0" height="37" width="125"></a>
+			<br/><br/>
+			<a target="_top" href="http://sourceforge.net/donate/index.php?group_id=123466">
+			<img src="http://sourceforge.net/images/project-support.jpg" alt="donate to AntInstaller"/>
+			</a>
+			</div>
+		</td>
+      <td class="tpright" valign="top">
+      <div class="tpcontent">
+			<!--[segment-content] page content start -->
+      <h2>MiniInstaller</h2>
+The mini installer is the selfextracting jar component of AntInstaller with a few modifications<br/>
+
+ It simply extracts all the files in the Jar to a user selected directory.
+ It works on the command line or with a GUI if possible.<br/>
+ It is available as a separate download.
+ 
+<h3>Usage</h3>
+Simply place <code>org.tp23.mini.MiniInstaller.class</code> and 
+ <code>org.tp23.mini.ProgressIndicator.class</code>
+ in the Jar and add a <code>/META-INF/MANIFEST.mf</code> 
+ with the Main-Class attribute set to <code>org.tp23.mini.MiniInstaller</code>. 
+ <br/>
+ If the manifest includes an attribute <code>Overwrite-Files</code> with any value
+ the installer will overwrite existing files.<br/><br/>
+
+ <h3>LookAndFeel</h3> 
+ If the manifest can include an attribute <code>Look-And-Feel</code> with a value
+ that specifies a look and feel on the claspath that look and feel will be used.<br/>
+ As with AntInstaller a modified verison of the JGoodies look and feel is included.
+ This is cut down to 150K (after compression) since only the file chooser and 
+ JOptionPane are used.
+ If it is still too much just don't include the package <code>org.tp23.jgoodies</code> in the installer
+ and the default LookAndFeel will be used.
+ <br/><br/>
+ 
+ <h3>Extending MiniInstaller</h3>
+  <p>A Hook class can be implemented in the default package that must implement
+ this imaginary interface.
+ <pre>
+interface Hook{
+	public int exec(MiniInstaller installer, boolean graphicsEnv);
+}
+<pre>
+ The interface is <i>imaginary</i> since it does not exist and is not required on the classpath
+ .Reflection is used to find the method.
+ The Hook should never throw exceptions.   <br/>
+ <code>MiniInstaller.isGraphicsEnv()</code> can be used to determine if there is a graphics environment.<br/>
+ <code>MiniInstaller.printXorTextWarning(String)</code> can be used to print a message.<br/>
+ <code>MiniInstaller.getArchiveFile()</code> returns a file handle on the Jar being extracted.<br/>
+ All classes in the package <code>org.tp23</code> including ProgressIndicator,MiniInstaller,Hook and the image
+ resources/extract-image.png are not extracted.<br/><br/>
+ 
+ If you add other classes to Help your Hook class they should be added to the
+ package <code>org.skip</code> and they will not be extracted.
+
+
+			<!-- content end [segment-end]-->
+		 	</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div id="contents-panel">
+<!--[segment-file://contents-include.html] menu start -->
+<div id="contents-menu">
+<ol class="sidebar" id="root">
+	<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><b>Site map</b>
+		<ol>
+			<li class="sidebar"><a href="introduction.html">Introduction</a></li>
+			<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><b>Developer References</b>
+				<ol>
+					<li class="sidebar"><a href="quickstart.html">Quick Start</a></li>
+					<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html">Manual</a>
+						<ol class="init-hidden">
+							<li class="sidebar"><a href="manual.html#config">antinstall-config.xml</a></li>
+							<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html#page">Pages</a>
+								<ol class="init-hidden">
+									<li class="sidebar"><a href="manual.html#pagesplash">Splash Page</a></li>
+									<li class="sidebar"><a href="manual.html#pagetext">Text Page</a></li>
+									<li class="sidebar"><a href="manual.html#pagelicense">License Page</a></li>
+									<li class="sidebar"><a href="manual.html#pageinput">Input Page</a></li>
+									<li class="sidebar"><a href="manual.html#pageprogress">Progress Page</a></li>
+								</ol>
+							</li>
+							<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html#inputtypes">Input types</a>
+								<ol class="init-hidden">
+									<li class="sidebar"><a href="manual.html#app-root">Application Root</a></li>
+									<li class="sidebar"><a href="manual.html#checkbox">Checkbox</a></li>
+									<li class="sidebar"><a href="manual.html#comment">Comment</a></li>
+									<li class="sidebar"><a href="manual.html#date">Date</a></li>
+									<li class="sidebar"><a href="manual.html#directory">Directory</a></li>
+									<li class="sidebar"><a href="manual.html#file">File</a></li>
+									<li class="sidebar"><a href="manual.html#large-select">Large Select</a></li>
+									<li class="sidebar"><a href="manual.html#password">Password Text</a></li>
+									<li class="sidebar"><a href="manual.html#password-confirm">Confirm Password</a></li>
+									<li class="sidebar"><a href="manual.html#select">Select</a></li>
+									<li class="sidebar"><a href="manual.html#target">Target</a></li>
+									<li class="sidebar"><a href="manual.html#target-select">Target Select</a></li>
+									<li class="sidebar"><a href="manual.html#text">Unvalidated Text</a></li>
+									<li class="sidebar"><a href="manual.html#validated">Validated Text</a></li>
+									<li class="sidebar"><a href="manual.html#extvalidated">Externally Validated Text</a></li>
+								</ol>
+							</li>
+							<li class="sidebar"><a href="manual.html#extractor">Self Extractor</a></li>
+							<li class="sidebar"><a href="manual.html#non-extractor">Non Extractor</a></li>
+							<li class="sidebar"><a href="manual.html#scripts">Start Scripts</a></li>
+							<li class="sidebar"><a href="manual.html#refs">Dynamic References</a></li>
+							<li class="sidebar"><a href="manual.html#pagedisplay">Page Displaying</a></li>
+						</ol>
+					</li>
+					<li class="sidebar"><a href="installertask.html">Installer Ant task</a></li>
+					<li class="sidebar"><a href="validationofconfig.html">Validation of config</a></li>
+					<li class="sidebar"><a href="lookandfeels.html">LookAndFeels</a> <br/>(inc screenshots)</li>
+					<li class="sidebar"><a href="classpathresources.html">Resources/Classpath issues</a></li>
+					<li class="sidebar"><a href="i18n.html">Internationalisation</a></li>
+					<li class="sidebar"><a href="auto.html">Automated installs</a></li>
+					<li class="sidebar"><a href="installtypes.html">Multiple install types</a></li>
+					<li class="sidebar"><a href="posttargets.html">Post display targets</a></li>
+					<li class="sidebar"><a href="icons.html">Button Icons</a></li>
+					<li class="sidebar"><a href="antinstall-config-example.html">Example antinstall-config.xml</a></li>
+				</ol>
+			</li>
+			<li class="sidebar"><a href="manual-ant.html">Ant Manual</a></li>
+			<li class="sidebar"><a href="antlinks.html">Ant links</a></li>
+			<li class="sidebar"><a href="userusage.html">User usage</a></li>
+			<li class="sidebar"><a href="licenses.html">Licenses</a></li>
+			<li class="sidebar"><a href="potentialuses.html">Potential uses</a></li>
+			<li class="sidebar"><a href="roadmap.html">Road Map</a></li>
+			<li class="sidebar"><a href="wanted.html">Wanted</a></li>
+			<li class="sidebar"><a href="dtds.html">DTDs</a></li>
+			<li class="sidebar"><a href="changelog.html">Changelog</a></li>
+			<li class="sidebar"><a href="http://sourceforge.net/projects/antinstaller">Project page on SourceForge</a></li>
+			<li class="sidebar"><a href="java2html/antinstaller/index.html">Java2HTML (main)</a></li>
+			<li class="sidebar"><a href="java2html/ext/index.html">Java2HTML (extensions)</a></li>
+			<li class="sidebar"><a href="http://antinstaller.cvs.sourceforge.net/antinstaller">Public CVS over HTTP</a></li>
+			<li class="sidebar"><a href="http://sourceforge.net/sendmessage.php?touser=616485">Contact AntInstaller Admin</a></li>
+		</ol>
+	</li>
+</ol>
+<br/>
+<br/>
+</div>
+
+
+<!-- menu end [segment-end]-->
+</div>
+<div id="contents-options">
+<a id="toggle" href="#" onclick="toggleMenu(); return false;">show menu</a>
+</div>
+
+</div>
+</body>
+</html>

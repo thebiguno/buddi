@@ -1,0 +1,503 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.selfextract.SelfExtractor (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">SelfExtractor.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.selfextract.index.html" target="packageFrame">org.tp23.antinstaller.selfextract</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.awt.HeadlessException;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.io.BufferedOutputStream;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.io.File;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.io.FileFilter;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.io.FileInputStream;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> java.io.FileNotFoundException;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> java.io.FileOutputStream;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> java.io.IOException;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="Import">import</FONT> java.net.URL;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> java.util.ArrayList;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A><FONT CLASS="Import">import</FONT> java.util.jar.JarEntry;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Import">import</FONT> java.util.jar.JarFile;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> java.util.jar.JarInputStream;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A>
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Import">import</FONT> javax.swing.JOptionPane;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="Import">import</FONT> javax.swing.UIManager;
+<FONT CLASS="LN">34</FONT><A NAME="34"></A>
+<FONT CLASS="LN">35</FONT><A NAME="35"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">org.tp23.antinstaller.InstallException</A>;
+<FONT CLASS="LN">36</FONT><A NAME="36"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/swing/plaf/LookAndFeelFactory.java.html">org.tp23.antinstaller.renderer.swing.plaf.LookAndFeelFactory</A>;
+<FONT CLASS="LN">37</FONT><A NAME="37"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/ExecInstall.java.html">org.tp23.antinstaller.runtime.ExecInstall</A>;
+<FONT CLASS="LN">38</FONT><A NAME="38"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/exe/FilterChain.java.html">org.tp23.antinstaller.runtime.exe.FilterChain</A>;
+<FONT CLASS="LN">39</FONT><A NAME="39"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/exe/FilterFactory.java.html">org.tp23.antinstaller.runtime.exe.FilterFactory</A>;
+<FONT CLASS="LN">40</FONT><A NAME="40"></A>
+<FONT CLASS="LN">41</FONT><A NAME="41"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">42</FONT><A NAME="42"></A> *
+<FONT CLASS="LN">43</FONT><A NAME="43"></A> * &lt;p&gt;Finds a file reference to the Jar that loads this class and then extracts that Jar
+<FONT CLASS="LN">44</FONT><A NAME="44"></A> * to a temporary directory &lt;/p&gt;
+<FONT CLASS="LN">45</FONT><A NAME="45"></A> * &lt;p&gt; &lt;/p&gt;
+<FONT CLASS="LN">46</FONT><A NAME="46"></A> * @author Paul Hinds
+<FONT CLASS="LN">47</FONT><A NAME="47"></A> * @version $Id: SelfExtractor.java,v 1.10 2007/01/28 08:44:40 teknopaul Exp $
+<FONT CLASS="LN">48</FONT><A NAME="48"></A> */</FONT>
+<FONT CLASS="LN">49</FONT><A NAME="49"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> SelfExtractor {
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String CONFIG_RESOURCE = <FONT CLASS="StringLiteral">"/org/tp23/antinstaller/runtime/exe/selfextractor.fconfig"</FONT>;
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>    
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>    <FONT CLASS="Private">private</FONT> File extractDir;
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>    <FONT CLASS="Private">private</FONT> File archiveFile;
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> overwrite = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Int">int</FONT> DEFAULT_BUFFER_SIZE = <FONT CLASS="IntegerLiteral">1024</FONT>;
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Int">int</FONT> BUFFER_SIZE = DEFAULT_BUFFER_SIZE;
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Boolean">boolean</FONT> graphicsEnv = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> String lookAndFeel = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>     * returns the Jar that the reference object was loaded from.  If it was not
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>     * loaded from a jar this methods behaviour is undefined
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>     * @TODO define what happens
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>     * @param reference
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>     * @return A java.io.File reference to the Jar
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>     */</FONT>
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> File getEnclosingJar(Object reference) {
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>        String thisClass = <FONT CLASS="StringLiteral">"/"</FONT> + reference.getClass().getName().replace(<FONT CLASS="CharacerLiteral">'.'</FONT>,<FONT CLASS="CharacerLiteral">'/'</FONT>) + <FONT CLASS="StringLiteral">".class"</FONT>;
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>        URL jarUrl = reference.getClass().getResource(thisClass);
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>        String stringForm = jarUrl.toString();
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>        <FONT CLASS="SingleLineComment">//String fileForm = jarUrl.getFile();
+<FONT CLASS="LN">74</FONT><A NAME="74"></A></FONT>
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>        File file = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>        <FONT CLASS="Int">int</FONT> endIdx = stringForm.indexOf(<FONT CLASS="StringLiteral">"!/"</FONT>);
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>        <FONT CLASS="If">if</FONT>(endIdx != -<FONT CLASS="IntegerLiteral">1</FONT>){
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>            String unescaped = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>            String fileNamePart = stringForm.substring(<FONT CLASS="StringLiteral">"jar:file:"</FONT>.length(), endIdx);
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>            file = <FONT CLASS="New">new</FONT> File(fileNamePart);
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>            <FONT CLASS="If">if</FONT> ( ! file.exists()) {
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>                <FONT CLASS="SingleLineComment">// try to unescape encase the URL Handler has escaped the " " to %20
+<FONT CLASS="LN">83</FONT><A NAME="83"></A></FONT>                unescaped = unescape(fileNamePart);
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>                file = <FONT CLASS="New">new</FONT> File(unescaped);
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>            }
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>            <FONT CLASS="Return">return</FONT> file;
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>        }
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>        <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> RuntimeException(<FONT CLASS="StringLiteral">"Failed expanding Jar."</FONT>);
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>    }
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>     * Constructor for the SelfExtractor object.  Directly after constructing
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>     * an instance the init() method should be called unless subclassing
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>     */</FONT>
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>    <FONT CLASS="Public">public</FONT> SelfExtractor() {
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>    }
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>     * This has been moved from the default constructor to facilitate subclassing
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>     * @return true if the lookAndFeel worked
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>     */</FONT>
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> init(){
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>        System.out.println(<FONT CLASS="StringLiteral">"Loading self extractor..."</FONT>);
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>        archiveFile = getEnclosingJar(<FONT CLASS="This">this</FONT>);
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>        makeTempDir();
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>            JarFile thisJar = <FONT CLASS="New">new</FONT> JarFile(archiveFile);
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>            lookAndFeel = thisJar.getManifest().getMainAttributes().getValue(<FONT CLASS="StringLiteral">"Look-And-Feel"</FONT>);
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>            lookAndFeel = LookAndFeelFactory.getLafFromToken(lookAndFeel);
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>            <FONT CLASS="If">if</FONT>(lookAndFeel != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>                UIManager.setLookAndFeel(lookAndFeel);
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>            }
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>        }
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>        <FONT CLASS="Catch">catch</FONT> (Throwable ex) {
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>            <FONT CLASS="SingleLineComment">// not concerned about Look and Feel
+<FONT CLASS="LN">16</FONT><A NAME="116"></A></FONT>        }
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>    }
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>    
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>     * Creates a new empty temporary directory for the file extraction
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>     * @return
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>     */</FONT>
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>    <FONT CLASS="Protected">protected</FONT> File makeTempDir(){
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>        String tempDir = System.getProperty(<FONT CLASS="StringLiteral">"java.io.tmpdir"</FONT>);
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>        extractDir = <FONT CLASS="New">new</FONT> File(tempDir, <FONT CLASS="StringLiteral">"antinstall"</FONT>);
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>        <FONT CLASS="Int">int</FONT> idx = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>        <FONT CLASS="While">while</FONT> (extractDir.exists()) {
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>            extractDir = <FONT CLASS="New">new</FONT> File(tempDir, <FONT CLASS="StringLiteral">"antinstall"</FONT> + (idx++));
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>        }
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>        extractDir.mkdirs();
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>        extractDir.deleteOnExit();
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>        <FONT CLASS="Return">return</FONT> extractDir;
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>    }
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>     *  Constructor for the SelfExtractor object that sets the buffersize in use.
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>     *  The write buffer is the same size as the write buffer size because the read buffer reads
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>     *  decompressed bytes
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>     *  @param newBufferSize the size of the read buffer
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>     */</FONT>
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>    <FONT CLASS="Public">public</FONT> SelfExtractor(<FONT CLASS="Int">int</FONT> newBufferSize) {
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>        BUFFER_SIZE = newBufferSize;
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>        archiveFile = getEnclosingJar(<FONT CLASS="This">this</FONT>);
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>    }
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>     *  Sets the Directory into which the file will be extracted
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>     *
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>     *@param  newExtractDir  The new extract directory
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>     */</FONT>
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setExtractDir(File newExtractDir) {
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>        extractDir = newExtractDir;
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>    }
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>     *  changes the archive to be extracted
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>     *@param  newArchiveFile  The new archiveFile value
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>     */</FONT>
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setArchiveFile(File newArchiveFile) {
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>        archiveFile = newArchiveFile;
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>    }
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>     *  Gets the Directory into which the files will be extracted that
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>     *  is currently set in the ZipExtractor object
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>     *@return    The extract directory value
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>     */</FONT>
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>    <FONT CLASS="Public">public</FONT> File getExtractDir() {
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>        <FONT CLASS="Return">return</FONT> extractDir;
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>    }
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>     *  Gets the set in the ZipExtractor
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>     *@return    The archiveFile value
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>     */</FONT>
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> isOverwrite() {
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>        <FONT CLASS="Return">return</FONT> overwrite;
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>    }
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>     *  Gets the Directory into which the files will be extracted that
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>     *  is currently set in the ZipExtractor object
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>     *@return    The extract directory value
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>     */</FONT>
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> setOverwrite(<FONT CLASS="Boolean">boolean</FONT> overwrite) {
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>        <FONT CLASS="This">this</FONT>.overwrite = overwrite;
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>    }
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>     *  Gets the set in the ZipExtractor
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>     *@return    The archiveFile value
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>     */</FONT>
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>    <FONT CLASS="Public">public</FONT> File getArchiveFile() {
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>        <FONT CLASS="Return">return</FONT> archiveFile;
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>    }
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>     *  Opens up the zip and gets a list of the files in it.  If the zip file
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>     *  or the temp file have not been set NullPointerExceptions will get thrown
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>     *@param  vebose  if true Prints out a list of the zips
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>     *      contents on to the command line
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>     *@return  an ArrayList of String objects that will
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>     *         be as per the path in the zip
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>     *@exception  FileNotFoundException  Description of Exception
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>     *@exception  IOException            Description of Exception
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>     */</FONT>
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>    <FONT CLASS="Public">public</FONT> ArrayList getList(<FONT CLASS="Boolean">boolean</FONT> vebose) <FONT CLASS="Throws">throws</FONT> FileNotFoundException, IOException {
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>        JarInputStream zis = <FONT CLASS="New">new</FONT> JarInputStream(<FONT CLASS="New">new</FONT> FileInputStream(archiveFile));
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>        JarEntry entry = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>        ArrayList result = <FONT CLASS="New">new</FONT> ArrayList();
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>        <FONT CLASS="While">while</FONT> ( (entry = zis.getNextJarEntry()) != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>            <FONT CLASS="If">if</FONT> (vebose) {
+<FONT CLASS="LN">13</FONT><A NAME="213"></A>                System.out.println(entry.getName());
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>            }
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>            result.add(entry.getName());
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>        }
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>        <FONT CLASS="Return">return</FONT> result;
+<FONT CLASS="LN">18</FONT><A NAME="218"></A>    }
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>     * @return the number of files in the jar
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>     * @throws FileNotFoundException
+<FONT CLASS="LN">23</FONT><A NAME="223"></A>     * @throws IOException
+<FONT CLASS="LN">24</FONT><A NAME="224"></A>     */</FONT>
+<FONT CLASS="LN">25</FONT><A NAME="225"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Int">int</FONT> getFileCount() <FONT CLASS="Throws">throws</FONT> FileNotFoundException, IOException {
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>        JarInputStream zis = <FONT CLASS="New">new</FONT> JarInputStream(<FONT CLASS="New">new</FONT> FileInputStream(archiveFile));
+<FONT CLASS="LN">27</FONT><A NAME="227"></A>        <FONT CLASS="Int">int</FONT> count = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>        <FONT CLASS="While">while</FONT> (  zis.getNextJarEntry() != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">29</FONT><A NAME="229"></A>            count++;
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>        }
+<FONT CLASS="LN">31</FONT><A NAME="231"></A>        <FONT CLASS="Return">return</FONT> count;
+<FONT CLASS="LN">32</FONT><A NAME="232"></A>    }
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>
+<FONT CLASS="LN">34</FONT><A NAME="234"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">35</FONT><A NAME="235"></A>     *  Opens up the zip and extracts the files to the temp dir.
+<FONT CLASS="LN">36</FONT><A NAME="236"></A>     *
+<FONT CLASS="LN">37</FONT><A NAME="237"></A>     *@param  vebose  if true Prints out a list of the zips contents on to System.out
+<FONT CLASS="LN">38</FONT><A NAME="238"></A>     *@return an ArrayList of java.io.File objects that
+<FONT CLASS="LN">39</FONT><A NAME="239"></A>     *      will be as per the path in the zip with the root being the temp dir
+<FONT CLASS="LN">40</FONT><A NAME="240"></A>     *@exception  FileNotFoundException
+<FONT CLASS="LN">41</FONT><A NAME="241"></A>     *@exception  IOException
+<FONT CLASS="LN">42</FONT><A NAME="242"></A>     */</FONT>
+<FONT CLASS="LN">43</FONT><A NAME="243"></A>    <FONT CLASS="Public">public</FONT> ArrayList extract(<FONT CLASS="Boolean">boolean</FONT> vebose, <FONT CLASS="Boolean">boolean</FONT> isX) <FONT CLASS="Throws">throws</FONT> FileNotFoundException, IOException {
+<FONT CLASS="LN">44</FONT><A NAME="244"></A>        <FONT CLASS="Int">int</FONT> fileCount = getFileCount();
+<FONT CLASS="LN">45</FONT><A NAME="245"></A>        <A HREF="../../../../org/tp23/antinstaller/selfextract/ProgressIndicator.java.html">ProgressIndicator</A> indicator = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">46</FONT><A NAME="246"></A>        <FONT CLASS="If">if</FONT>(isX){
+<FONT CLASS="LN">47</FONT><A NAME="247"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">48</FONT><A NAME="248"></A>                    indicator = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/selfextract/ProgressIndicator.java.html">ProgressIndicator</A>(fileCount);
+<FONT CLASS="LN">49</FONT><A NAME="249"></A>                    indicator.show();
+<FONT CLASS="LN">50</FONT><A NAME="250"></A>            }
+<FONT CLASS="LN">51</FONT><A NAME="251"></A>            <FONT CLASS="Catch">catch</FONT> ( Exception exc ) {
+<FONT CLASS="LN">52</FONT><A NAME="252"></A>                <FONT CLASS="MultiLineComment">/*
+<FONT CLASS="LN">53</FONT><A NAME="253"></A>                 * Chances are, there are problems with the graphics environment
+<FONT CLASS="LN">54</FONT><A NAME="254"></A>                 * so trying falling back to text mode
+<FONT CLASS="LN">55</FONT><A NAME="255"></A>                 */</FONT>
+<FONT CLASS="LN">56</FONT><A NAME="256"></A>                graphicsEnv = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">57</FONT><A NAME="257"></A>                isX = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">58</FONT><A NAME="258"></A>            }
+<FONT CLASS="LN">59</FONT><A NAME="259"></A>
+<FONT CLASS="LN">60</FONT><A NAME="260"></A>        }
+<FONT CLASS="LN">61</FONT><A NAME="261"></A>        JarInputStream zis = <FONT CLASS="New">new</FONT> JarInputStream(<FONT CLASS="New">new</FONT> FileInputStream(archiveFile));
+<FONT CLASS="LN">62</FONT><A NAME="262"></A>        JarEntry entry = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">63</FONT><A NAME="263"></A>        ArrayList result = <FONT CLASS="New">new</FONT> ArrayList();
+<FONT CLASS="LN">64</FONT><A NAME="264"></A>        <FONT CLASS="While">while</FONT> ( (entry = zis.getNextJarEntry()) != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">65</FONT><A NAME="265"></A>            <FONT CLASS="If">if</FONT> (vebose) {
+<FONT CLASS="LN">66</FONT><A NAME="266"></A>                System.out.println(<FONT CLASS="StringLiteral">"Extracting:"</FONT> + entry.getName());
+<FONT CLASS="LN">67</FONT><A NAME="267"></A>            }
+<FONT CLASS="LN">68</FONT><A NAME="268"></A>            result.add(extract(zis, entry));
+<FONT CLASS="LN">69</FONT><A NAME="269"></A>            <FONT CLASS="If">if</FONT> (isX) {
+<FONT CLASS="LN">70</FONT><A NAME="270"></A>                indicator.tick();
+<FONT CLASS="LN">71</FONT><A NAME="271"></A>            }
+<FONT CLASS="LN">72</FONT><A NAME="272"></A>        }
+<FONT CLASS="LN">73</FONT><A NAME="273"></A>        <FONT CLASS="If">if</FONT> (isX) {
+<FONT CLASS="LN">74</FONT><A NAME="274"></A>            indicator.hide();
+<FONT CLASS="LN">75</FONT><A NAME="275"></A>        }
+<FONT CLASS="LN">76</FONT><A NAME="276"></A>        zis.close();
+<FONT CLASS="LN">77</FONT><A NAME="277"></A>        <FONT CLASS="Return">return</FONT> result;
+<FONT CLASS="LN">78</FONT><A NAME="278"></A>    }
+<FONT CLASS="LN">79</FONT><A NAME="279"></A>
+<FONT CLASS="LN">80</FONT><A NAME="280"></A>
+<FONT CLASS="LN">81</FONT><A NAME="281"></A>
+<FONT CLASS="LN">82</FONT><A NAME="282"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">83</FONT><A NAME="283"></A>     *  Extract a single file from the stream. N.B. the stream must be in the correct
+<FONT CLASS="LN">84</FONT><A NAME="284"></A>     *  position for this to work
+<FONT CLASS="LN">85</FONT><A NAME="285"></A>     *@param  zis                        ZipInputStream open and ready
+<FONT CLASS="LN">86</FONT><A NAME="286"></A>     *@param  entry                      A valid entry read from the stream
+<FONT CLASS="LN">87</FONT><A NAME="287"></A>     *@return                            The inflated file generated in the temp dir
+<FONT CLASS="LN">88</FONT><A NAME="288"></A>     *@exception  FileNotFoundException
+<FONT CLASS="LN">89</FONT><A NAME="289"></A>     *@exception  IOException
+<FONT CLASS="LN">90</FONT><A NAME="290"></A>     */</FONT>
+<FONT CLASS="LN">91</FONT><A NAME="291"></A>    <FONT CLASS="Private">private</FONT> File extract(JarInputStream zis, JarEntry entry) <FONT CLASS="Throws">throws</FONT> FileNotFoundException, IOException {
+<FONT CLASS="LN">92</FONT><A NAME="292"></A>        createPath(entry.getName());
+<FONT CLASS="LN">93</FONT><A NAME="293"></A>        File fileToUse = <FONT CLASS="New">new</FONT> File(extractDir, entry.getName());
+<FONT CLASS="LN">94</FONT><A NAME="294"></A>        <FONT CLASS="If">if</FONT> (fileToUse.exists()) {
+<FONT CLASS="LN">95</FONT><A NAME="295"></A>            <FONT CLASS="If">if</FONT> (!overwrite) {
+<FONT CLASS="LN">96</FONT><A NAME="296"></A>                <FONT CLASS="Return">return</FONT> fileToUse;
+<FONT CLASS="LN">97</FONT><A NAME="297"></A>            }
+<FONT CLASS="LN">98</FONT><A NAME="298"></A>        }
+<FONT CLASS="LN">99</FONT><A NAME="299"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">00</FONT><A NAME="300"></A>            fileToUse.createNewFile();
+<FONT CLASS="LN">01</FONT><A NAME="301"></A>        }
+<FONT CLASS="LN">02</FONT><A NAME="302"></A>        <FONT CLASS="If">if</FONT> (fileToUse.isDirectory()) {
+<FONT CLASS="LN">03</FONT><A NAME="303"></A>            <FONT CLASS="Return">return</FONT> fileToUse;
+<FONT CLASS="LN">04</FONT><A NAME="304"></A>        }
+<FONT CLASS="LN">05</FONT><A NAME="305"></A>
+<FONT CLASS="LN">06</FONT><A NAME="306"></A>        BufferedOutputStream bos = <FONT CLASS="New">new</FONT> BufferedOutputStream(<FONT CLASS="New">new</FONT> FileOutputStream(fileToUse), BUFFER_SIZE);
+<FONT CLASS="LN">07</FONT><A NAME="307"></A>        <FONT CLASS="Byte">byte</FONT>[] bytes = <FONT CLASS="New">new</FONT> <FONT CLASS="Byte">byte</FONT>[BUFFER_SIZE];
+<FONT CLASS="LN">08</FONT><A NAME="308"></A>        <FONT CLASS="Int">int</FONT> len = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">09</FONT><A NAME="309"></A>        <FONT CLASS="While">while</FONT> ( (len = zis.read(bytes)) &gt;= <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">10</FONT><A NAME="310"></A>            bos.write(bytes, <FONT CLASS="IntegerLiteral">0</FONT>, len);
+<FONT CLASS="LN">11</FONT><A NAME="311"></A>        }
+<FONT CLASS="LN">12</FONT><A NAME="312"></A>        bos.close();
+<FONT CLASS="LN">13</FONT><A NAME="313"></A>        zis.closeEntry();
+<FONT CLASS="LN">14</FONT><A NAME="314"></A>        <FONT CLASS="Return">return</FONT> fileToUse;
+<FONT CLASS="LN">15</FONT><A NAME="315"></A>    }
+<FONT CLASS="LN">16</FONT><A NAME="316"></A>
+<FONT CLASS="LN">17</FONT><A NAME="317"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">18</FONT><A NAME="318"></A>     *  This adds all the necessary directories in the root of the zip path to the
+<FONT CLASS="LN">19</FONT><A NAME="319"></A>     *  temp dir.
+<FONT CLASS="LN">20</FONT><A NAME="320"></A>     *@param  entryName        The string name in the Zip file (virtual path)
+<FONT CLASS="LN">21</FONT><A NAME="321"></A>     *@exception  IOException  if the directories can not be made
+<FONT CLASS="LN">22</FONT><A NAME="322"></A>     */</FONT>
+<FONT CLASS="LN">23</FONT><A NAME="323"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> createPath(String entryName) <FONT CLASS="Throws">throws</FONT> IOException {
+<FONT CLASS="LN">24</FONT><A NAME="324"></A>        <FONT CLASS="Int">int</FONT> slashIdx = entryName.lastIndexOf(<FONT CLASS="CharacerLiteral">'/'</FONT>);
+<FONT CLASS="LN">25</FONT><A NAME="325"></A>        <FONT CLASS="If">if</FONT> (slashIdx &gt;= <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">26</FONT><A NAME="326"></A>            <FONT CLASS="SingleLineComment">// there is path info
+<FONT CLASS="LN">27</FONT><A NAME="327"></A></FONT>            String firstPath = entryName.substring(<FONT CLASS="IntegerLiteral">0</FONT>, slashIdx);
+<FONT CLASS="LN">28</FONT><A NAME="328"></A>            File dir = <FONT CLASS="New">new</FONT> File(extractDir, firstPath);
+<FONT CLASS="LN">29</FONT><A NAME="329"></A>            <FONT CLASS="If">if</FONT> (!dir.exists()) {
+<FONT CLASS="LN">30</FONT><A NAME="330"></A>                dir.mkdirs();
+<FONT CLASS="LN">31</FONT><A NAME="331"></A>            }
+<FONT CLASS="LN">32</FONT><A NAME="332"></A>        }
+<FONT CLASS="LN">33</FONT><A NAME="333"></A>    }
+<FONT CLASS="LN">34</FONT><A NAME="334"></A>
+<FONT CLASS="LN">35</FONT><A NAME="335"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">36</FONT><A NAME="336"></A>     * Run method to use from the command line. This is fired via an entry in the 
+<FONT CLASS="LN">37</FONT><A NAME="337"></A>     * MANIFEST.MF in the Jar
+<FONT CLASS="LN">38</FONT><A NAME="338"></A>     *@param  args  The command line arguments
+<FONT CLASS="LN">39</FONT><A NAME="339"></A>     */</FONT>
+<FONT CLASS="LN">40</FONT><A NAME="340"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> main(String[] args) {
+<FONT CLASS="LN">41</FONT><A NAME="341"></A>        testX();
+<FONT CLASS="LN">42</FONT><A NAME="342"></A>        <FONT CLASS="SingleLineComment">// FIXME move after parseArgs() and set graphicsEnv if text selected
+<FONT CLASS="LN">43</FONT><A NAME="343"></A></FONT>        <FONT CLASS="SingleLineComment">// will need to test SelfExtractor and comment parseArgs() to ensure
+<FONT CLASS="LN">44</FONT><A NAME="344"></A></FONT>        <FONT CLASS="SingleLineComment">// no side effects in the future.
+<FONT CLASS="LN">45</FONT><A NAME="345"></A></FONT>        <A HREF="../../../../org/tp23/antinstaller/selfextract/SelfExtractor.java.html">SelfExtractor</A> extractor = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">46</FONT><A NAME="346"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">47</FONT><A NAME="347"></A>            <FONT CLASS="Boolean">boolean</FONT> verbose = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">48</FONT><A NAME="348"></A>            extractor = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/selfextract/SelfExtractor.java.html">SelfExtractor</A>();
+<FONT CLASS="LN">49</FONT><A NAME="349"></A>            extractor.init();
+<FONT CLASS="LN">50</FONT><A NAME="350"></A>            extractor.extract(verbose, graphicsEnv);
+<FONT CLASS="LN">51</FONT><A NAME="351"></A>        }
+<FONT CLASS="LN">52</FONT><A NAME="352"></A>        <FONT CLASS="Catch">catch</FONT> (Exception e) {
+<FONT CLASS="LN">53</FONT><A NAME="353"></A>            e.printStackTrace();
+<FONT CLASS="LN">54</FONT><A NAME="354"></A>            String tempDir = <FONT CLASS="StringLiteral">"unknown"</FONT>;
+<FONT CLASS="LN">55</FONT><A NAME="355"></A>            <FONT CLASS="If">if</FONT>(extractor != <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">56</FONT><A NAME="356"></A>                tempDir = extractor.getExtractDir().getAbsolutePath();
+<FONT CLASS="LN">57</FONT><A NAME="357"></A>            }
+<FONT CLASS="LN">58</FONT><A NAME="358"></A>            String warning = <FONT CLASS="StringLiteral">"Could not extract Jar file to directory:"</FONT> + tempDir;
+<FONT CLASS="LN">59</FONT><A NAME="359"></A>            printXorTextWarning(warning);
+<FONT CLASS="LN">60</FONT><A NAME="360"></A>        }
+<FONT CLASS="LN">61</FONT><A NAME="361"></A>        
+<FONT CLASS="LN">62</FONT><A NAME="362"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">63</FONT><A NAME="363"></A>            <A HREF="../../../../org/tp23/antinstaller/runtime/exe/FilterChain.java.html">FilterChain</A> chain = FilterFactory.factory(CONFIG_RESOURCE);     
+<FONT CLASS="LN">64</FONT><A NAME="364"></A>            <A HREF="../../../../org/tp23/antinstaller/runtime/ExecInstall.java.html">ExecInstall</A> installExec = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/ExecInstall.java.html">ExecInstall</A>(chain);
+<FONT CLASS="LN">65</FONT><A NAME="365"></A>            installExec.parseArgs(args, <FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">66</FONT><A NAME="366"></A>            installExec.setInstallRoot(extractor.getExtractDir());
+<FONT CLASS="LN">67</FONT><A NAME="367"></A>            <FONT CLASS="SingleLineComment">// removes files on exit
+<FONT CLASS="LN">68</FONT><A NAME="368"></A></FONT>            installExec.setTempRoot(extractor.getExtractDir());
+<FONT CLASS="LN">69</FONT><A NAME="369"></A>
+<FONT CLASS="LN">70</FONT><A NAME="370"></A>            installExec.exec();
+<FONT CLASS="LN">71</FONT><A NAME="371"></A>        }
+<FONT CLASS="LN">72</FONT><A NAME="372"></A>        <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> e1) {
+<FONT CLASS="LN">73</FONT><A NAME="373"></A>            System.out.println(<FONT CLASS="StringLiteral">"Cant load filter chain:/org/tp23/antinstaller/runtime/exe/selfextractor.fconfig"</FONT>);
+<FONT CLASS="LN">74</FONT><A NAME="374"></A>            e1.printStackTrace();
+<FONT CLASS="LN">75</FONT><A NAME="375"></A>        }
+<FONT CLASS="LN">76</FONT><A NAME="376"></A>    }
+<FONT CLASS="LN">77</FONT><A NAME="377"></A>
+<FONT CLASS="LN">78</FONT><A NAME="378"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">79</FONT><A NAME="379"></A>     * This tests for the existence of a  graphics environment and sets an
+<FONT CLASS="LN">80</FONT><A NAME="380"></A>     * internal flag so the test does not have to be repeated, it may be expensive.
+<FONT CLASS="LN">81</FONT><A NAME="381"></A>     * Prior to running this method the isGraphicsEnv() method will be invalid.
+<FONT CLASS="LN">82</FONT><A NAME="382"></A>     */</FONT>
+<FONT CLASS="LN">83</FONT><A NAME="383"></A>    <FONT CLASS="Protected">protected</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> testX(){
+<FONT CLASS="LN">84</FONT><A NAME="384"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">85</FONT><A NAME="385"></A>            java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
+<FONT CLASS="LN">86</FONT><A NAME="386"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">87</FONT><A NAME="387"></A>                <FONT CLASS="Boolean">boolean</FONT> headless = java.awt.GraphicsEnvironment.isHeadless();
+<FONT CLASS="LN">88</FONT><A NAME="388"></A>                <FONT CLASS="If">if</FONT>(headless) {
+<FONT CLASS="LN">89</FONT><A NAME="389"></A>                    graphicsEnv = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">90</FONT><A NAME="390"></A>                    <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">91</FONT><A NAME="391"></A>                }
+<FONT CLASS="LN">92</FONT><A NAME="392"></A>            } <FONT CLASS="Catch">catch</FONT> (Throwable e) {
+<FONT CLASS="LN">93</FONT><A NAME="393"></A>                <FONT CLASS="SingleLineComment">// JDK 1.3 does not have the isHeadless() method but may still work in other situations
+<FONT CLASS="LN">94</FONT><A NAME="394"></A></FONT>            }
+<FONT CLASS="LN">95</FONT><A NAME="395"></A>            graphicsEnv = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">96</FONT><A NAME="396"></A>        }
+<FONT CLASS="LN">97</FONT><A NAME="397"></A>        <FONT CLASS="Catch">catch</FONT> (Throwable e) {
+<FONT CLASS="LN">98</FONT><A NAME="398"></A>            <FONT CLASS="SingleLineComment">// thus graphicsEnv stays false;
+<FONT CLASS="LN">99</FONT><A NAME="399"></A></FONT>        }
+<FONT CLASS="LN">00</FONT><A NAME="400"></A>    }
+<FONT CLASS="LN">01</FONT><A NAME="401"></A>    
+<FONT CLASS="LN">02</FONT><A NAME="402"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">03</FONT><A NAME="403"></A>     * @see #testX()
+<FONT CLASS="LN">04</FONT><A NAME="404"></A>     * @return true if an X or windows environment is available
+<FONT CLASS="LN">05</FONT><A NAME="405"></A>     */</FONT>
+<FONT CLASS="LN">06</FONT><A NAME="406"></A>    <FONT CLASS="Protected">protected</FONT> <FONT CLASS="Boolean">boolean</FONT> isGraphicsEnv(){
+<FONT CLASS="LN">07</FONT><A NAME="407"></A>        <FONT CLASS="Return">return</FONT> graphicsEnv;
+<FONT CLASS="LN">08</FONT><A NAME="408"></A>    }
+<FONT CLASS="LN">09</FONT><A NAME="409"></A>
+<FONT CLASS="LN">10</FONT><A NAME="410"></A>    <FONT CLASS="Protected">protected</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> printXorTextWarning(String warning){
+<FONT CLASS="LN">11</FONT><A NAME="411"></A>        <FONT CLASS="If">if</FONT>(graphicsEnv){
+<FONT CLASS="LN">12</FONT><A NAME="412"></A>            <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">13</FONT><A NAME="413"></A>                JOptionPane.showMessageDialog(<FONT CLASS="Null">null</FONT>, warning);
+<FONT CLASS="LN">14</FONT><A NAME="414"></A>            }
+<FONT CLASS="LN">15</FONT><A NAME="415"></A>            <FONT CLASS="Catch">catch</FONT>( HeadlessException headlessExc ) {
+<FONT CLASS="LN">16</FONT><A NAME="416"></A>                graphicsEnv = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">17</FONT><A NAME="417"></A>                System.out.println(warning);
+<FONT CLASS="LN">18</FONT><A NAME="418"></A>            }
+<FONT CLASS="LN">19</FONT><A NAME="419"></A>        }
+<FONT CLASS="LN">20</FONT><A NAME="420"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">21</FONT><A NAME="421"></A>            System.out.println(warning);
+<FONT CLASS="LN">22</FONT><A NAME="422"></A>        }
+<FONT CLASS="LN">23</FONT><A NAME="423"></A>    }
+<FONT CLASS="LN">24</FONT><A NAME="424"></A>
+<FONT CLASS="LN">25</FONT><A NAME="425"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Int">int</FONT> deleteRecursive(File directory) {
+<FONT CLASS="LN">26</FONT><A NAME="426"></A>        <FONT CLASS="Int">int</FONT> count = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">27</FONT><A NAME="427"></A>        File[] files = directory.listFiles(<FONT CLASS="New">new</FONT> FileFilter() {
+<FONT CLASS="LN">28</FONT><A NAME="428"></A>            <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> accept(File file) {
+<FONT CLASS="LN">29</FONT><A NAME="429"></A>                <FONT CLASS="Return">return</FONT>!file.isDirectory();
+<FONT CLASS="LN">30</FONT><A NAME="430"></A>            }
+<FONT CLASS="LN">31</FONT><A NAME="431"></A>        });
+<FONT CLASS="LN">32</FONT><A NAME="432"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; files.length; i++) {
+<FONT CLASS="LN">33</FONT><A NAME="433"></A>            files[i].delete();
+<FONT CLASS="LN">34</FONT><A NAME="434"></A>            count++;
+<FONT CLASS="LN">35</FONT><A NAME="435"></A>        }
+<FONT CLASS="LN">36</FONT><A NAME="436"></A>        File[] dirs = directory.listFiles(<FONT CLASS="New">new</FONT> FileFilter() {
+<FONT CLASS="LN">37</FONT><A NAME="437"></A>            <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> accept(File file) {
+<FONT CLASS="LN">38</FONT><A NAME="438"></A>                <FONT CLASS="Return">return</FONT> file.isDirectory();
+<FONT CLASS="LN">39</FONT><A NAME="439"></A>            }
+<FONT CLASS="LN">40</FONT><A NAME="440"></A>        });
+<FONT CLASS="LN">41</FONT><A NAME="441"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; dirs.length; i++) {
+<FONT CLASS="LN">42</FONT><A NAME="442"></A>            count += deleteRecursive(dirs[i]);
+<FONT CLASS="LN">43</FONT><A NAME="443"></A>        }
+<FONT CLASS="LN">44</FONT><A NAME="444"></A>        directory.delete();
+<FONT CLASS="LN">45</FONT><A NAME="445"></A>        <FONT CLASS="Return">return</FONT> count;
+<FONT CLASS="LN">46</FONT><A NAME="446"></A>    }
+<FONT CLASS="LN">47</FONT><A NAME="447"></A>
+<FONT CLASS="LN">48</FONT><A NAME="448"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">49</FONT><A NAME="449"></A>     * UN-URL encode string
+<FONT CLASS="LN">50</FONT><A NAME="450"></A>     * TODO should this not support UNICODE escapes
+<FONT CLASS="LN">51</FONT><A NAME="451"></A>     */</FONT>
+<FONT CLASS="LN">52</FONT><A NAME="452"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> String unescape(<FONT CLASS="Final">final</FONT> String s) {
+<FONT CLASS="LN">53</FONT><A NAME="453"></A>        StringBuffer sb = <FONT CLASS="New">new</FONT> StringBuffer(s.length());
+<FONT CLASS="LN">54</FONT><A NAME="454"></A>
+<FONT CLASS="LN">55</FONT><A NAME="455"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; s.length(); i++) {
+<FONT CLASS="LN">56</FONT><A NAME="456"></A>            <FONT CLASS="Char">char</FONT> c = s.charAt(i);
+<FONT CLASS="LN">57</FONT><A NAME="457"></A>            <FONT CLASS="Switch">switch</FONT> (c) {
+<FONT CLASS="LN">58</FONT><A NAME="458"></A>                <FONT CLASS="Case">case</FONT> <FONT CLASS="CharacerLiteral">'%'</FONT>: {
+<FONT CLASS="LN">59</FONT><A NAME="459"></A>                    <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">60</FONT><A NAME="460"></A>                        sb.append( (<FONT CLASS="Char">char</FONT>) Integer.parseInt(s.substring(i + <FONT CLASS="IntegerLiteral">1</FONT>, i + <FONT CLASS="IntegerLiteral">3</FONT>), <FONT CLASS="IntegerLiteral">16</FONT>));
+<FONT CLASS="LN">61</FONT><A NAME="461"></A>                        i += <FONT CLASS="IntegerLiteral">2</FONT>;
+<FONT CLASS="LN">62</FONT><A NAME="462"></A>                        <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">63</FONT><A NAME="463"></A>                    }
+<FONT CLASS="LN">64</FONT><A NAME="464"></A>                    <FONT CLASS="Catch">catch</FONT> (NumberFormatException nfe) {
+<FONT CLASS="LN">65</FONT><A NAME="465"></A>                        <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> IllegalArgumentException();
+<FONT CLASS="LN">66</FONT><A NAME="466"></A>                    }
+<FONT CLASS="LN">67</FONT><A NAME="467"></A>                    <FONT CLASS="Catch">catch</FONT> (StringIndexOutOfBoundsException siob) {
+<FONT CLASS="LN">68</FONT><A NAME="468"></A>                        String end = s.substring(i);
+<FONT CLASS="LN">69</FONT><A NAME="469"></A>                        sb.append(end);
+<FONT CLASS="LN">70</FONT><A NAME="470"></A>                        <FONT CLASS="If">if</FONT> (end.length() == <FONT CLASS="IntegerLiteral">2</FONT>) i++;
+<FONT CLASS="LN">71</FONT><A NAME="471"></A>                    }
+<FONT CLASS="LN">72</FONT><A NAME="472"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">73</FONT><A NAME="473"></A>                }
+<FONT CLASS="LN">74</FONT><A NAME="474"></A>                <FONT CLASS="Default">default</FONT>: {
+<FONT CLASS="LN">75</FONT><A NAME="475"></A>                    sb.append(c);
+<FONT CLASS="LN">76</FONT><A NAME="476"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">77</FONT><A NAME="477"></A>                }
+<FONT CLASS="LN">78</FONT><A NAME="478"></A>            }
+<FONT CLASS="LN">79</FONT><A NAME="479"></A>        }
+<FONT CLASS="LN">80</FONT><A NAME="480"></A>        <FONT CLASS="Return">return</FONT> sb.toString();
+<FONT CLASS="LN">81</FONT><A NAME="481"></A>    }
+<FONT CLASS="LN">82</FONT><A NAME="482"></A>
+<FONT CLASS="LN">83</FONT><A NAME="483"></A>}
+<FONT CLASS="LN">84</FONT><A NAME="484"></A></pre>
+</BODY>
+</HTML>

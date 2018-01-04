@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<!--
+
+This is the build.xml run by AntInstaller for the demo app
+
+It is a normal Ant build script, but remember that it is run in a similar
+way to running
+> ant -buildfile build.xml default,tgdoc,tgsrc
+
+this is targets selected in the selector page have dependencies those
+dependencies may be run once for each target selected
+e.g. if tgdoc had depends="default" and the installer passed
+default,tgdoc  ant would run default then default again then tgdoc
+
+To avoid this problem targets can be forced in the gui using the following
+input in the page to choose components to install
+		<input
+			type="target"
+			displayText="Core components"
+			target="default"
+			defaultValue="true"
+			force="true"/>
+
+-->
+
+<project name="Installation Build"  default="default"  basedir="${basedir}">
+
+	<property file="${basedir}/ant.install.properties"/>
+
+
+	<target name="default" depends="">
+	
+		<echo message="IF ANY OF THE FOLLOWING ARE MISSING THERE IS A PROBLEM"/>
+		
+		<echo message="(or you entered blank in an unvalidated field)"/>
+		<echo message="Installation Directory [${installDir}]"/>
+		<echo message="Entered Property [${myProperty}]"/>
+		<echo message="Checkbox Property [${truefalseprop}]"/>
+		<echo message="Colour selected [${colour}]"/>
+		<echo message="File [${selectedfile}]"/>
+		
+		<echo message="Installer JAR:${antinstaller.jar}"/>
+		<mkdir dir="${installDir}"/>
+		<mkdir dir="${installDir}/classes"/>
+		<mkdir dir="${installDir}/config"/>
+		<mkdir dir="${installDir}/lib"/>
+		<unjar src="${antinstaller.jar}" dest="${basedir}">
+			<patternset>
+					<include name="installpack.zip"/>
+			</patternset>
+		</unjar>
+		<unzip src="${basedir}/installpack.zip" dest="${installDir}">
+			<patternset>
+					<include name="**/*"/>
+					<exclude name="doc/*"/>
+					<exclude name="src/*"/>
+			</patternset>
+		</unzip>
+		<copy file="${installDir}/bin/run.sh"  tofile="${installDir}/run.sh"/>
+		<copy file="${installDir}/bin/run.cmd"  tofile="${installDir}/run.cmd"/>
+		<chmod file="${installDir}/run.sh" perm="774">
+		</chmod>
+		<replace file="${installDir}/config/example-config.xml">
+			<replacefilter token="@TextProperty@"   value="${myProperty}"/>
+			<replacefilter token="@SelectedFile@"     value="${selectedfile}"/>
+			<replacefilter token="@Colour@" value="${colour}"/>
+			<replacefilter token="@BooleanProperty@" value="${truefalseprop}"/>
+		</replace>
+	</target>
+
+	<target name="tgdoc" depends="">
+		<echo message="Installing documentation files"/>
+		<mkdir dir="${installDir}/doc"/>
+		<unzip src="${basedir}/installpack.zip" dest="${installDir}/doc">
+			<patternset>
+					<include name="doc/*"/>
+			</patternset>
+		</unzip>
+	</target>
+
+	<target name="tgsrc" depends="">
+		<echo message="Installing Source files"/>
+		<mkdir dir="${installDir}/src"/>
+		<unzip src="${basedir}/installpack.zip" dest="${installDir}/src">
+			<patternset>
+					<include name="src/*"/>
+			</patternset>
+		</unzip>
+	</target>
+
+</project>

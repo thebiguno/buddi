@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.runtime.logic.CompoundExpression (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">CompoundExpression.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/*
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> *
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * limitations under the License.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> */</FONT>
+<FONT CLASS="LN">14</FONT><A NAME="14"></A>
+<FONT CLASS="LN">15</FONT><A NAME="15"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../../org.tp23.antinstaller.runtime.logic.index.html" target="packageFrame">org.tp23.antinstaller.runtime.logic</A>;
+<FONT CLASS="LN">16</FONT><A NAME="16"></A>
+<FONT CLASS="LN">17</FONT><A NAME="17"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">18</FONT><A NAME="18"></A> * @author mwilson
+<FONT CLASS="LN">19</FONT><A NAME="19"></A> * @version $Id: CompoundExpression.java,v 1.1 2006/09/08 19:16:22
+<FONT CLASS="LN">20</FONT><A NAME="20"></A> *          anothermwilson Exp $
+<FONT CLASS="LN">21</FONT><A NAME="21"></A> * @since 0.7.4 patch 2
+<FONT CLASS="LN">22</FONT><A NAME="22"></A> */</FONT>
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> CompoundExpression <FONT CLASS="Implements">implements</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/Expression.java.html">Expression</A> {
+<FONT CLASS="LN">24</FONT><A NAME="24"></A>
+<FONT CLASS="LN">25</FONT><A NAME="25"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/Expression.java.html">Expression</A> expression1;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/LogicalTest.java.html">LogicalTest</A> test;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A>    <FONT CLASS="Private">private</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/Expression.java.html">Expression</A> expression2;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A>
+<FONT CLASS="LN">29</FONT><A NAME="29"></A>    <FONT CLASS="Public">public</FONT> CompoundExpression(<A HREF="../../../../../org/tp23/antinstaller/runtime/logic/Expression.java.html">Expression</A> expr1, <FONT CLASS="Final">final</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/LogicalTest.java.html">LogicalTest</A> logicalTest, <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/Expression.java.html">Expression</A> expr2) {
+<FONT CLASS="LN">30</FONT><A NAME="30"></A>        <FONT CLASS="This">this</FONT>.expression1 = expr1;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A>        <FONT CLASS="This">this</FONT>.expression2 = expr2;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A>        <FONT CLASS="This">this</FONT>.test = logicalTest;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A>    }
+<FONT CLASS="LN">34</FONT><A NAME="34"></A>
+<FONT CLASS="LN">35</FONT><A NAME="35"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> evaluate() {
+<FONT CLASS="LN">36</FONT><A NAME="36"></A>        <FONT CLASS="Return">return</FONT> test.getTestResult(expression1, expression2);
+<FONT CLASS="LN">37</FONT><A NAME="37"></A>    }
+<FONT CLASS="LN">38</FONT><A NAME="38"></A>}
+<FONT CLASS="LN">39</FONT><A NAME="39"></A></pre>
+</BODY>
+</HTML>

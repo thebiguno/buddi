@@ -1,0 +1,160 @@
+body {
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	font-family: Georgia, "Times New Roman", serif;
+	font-size: 14px;
+	color: #000000;
+	background-color: #FFFFFF;
+	
+}
+table {
+	margin: 0px;
+	margin-left: 0px;
+	padding: 0px;
+	border: 0px;
+}
+img {
+	border: 0px;
+}
+img#fixwidth {
+	display: none;
+}
+img.but {
+	display: none;
+}
+
+tr.tpheader {
+	color: #000000;
+	background-color: #FFFFFF;
+}
+
+.tpsmall {
+	font-size: 10px;
+	text-indent: 23px;
+	font-weight: normal;
+}
+
+.tpheadertitle {
+	color: #000000;
+	background-color: #eeeeee;
+	font-family: Verdana,Helvetica,Arial;
+	width: 100%;
+	font-size: 36px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.tpcontent {
+	border: 0px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.tpnoprint {
+	display: none;
+}
+
+.notready {
+	color: InactiveCaptionText;
+}
+
+a span.notready {
+	color: InactiveCaptionText;
+	text-decoration: none;
+}
+
+table.manual {
+	color: #000000;
+	padding: 0px;
+	margin: 0px;
+	border-top: 1px;
+	border-bottom: 0px;
+	border-right: 1px;
+	border-left: 1px;
+	border-style: solid;
+	border-color: #000000;
+}
+table.manual td {
+	margin: 2px;
+	padding: 2px;
+	border-top: 0px;
+	border-bottom: 1px;
+	border-right: 0px;
+	border-left: 1px;
+	border-style: solid;
+	border-color: #000000;
+	font-size: 12px;
+	vertical-align: top;
+	text-align: left;
+}
+th.manual {
+	font-family: monospace;
+	margin: 2px;
+	padding: 4px;
+	border-top: 1px;
+	border-bottom: 1px;
+	border-left: 1px;
+	border-right: 0px;
+	border-style: solid;
+	border-color: #000000;
+	color: #000000;
+	background-color: #FFFFFF;
+	font-size: 14px;
+	vertical-align: top;
+	text-align: left;
+}
+th.manual2 {
+	font-family: Verdana,Helvetica,Arial;
+	margin: 1px;
+	padding: 1px;
+	border-top: 1px;
+	border-bottom: 1px;
+	border-left: 1px;
+	border-right: 0px;
+	border-style: solid;
+	border-color: #000000;
+	color: #000000;
+	background-color: #FFFFFF;
+	font-size: 12px;
+	vertical-align: top;
+	text-align: left;
+}
+
+ul {
+	text-indent: 0px;
+	margin-left: 0px;
+	padding-left: 0px;
+	
+}
+li {
+	list-style-type: square;
+	text-indent: 0px;
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	list-style-position: inside;
+}
+
+h2 {
+	font-family: Verdana,Helvetica,Arial;
+	color: #000000;
+	background-color: #eeeeee;
+	border: 0px;
+	margin-top: 20px;
+	padding-left: 40px;
+}
+h3 {
+	font-family: Verdana,Helvetica,Arial;
+	color: #000000;
+	background-color: #eeeeee;
+	border: 0px;
+	margin-top: 40px;
+	padding-left: 40px;
+}
+
+a {
+	text-decoration: none;
+	color: #000000;
+	font-weight: bold;
+}

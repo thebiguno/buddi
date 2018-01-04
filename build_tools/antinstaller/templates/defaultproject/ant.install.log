@@ -1,0 +1,23 @@
+Logger initialized
+Ant basedir:/Users/Wyatt/Documents/Programming/Workplace/build_tools/antinstaller/templates/defaultproject
+Filter: org.tp23.antinstaller.runtime.exe.LoadConfigFilter
+Config loaded
+Filter: org.tp23.antinstaller.runtime.exe.CreateUIFilter
+Creating UI classes
+Setting look and feel:org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel
+Created UI classes
+Filter: org.tp23.antinstaller.runtime.exe.PropertyLoaderFilter
+loadDefaults attribute:null
+Not loading defaults
+Filter: org.tp23.antinstaller.runtime.exe.ExecuteRunnerFilter
+Starting UI Screens
+Install screens rendered
+Filter: org.tp23.antinstaller.runtime.exe.PropertyPrinterFilter
+auto build supported: false
+Properties printed:/Users/Wyatt/Documents/Programming/Workplace/build_tools/antinstaller/templates/defaultproject/./ant.install.properties
+Filter: org.tp23.antinstaller.runtime.exe.AntLauncherFilter
+Starting Ant Launcher
+Running targets:Base,Libraries
+Ant finished
+Filter: org.tp23.antinstaller.runtime.exe.FinalizerFilter
+Finalizing

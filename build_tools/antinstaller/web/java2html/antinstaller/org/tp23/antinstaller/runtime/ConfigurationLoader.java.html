@@ -1,0 +1,373 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.runtime.ConfigurationLoader (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">ConfigurationLoader.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.runtime.index.html" target="packageFrame">org.tp23.antinstaller.runtime</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.io.File;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.io.IOException;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.util.ArrayList;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.util.HashSet;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.util.Iterator;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> java.util.Set;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A>
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">org.tp23.antinstaller.InstallException</A>;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/Installer.java.html">org.tp23.antinstaller.Installer</A>;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/PropertiesFileRenderer.java.html">org.tp23.antinstaller.PropertiesFileRenderer</A>;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/input/ConditionalField.java.html">org.tp23.antinstaller.input.ConditionalField</A>;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/input/InputField.java.html">org.tp23.antinstaller.input.InputField</A>;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/input/OutputField.java.html">org.tp23.antinstaller.input.OutputField</A>;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/input/ResultContainer.java.html">org.tp23.antinstaller.input.ResultContainer</A>;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/input/SelectInput.java.html">org.tp23.antinstaller.input.SelectInput</A>;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/input/TargetInput.java.html">org.tp23.antinstaller.input.TargetInput</A>;
+<FONT CLASS="LN">34</FONT><A NAME="34"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/input/TargetSelectInput.java.html">org.tp23.antinstaller.input.TargetSelectInput</A>;
+<FONT CLASS="LN">35</FONT><A NAME="35"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/page/Page.java.html">org.tp23.antinstaller.page.Page</A>;
+<FONT CLASS="LN">36</FONT><A NAME="36"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/page/ProgressPage.java.html">org.tp23.antinstaller.page.ProgressPage</A>;
+<FONT CLASS="LN">37</FONT><A NAME="37"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">org.tp23.antinstaller.page.SimpleInputPage</A>;
+<FONT CLASS="LN">38</FONT><A NAME="38"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/renderer/swing/plaf/LookAndFeelFactory.java.html">org.tp23.antinstaller.renderer.swing.plaf.LookAndFeelFactory</A>;
+<FONT CLASS="LN">39</FONT><A NAME="39"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/exe/LoadConfigFilter.java.html">org.tp23.antinstaller.runtime.exe.LoadConfigFilter</A>;
+<FONT CLASS="LN">40</FONT><A NAME="40"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/exe/PropertyLoaderFilter.java.html">org.tp23.antinstaller.runtime.exe.PropertyLoaderFilter</A>;
+<FONT CLASS="LN">41</FONT><A NAME="41"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/logic/ExpressionBuilder.java.html">org.tp23.antinstaller.runtime.logic.ExpressionBuilder</A>;
+<FONT CLASS="LN">42</FONT><A NAME="42"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">43</FONT><A NAME="43"></A> *
+<FONT CLASS="LN">44</FONT><A NAME="44"></A> * &lt;p&gt;Loads the configuration file into memory as an Installer object. &lt;/p&gt;
+<FONT CLASS="LN">45</FONT><A NAME="45"></A> * &lt;p&gt;This class also contains the main() method to check the config files for common errors &lt;/p&gt;
+<FONT CLASS="LN">46</FONT><A NAME="46"></A> * &lt;p&gt;Copyright: Copyright (c) 2004&lt;/p&gt;
+<FONT CLASS="LN">47</FONT><A NAME="47"></A> * &lt;p&gt;Company: tp23&lt;/p&gt;
+<FONT CLASS="LN">48</FONT><A NAME="48"></A> * @todo this should be an interface not a class
+<FONT CLASS="LN">49</FONT><A NAME="49"></A> * @author Paul Hinds
+<FONT CLASS="LN">50</FONT><A NAME="50"></A> * @version $Id: ConfigurationLoader.java,v 1.15 2007/01/28 08:44:43 teknopaul Exp $
+<FONT CLASS="LN">51</FONT><A NAME="51"></A> */</FONT>
+<FONT CLASS="LN">52</FONT><A NAME="52"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> ConfigurationLoader <FONT CLASS="Extends">extends</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/exe/LoadConfigFilter.java.html">LoadConfigFilter</A>{
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>    
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>     * Command line config checker
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>     * @param args String[]
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>     * @throws InstallException 
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>     */</FONT>
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> main(String[] args) {
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>        <A HREF="../../../../org/tp23/antinstaller/runtime/ConfigurationLoader.java.html">ConfigurationLoader</A> configurationLoader = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/ConfigurationLoader.java.html">ConfigurationLoader</A>();
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>        String configFile = INSTALLER_CONFIG_FILE;
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>        <FONT CLASS="If">if</FONT>(args.length &gt; <FONT CLASS="IntegerLiteral">1</FONT> &amp;&amp; args[<FONT CLASS="IntegerLiteral">1</FONT>].endsWith(<FONT CLASS="StringLiteral">".xml"</FONT>)){
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>            configFile = args[<FONT CLASS="IntegerLiteral">1</FONT>];
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>        }
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>        <FONT CLASS="Int">int</FONT> ret = <FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>            configurationLoader.readConfig(<FONT CLASS="New">new</FONT> File(args[<FONT CLASS="IntegerLiteral">0</FONT>]), configFile);
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>            ret = configurationLoader.validate();
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>            
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>            <FONT CLASS="If">if</FONT>(ret &gt; <FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>                System.out.println(<FONT CLASS="StringLiteral">"VALIDATION FAILED"</FONT>);
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>            }
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>        }
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>        <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">ConfigurationException</A> ex) {
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>            ex.printStackTrace();
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>            System.exit(ret);
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>        }
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>        <FONT CLASS="Catch">catch</FONT> (IOException ex) {
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>            ex.printStackTrace();
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>            System.exit(ret);
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>        } <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A> ex) {
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>            <FONT CLASS="SingleLineComment">// probably ifProperty syntax wrong
+<FONT CLASS="LN">83</FONT><A NAME="83"></A></FONT>            ex.printStackTrace();
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>            System.exit(ret);
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>        }
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>    }
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>    
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>     * This method is not valid until super.readConfig() has been run
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>     * @return
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>     */</FONT>
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>    <FONT CLASS="Public">public</FONT> <A HREF="../../../../org/tp23/antinstaller/Installer.java.html">Installer</A> getInstaller(){
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>        <FONT CLASS="Return">return</FONT> installer;
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>    }
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>    
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Int">int</FONT> validate() <FONT CLASS="Throws">throws</FONT> IOException, <A HREF="../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">ConfigurationException</A>, <A HREF="../../../../org/tp23/antinstaller/InstallException.java.html">InstallException</A>{
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>        <A HREF="../../../../org/tp23/antinstaller/page/Page.java.html">Page</A>[] pages = installer.getPages();
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>        <FONT CLASS="Boolean">boolean</FONT> foundErrors = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>        Set pageNames = <FONT CLASS="New">new</FONT> HashSet();
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>        Set targets = <FONT CLASS="New">new</FONT> HashSet();
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>        Set propertyNames = <FONT CLASS="New">new</FONT> HashSet();
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>        Set pagePropertyNames = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>        
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>        <FONT CLASS="If">if</FONT>(validateInstallerAttributes()){
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>            foundErrors = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>        }
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>        
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> p = <FONT CLASS="IntegerLiteral">0</FONT>; p &lt; pages.length; p++) {
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>           System.out.println(<FONT CLASS="StringLiteral">"Checking page: "</FONT> + pages[p].getName() );
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>            <FONT CLASS="If">if</FONT>(pageNames.contains(pages[p].getName())){
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>                System.out.println(<FONT CLASS="StringLiteral">"Error: page name '"</FONT>
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>                                    + pages[p].getName()
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>                                    + <FONT CLASS="StringLiteral">"' repeated - auto loading of configuration will fail"</FONT>);
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>                foundErrors = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>            }
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>            pageNames.add(pages[p].getName());
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>            
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>            <FONT CLASS="SingleLineComment">//TODO check page requirements
+<FONT CLASS="LN">19</FONT><A NAME="119"></A></FONT>            <FONT CLASS="SingleLineComment">//test ifProperty syntax
+<FONT CLASS="LN">20</FONT><A NAME="120"></A></FONT>            <FONT CLASS="SingleLineComment">// TODO passes validation even if nothing will evaluate
+<FONT CLASS="LN">21</FONT><A NAME="121"></A></FONT>            <FONT CLASS="If">if</FONT> (pages[p] <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">SimpleInputPage</A>) {
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>                <A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">SimpleInputPage</A> sPage = (<A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">SimpleInputPage</A>)pages[p];
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>                <FONT CLASS="If">if</FONT>(sPage.getIfProperty() != <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>                    <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>                        <A HREF="../../../../org/tp23/antinstaller/input/ResultContainer.java.html">ResultContainer</A> mock = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/input/ResultContainer.java.html">ResultContainer</A>();
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>                        ExpressionBuilder.parseLogicalExpressions( mock,
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>                                sPage.getIfProperty() );
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>                    }
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>                    <FONT CLASS="Catch">catch</FONT>( <A HREF="../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">ConfigurationException</A> configExc ){
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>                        System.out.println(<FONT CLASS="StringLiteral">"Error: loading ifProperty,"</FONT> + sPage.getIfProperty() + <FONT CLASS="StringLiteral">" ,page: "</FONT> + pages[p].getName() );
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>                        foundErrors = <FONT CLASS="True">true</FONT>;   
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>                    }
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>                }
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>            }
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>            
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>            pagePropertyNames = <FONT CLASS="New">new</FONT> HashSet();
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>            
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>            <A HREF="../../../../org/tp23/antinstaller/input/OutputField.java.html">OutputField</A>[] fields = pages[p].getOutputField();
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> f = <FONT CLASS="IntegerLiteral">0</FONT>; f &lt; fields.length; f++) {
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>                <FONT CLASS="If">if</FONT>(!fields[f].validateObject()){
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>                    foundErrors = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>                    System.out.println(<FONT CLASS="StringLiteral">"Error in page:"</FONT> + pages[p].getName());
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>                }
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>                <FONT CLASS="If">if</FONT>(fields[f] <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../org/tp23/antinstaller/input/TargetInput.java.html">TargetInput</A>){
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>                    <A HREF="../../../../org/tp23/antinstaller/input/TargetInput.java.html">TargetInput</A> tgtInput = (<A HREF="../../../../org/tp23/antinstaller/input/TargetInput.java.html">TargetInput</A>)fields[f];
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>                    targets.add(tgtInput.getTarget());
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>                }
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>                <FONT CLASS="If">if</FONT>(fields[f] <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../org/tp23/antinstaller/input/InputField.java.html">InputField</A> &amp;&amp; !(fields[f] <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../org/tp23/antinstaller/input/ConditionalField.java.html">ConditionalField</A>) ){
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>                    <A HREF="../../../../org/tp23/antinstaller/input/InputField.java.html">InputField</A> genericInput = (<A HREF="../../../../org/tp23/antinstaller/input/InputField.java.html">InputField</A>)fields[f];
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>                    <FONT CLASS="If">if</FONT>(genericInput.getProperty().endsWith(PropertiesFileRenderer.TARGETS_SUFFIX)){
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>                        System.out.println(<FONT CLASS="StringLiteral">"Error: invalid property name:"</FONT> + genericInput.getProperty());
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>                        System.out.println(<FONT CLASS="StringLiteral">"InputField names must not end with -targets"</FONT>);
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>                    }
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>                    String propertyName = genericInput.getProperty();
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>                    <FONT CLASS="SingleLineComment">//System.out.println("Checking page.property: " + pages[p].getName() + "," + propertyName );
+<FONT CLASS="LN">57</FONT><A NAME="157"></A></FONT>                    <FONT CLASS="If">if</FONT>(propertyNames.contains(propertyName)){
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>                        <FONT CLASS="SingleLineComment">//foundErrors = true;
+<FONT CLASS="LN">59</FONT><A NAME="159"></A></FONT>                        System.out.println(<FONT CLASS="StringLiteral">"Repeated property name:"</FONT>  + propertyName);
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>                        System.out.println(<FONT CLASS="StringLiteral">"Loading defaults from file will probably not work:"</FONT>  + propertyName);
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>                    }
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>                    <FONT CLASS="Else">else</FONT>{
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>                        propertyNames.add(propertyName);
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>                    }
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>                    <FONT CLASS="SingleLineComment">// repeated properties on the same page are an error always
+<FONT CLASS="LN">66</FONT><A NAME="166"></A></FONT>                    <FONT CLASS="If">if</FONT>(pagePropertyNames.contains(propertyName)){
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>                        foundErrors = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>                        System.out.println(<FONT CLASS="StringLiteral">"Repeated property name: page="</FONT> + 
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>                                pages[p].getName() + <FONT CLASS="StringLiteral">", property="</FONT> + propertyName);
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>                    }
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>                    <FONT CLASS="Else">else</FONT>{
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>                        pagePropertyNames.add(propertyName);
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>                    }
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>                    
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>                }
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>            }
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>            
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>        }
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>        System.out.println(<FONT CLASS="StringLiteral">"Finished checking config inputs"</FONT>);
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>        <FONT CLASS="SingleLineComment">// check page structure
+<FONT CLASS="LN">81</FONT><A NAME="181"></A></FONT>        <FONT CLASS="If">if</FONT>(!(pages[pages.length-<FONT CLASS="IntegerLiteral">1</FONT>] <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../org/tp23/antinstaller/page/ProgressPage.java.html">ProgressPage</A>)){
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>            foundErrors = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>            System.out.println(<FONT CLASS="StringLiteral">"Last Page should be a progress page"</FONT>);
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>        }
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>        <FONT CLASS="Else">else</FONT>{
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>            <FONT CLASS="If">if</FONT> (pages[pages.length-<FONT CLASS="IntegerLiteral">1</FONT>].getPostDisplayTarget() != <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>                foundErrors = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>                System.out.println(<FONT CLASS="StringLiteral">"Progress pages do not support postDisplayTarget"</FONT>);
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>            }
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>        }
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>        <FONT CLASS="SingleLineComment">// check for targets
+<FONT CLASS="LN">92</FONT><A NAME="192"></A></FONT>        <FONT CLASS="Int">int</FONT> numOfPageTargets = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> p = <FONT CLASS="IntegerLiteral">0</FONT>; p &lt; pages.length; p++) {
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>            numOfPageTargets += pages[p].getAllTargets().size();
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>        }
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>        <FONT CLASS="If">if</FONT>(numOfPageTargets == <FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>            System.out.println(<FONT CLASS="StringLiteral">"Warning: No Page Targets (not a problem if there are target input types)"</FONT>);
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>        }
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>        
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>        Iterator iter = targets.iterator();
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>        <FONT CLASS="While">while</FONT> (iter.hasNext()) {
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>            String tgt = (String) iter.next();
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>            <FONT CLASS="If">if</FONT>(tgt.endsWith(PropertiesFileRenderer.TARGETS_SUFFIX)){
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>                System.out.println(<FONT CLASS="StringLiteral">"Error: invalid target name:"</FONT> + tgt);
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>                System.out.println(<FONT CLASS="StringLiteral">"Target names must not end with -targets"</FONT>);
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>                foundErrors = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>            }
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>        }
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>        <FONT CLASS="SingleLineComment">//@todo check targets exist in build.xml remember OSSpecific could be tricky to validate
+<FONT CLASS="LN">11</FONT><A NAME="211"></A></FONT>        
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>        <FONT CLASS="Int">int</FONT> numOfTargetInputs = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">13</FONT><A NAME="213"></A>        <FONT CLASS="SingleLineComment">// check ifTargets
+<FONT CLASS="LN">14</FONT><A NAME="214"></A></FONT>        ArrayList targetsSoFar = <FONT CLASS="New">new</FONT> ArrayList();
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> p = <FONT CLASS="IntegerLiteral">0</FONT>; p &lt; pages.length; p++) {
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>            <FONT CLASS="If">if</FONT>(pages[p] <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">SimpleInputPage</A>){
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>                <A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">SimpleInputPage</A> simple = (<A HREF="../../../../org/tp23/antinstaller/page/SimpleInputPage.java.html">SimpleInputPage</A>)pages[p];
+<FONT CLASS="LN">18</FONT><A NAME="218"></A>                String ifTarget = simple.getIfTarget();
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>                <FONT CLASS="If">if</FONT>(ifTarget != <FONT CLASS="Null">null</FONT> &amp;&amp; !targetsSoFar.contains(ifTarget)){
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>                    System.out.println(<FONT CLASS="StringLiteral">"ifTarget="</FONT> + ifTarget);
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>                    System.out.println(<FONT CLASS="StringLiteral">"ifTarget will never test true, no prior target in page:"</FONT>+pages[p].getName());
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>                    <FONT CLASS="SingleLineComment">// disabled due to bug 1412658 could be reinstated with proper test and OSSpecific handling 
+<FONT CLASS="LN">23</FONT><A NAME="223"></A></FONT>                    <FONT CLASS="SingleLineComment">//foundErrors = true;
+<FONT CLASS="LN">24</FONT><A NAME="224"></A></FONT>                }
+<FONT CLASS="LN">25</FONT><A NAME="225"></A>            }
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>            <FONT CLASS="SingleLineComment">// add after to ensure testing previous pages
+<FONT CLASS="LN">27</FONT><A NAME="227"></A></FONT>            targetsSoFar.addAll(pages[p].getAllTargets());
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>            <A HREF="../../../../org/tp23/antinstaller/input/OutputField.java.html">OutputField</A>[] fields = pages[p].getOutputField();
+<FONT CLASS="LN">29</FONT><A NAME="229"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> f = <FONT CLASS="IntegerLiteral">0</FONT>; f &lt; fields.length; f++) {
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>                <FONT CLASS="If">if</FONT>(fields[f] <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../org/tp23/antinstaller/input/TargetInput.java.html">TargetInput</A>){
+<FONT CLASS="LN">31</FONT><A NAME="231"></A>                    <FONT CLASS="If">if</FONT>(numOfTargetInputs == <FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">32</FONT><A NAME="232"></A>                        System.out.println(<FONT CLASS="StringLiteral">"Found target input type"</FONT>);
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>                    }
+<FONT CLASS="LN">34</FONT><A NAME="234"></A>                    numOfTargetInputs++;
+<FONT CLASS="LN">35</FONT><A NAME="235"></A>                    <A HREF="../../../../org/tp23/antinstaller/input/TargetInput.java.html">TargetInput</A> ti = (<A HREF="../../../../org/tp23/antinstaller/input/TargetInput.java.html">TargetInput</A>)fields[f];
+<FONT CLASS="LN">36</FONT><A NAME="236"></A>                    targetsSoFar.add(ti.getTarget());
+<FONT CLASS="LN">37</FONT><A NAME="237"></A>                }
+<FONT CLASS="LN">38</FONT><A NAME="238"></A>                <FONT CLASS="If">if</FONT>(fields[f] <FONT CLASS="InstanceOf">instanceof</FONT> <A HREF="../../../../org/tp23/antinstaller/input/TargetSelectInput.java.html">TargetSelectInput</A>){
+<FONT CLASS="LN">39</FONT><A NAME="239"></A>                    <FONT CLASS="If">if</FONT>(numOfTargetInputs == <FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">40</FONT><A NAME="240"></A>                        System.out.println(<FONT CLASS="StringLiteral">"Found target input type"</FONT>);
+<FONT CLASS="LN">41</FONT><A NAME="241"></A>                    }
+<FONT CLASS="LN">42</FONT><A NAME="242"></A>                    numOfTargetInputs++;
+<FONT CLASS="LN">43</FONT><A NAME="243"></A>                    <A HREF="../../../../org/tp23/antinstaller/input/TargetSelectInput.java.html">TargetSelectInput</A> ti = (<A HREF="../../../../org/tp23/antinstaller/input/TargetSelectInput.java.html">TargetSelectInput</A>)fields[f];
+<FONT CLASS="LN">44</FONT><A NAME="244"></A>                    <A HREF="../../../../org/tp23/antinstaller/input/SelectInput.java.html">SelectInput.Option</A>[] options = ti.getOptions();
+<FONT CLASS="LN">45</FONT><A NAME="245"></A>                    <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; options.length; i++) {
+<FONT CLASS="LN">46</FONT><A NAME="246"></A>                        <A HREF="../../../../org/tp23/antinstaller/input/SelectInput.java.html">SelectInput.Option</A> option = options[i];
+<FONT CLASS="LN">47</FONT><A NAME="247"></A>                        targetsSoFar.add(option.value);
+<FONT CLASS="LN">48</FONT><A NAME="248"></A>                    }
+<FONT CLASS="LN">49</FONT><A NAME="249"></A>                }
+<FONT CLASS="LN">50</FONT><A NAME="250"></A>            }
+<FONT CLASS="LN">51</FONT><A NAME="251"></A>        }
+<FONT CLASS="LN">52</FONT><A NAME="252"></A>        <FONT CLASS="If">if</FONT>(numOfPageTargets == <FONT CLASS="IntegerLiteral">0</FONT> &amp;&amp; numOfTargetInputs == <FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">53</FONT><A NAME="253"></A>            System.out.println(<FONT CLASS="StringLiteral">"Warning: No targets found, installer may do nothing."</FONT>);
+<FONT CLASS="LN">54</FONT><A NAME="254"></A>        }
+<FONT CLASS="LN">55</FONT><A NAME="255"></A><FONT CLASS="SingleLineComment">//      if(targetsSoFar.contains("default")){
+<FONT CLASS="LN">56</FONT><A NAME="256"></A></FONT><FONT CLASS="SingleLineComment">//          System.out.println("Target:target can not be \"default\"");
+<FONT CLASS="LN">57</FONT><A NAME="257"></A></FONT><FONT CLASS="SingleLineComment">//          foundErrors = true;
+<FONT CLASS="LN">58</FONT><A NAME="258"></A></FONT><FONT CLASS="SingleLineComment">//      }
+<FONT CLASS="LN">59</FONT><A NAME="259"></A></FONT>
+<FONT CLASS="LN">60</FONT><A NAME="260"></A>
+<FONT CLASS="LN">61</FONT><A NAME="261"></A>        System.out.println(<FONT CLASS="StringLiteral">"Finished checking config"</FONT>);
+<FONT CLASS="LN">62</FONT><A NAME="262"></A>        <FONT CLASS="If">if</FONT>(!foundErrors){
+<FONT CLASS="LN">63</FONT><A NAME="263"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">64</FONT><A NAME="264"></A>        }
+<FONT CLASS="LN">65</FONT><A NAME="265"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">66</FONT><A NAME="266"></A>    }
+<FONT CLASS="LN">67</FONT><A NAME="267"></A>
+<FONT CLASS="LN">68</FONT><A NAME="268"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> validateInstallerAttributes(){
+<FONT CLASS="LN">69</FONT><A NAME="269"></A>        
+<FONT CLASS="LN">70</FONT><A NAME="270"></A>        System.out.println(<FONT CLASS="StringLiteral">"Checking installer: "</FONT> + installer.getName() );
+<FONT CLASS="LN">71</FONT><A NAME="271"></A>        <FONT CLASS="Boolean">boolean</FONT> foundErrors = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">72</FONT><A NAME="272"></A>        
+<FONT CLASS="LN">73</FONT><A NAME="273"></A>        String[] validBooleanValues = {<FONT CLASS="StringLiteral">"true"</FONT>, <FONT CLASS="StringLiteral">"false"</FONT>};
+<FONT CLASS="LN">74</FONT><A NAME="274"></A>        foundErrors |= validateValue(<FONT CLASS="StringLiteral">"antialiased"</FONT>, installer.getAntialiased(), <FONT CLASS="True">true</FONT>, validBooleanValues);
+<FONT CLASS="LN">75</FONT><A NAME="275"></A>
+<FONT CLASS="LN">76</FONT><A NAME="276"></A>        <FONT CLASS="SingleLineComment">// done in DTD
+<FONT CLASS="LN">77</FONT><A NAME="277"></A></FONT>        <FONT CLASS="SingleLineComment">//foundErrors |= validateValue("verbose", installer.isVerbose(), true, validBooleanValues);
+<FONT CLASS="LN">78</FONT><A NAME="278"></A></FONT>        <FONT CLASS="SingleLineComment">//foundErrors |= validateValue("debug", installer.isDebug(), true, validBooleanValues);
+<FONT CLASS="LN">79</FONT><A NAME="279"></A></FONT>        
+<FONT CLASS="LN">80</FONT><A NAME="280"></A>        String[] validLAFValues = {LookAndFeelFactory.DEFAULT_LAF,
+<FONT CLASS="LN">81</FONT><A NAME="281"></A>                LookAndFeelFactory.GREYMETAL_LAF,
+<FONT CLASS="LN">82</FONT><A NAME="282"></A>                LookAndFeelFactory.NATIVE_LAF,
+<FONT CLASS="LN">83</FONT><A NAME="283"></A>                LookAndFeelFactory.JGOODIES_LAF,
+<FONT CLASS="LN">84</FONT><A NAME="284"></A>                LookAndFeelFactory.NULL_LAF };
+<FONT CLASS="LN">85</FONT><A NAME="285"></A>        <FONT CLASS="If">if</FONT>( validateValue(<FONT CLASS="StringLiteral">"lookAndFeel"</FONT>, installer.getLookAndFeel(), <FONT CLASS="True">true</FONT>, validLAFValues) ){
+<FONT CLASS="LN">86</FONT><A NAME="286"></A>            System.out.println(<FONT CLASS="StringLiteral">"Warning: non standard LookAndFeel ensure the correct classes are on the classpath at runtime:"</FONT> + installer.getLookAndFeel());
+<FONT CLASS="LN">87</FONT><A NAME="287"></A>        }
+<FONT CLASS="LN">88</FONT><A NAME="288"></A>        
+<FONT CLASS="LN">89</FONT><A NAME="289"></A>        <FONT CLASS="If">if</FONT> (installer.getName() == <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">90</FONT><A NAME="290"></A>            System.out.println(<FONT CLASS="StringLiteral">"Error: installer element attribute does not exist: name"</FONT>);
+<FONT CLASS="LN">91</FONT><A NAME="291"></A>            foundErrors = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">92</FONT><A NAME="292"></A>        }
+<FONT CLASS="LN">93</FONT><A NAME="293"></A>        
+<FONT CLASS="LN">94</FONT><A NAME="294"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">95</FONT><A NAME="295"></A>            String wide = installer.getWide();
+<FONT CLASS="LN">96</FONT><A NAME="296"></A>            <FONT CLASS="If">if</FONT>(wide != <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">97</FONT><A NAME="297"></A>                installer.parseWideValue(wide);
+<FONT CLASS="LN">98</FONT><A NAME="298"></A>            }
+<FONT CLASS="LN">99</FONT><A NAME="299"></A>        } <FONT CLASS="Catch">catch</FONT> (Exception e) {
+<FONT CLASS="LN">00</FONT><A NAME="300"></A>            System.out.println(<FONT CLASS="StringLiteral">"Error: installer element attribute incorrect format (e.g. 600:275): wide"</FONT>);
+<FONT CLASS="LN">01</FONT><A NAME="301"></A>            foundErrors = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">02</FONT><A NAME="302"></A>        }
+<FONT CLASS="LN">03</FONT><A NAME="303"></A>        
+<FONT CLASS="LN">04</FONT><A NAME="304"></A>        String[] validLoadDefaultValues = {PropertyLoaderFilter.FALSE,
+<FONT CLASS="LN">05</FONT><A NAME="305"></A>                PropertyLoaderFilter.LOAD,
+<FONT CLASS="LN">06</FONT><A NAME="306"></A>                PropertyLoaderFilter.PROMPT, 
+<FONT CLASS="LN">07</FONT><A NAME="307"></A>                PropertyLoaderFilter.PROMPT_AUTO};
+<FONT CLASS="LN">08</FONT><A NAME="308"></A>        
+<FONT CLASS="LN">09</FONT><A NAME="309"></A>        <FONT CLASS="Boolean">boolean</FONT> loadDefaultsNull = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">10</FONT><A NAME="310"></A>        <FONT CLASS="If">if</FONT>( installer.supportsAutoBuild() ){
+<FONT CLASS="LN">11</FONT><A NAME="311"></A>            loadDefaultsNull = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">12</FONT><A NAME="312"></A>        }
+<FONT CLASS="LN">13</FONT><A NAME="313"></A>        foundErrors |= validateValue(<FONT CLASS="StringLiteral">"loadDefaults"</FONT>, installer.getLoadDefaults(), loadDefaultsNull, validLoadDefaultValues);
+<FONT CLASS="LN">14</FONT><A NAME="314"></A>
+<FONT CLASS="LN">15</FONT><A NAME="315"></A>        <A HREF="../../../../org/tp23/antinstaller/runtime/VersionHelper.java.html">VersionHelper</A> vHelper = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/runtime/VersionHelper.java.html">VersionHelper</A>();
+<FONT CLASS="LN">16</FONT><A NAME="316"></A>        <FONT CLASS="If">if</FONT>( installer.supportsAutoBuild() ){
+<FONT CLASS="LN">17</FONT><A NAME="317"></A>            <FONT CLASS="If">if</FONT>( ! vHelper.isValid(installer.getVersion()) ){
+<FONT CLASS="LN">18</FONT><A NAME="318"></A>                System.out.println(<FONT CLASS="StringLiteral">"Error: invalid version attribute, required for -auto builds:"</FONT> + installer.getVersion());
+<FONT CLASS="LN">19</FONT><A NAME="319"></A>                foundErrors = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">20</FONT><A NAME="320"></A>            }
+<FONT CLASS="LN">21</FONT><A NAME="321"></A>        }
+<FONT CLASS="LN">22</FONT><A NAME="322"></A>        <FONT CLASS="If">if</FONT>(installer.getVersion() != <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">23</FONT><A NAME="323"></A>            <FONT CLASS="If">if</FONT>( ! vHelper.isValid(installer.getVersion()) ){
+<FONT CLASS="LN">24</FONT><A NAME="324"></A>                System.out.println(<FONT CLASS="StringLiteral">"Error: invalid version attribute format examples 1.2.0 , 0.2beta:"</FONT> + installer.getVersion());
+<FONT CLASS="LN">25</FONT><A NAME="325"></A>                foundErrors = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">26</FONT><A NAME="326"></A>            }
+<FONT CLASS="LN">27</FONT><A NAME="327"></A>        }
+<FONT CLASS="LN">28</FONT><A NAME="328"></A>        
+<FONT CLASS="LN">29</FONT><A NAME="329"></A>        <FONT CLASS="Return">return</FONT> foundErrors;
+<FONT CLASS="LN">30</FONT><A NAME="330"></A>    }
+<FONT CLASS="LN">31</FONT><A NAME="331"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">32</FONT><A NAME="332"></A>     * @return foundErrors  (true if there was an error)
+<FONT CLASS="LN">33</FONT><A NAME="333"></A>     */</FONT>
+<FONT CLASS="LN">34</FONT><A NAME="334"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> validateValue(String att, String value, <FONT CLASS="Boolean">boolean</FONT> allowsNull, String[] validValues){
+<FONT CLASS="LN">35</FONT><A NAME="335"></A>        <FONT CLASS="If">if</FONT>(value == <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">36</FONT><A NAME="336"></A>            <FONT CLASS="If">if</FONT>(!allowsNull){
+<FONT CLASS="LN">37</FONT><A NAME="337"></A>                System.out.println(<FONT CLASS="StringLiteral">"Error: installer element attribute does not exist: "</FONT> + att);
+<FONT CLASS="LN">38</FONT><A NAME="338"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">39</FONT><A NAME="339"></A>            }
+<FONT CLASS="LN">40</FONT><A NAME="340"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">41</FONT><A NAME="341"></A>        }
+<FONT CLASS="LN">42</FONT><A NAME="342"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">43</FONT><A NAME="343"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; validValues.length; i++) {
+<FONT CLASS="LN">44</FONT><A NAME="344"></A>                <FONT CLASS="If">if</FONT>(validValues[i].equals(value)){
+<FONT CLASS="LN">45</FONT><A NAME="345"></A>                    <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">46</FONT><A NAME="346"></A>                }
+<FONT CLASS="LN">47</FONT><A NAME="347"></A>            }
+<FONT CLASS="LN">48</FONT><A NAME="348"></A>            System.out.println(<FONT CLASS="StringLiteral">"Error: installer element attribute not valid value: "</FONT> + att);
+<FONT CLASS="LN">49</FONT><A NAME="349"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">50</FONT><A NAME="350"></A>        }
+<FONT CLASS="LN">51</FONT><A NAME="351"></A>    }
+<FONT CLASS="LN">52</FONT><A NAME="352"></A>
+<FONT CLASS="LN">53</FONT><A NAME="353"></A>}
+<FONT CLASS="LN">54</FONT><A NAME="354"></A></pre>
+</BODY>
+</HTML>

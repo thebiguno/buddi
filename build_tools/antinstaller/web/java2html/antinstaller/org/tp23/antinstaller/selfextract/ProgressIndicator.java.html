@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.selfextract.ProgressIndicator (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">ProgressIndicator.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.selfextract.index.html" target="packageFrame">org.tp23.antinstaller.selfextract</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.awt.BorderLayout;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.awt.Cursor;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.awt.Dimension;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.awt.GraphicsConfiguration;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.awt.GridBagConstraints;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> java.awt.GridBagLayout;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> java.awt.Insets;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> java.io.ByteArrayOutputStream;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="Import">import</FONT> java.io.InputStream;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> java.util.ResourceBundle;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A>
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Import">import</FONT> javax.swing.BorderFactory;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> javax.swing.ImageIcon;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A><FONT CLASS="Import">import</FONT> javax.swing.JFrame;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Import">import</FONT> javax.swing.JLabel;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="Import">import</FONT> javax.swing.JPanel;
+<FONT CLASS="LN">34</FONT><A NAME="34"></A><FONT CLASS="Import">import</FONT> javax.swing.JProgressBar;
+<FONT CLASS="LN">35</FONT><A NAME="35"></A><FONT CLASS="Import">import</FONT> javax.swing.UIManager;
+<FONT CLASS="LN">36</FONT><A NAME="36"></A><FONT CLASS="Import">import</FONT> javax.swing.border.BevelBorder;
+<FONT CLASS="LN">37</FONT><A NAME="37"></A><FONT CLASS="Import">import</FONT> javax.swing.border.Border;
+<FONT CLASS="LN">38</FONT><A NAME="38"></A>
+<FONT CLASS="LN">39</FONT><A NAME="39"></A>
+<FONT CLASS="LN">40</FONT><A NAME="40"></A>
+<FONT CLASS="LN">41</FONT><A NAME="41"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">42</FONT><A NAME="42"></A> *
+<FONT CLASS="LN">43</FONT><A NAME="43"></A> * &lt;p&gt;Frame to indicate progress of the extraction of a SelfExctracting archive &lt;/p&gt;
+<FONT CLASS="LN">44</FONT><A NAME="44"></A> * &lt;p&gt; &lt;/p&gt;
+<FONT CLASS="LN">45</FONT><A NAME="45"></A> * &lt;p&gt;Copyright: Copyright (c) 2004&lt;/p&gt;
+<FONT CLASS="LN">46</FONT><A NAME="46"></A> * &lt;p&gt;Company: tp23&lt;/p&gt;
+<FONT CLASS="LN">47</FONT><A NAME="47"></A> * @author Paul Hinds
+<FONT CLASS="LN">48</FONT><A NAME="48"></A> * @version $Id: ProgressIndicator.java,v 1.3 2007/01/28 08:44:40 teknopaul Exp $
+<FONT CLASS="LN">49</FONT><A NAME="49"></A> */</FONT>
+<FONT CLASS="LN">50</FONT><A NAME="50"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> ProgressIndicator
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>    <FONT CLASS="Extends">extends</FONT> JFrame {
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String IMAGE_RESOURCE = <FONT CLASS="StringLiteral">"/resources/extract-image.png"</FONT>;
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> ResourceBundle res = ResourceBundle.getBundle(<FONT CLASS="StringLiteral">"org.tp23.antinstaller.renderer.Res"</FONT>);
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>    <FONT CLASS="Private">private</FONT> JPanel jPanel1 = <FONT CLASS="New">new</FONT> JPanel();
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>    <FONT CLASS="Private">private</FONT> JProgressBar jProgressBar1 = <FONT CLASS="New">new</FONT> JProgressBar();
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>    <FONT CLASS="Private">private</FONT> JLabel textLabel = <FONT CLASS="New">new</FONT> JLabel();
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>    <FONT CLASS="Private">private</FONT> Border border1;
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Int">int</FONT> max = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Int">int</FONT> PAGE_WIDTH = <FONT CLASS="IntegerLiteral">160</FONT>;
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Int">int</FONT> PAGE_HEIGHT = <FONT CLASS="IntegerLiteral">110</FONT>; <FONT CLASS="SingleLineComment">// 35 is text + bar
+<FONT CLASS="LN">63</FONT><A NAME="63"></A></FONT>    <FONT CLASS="Private">private</FONT> String title = res.getString(<FONT CLASS="StringLiteral">"extracting"</FONT>);
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>    <FONT CLASS="Private">private</FONT> JLabel imagePanel = <FONT CLASS="New">new</FONT> JLabel();
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>    GridBagLayout gridBagLayout1 = <FONT CLASS="New">new</FONT> GridBagLayout();
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> useIcon = <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>    <FONT CLASS="Public">public</FONT> ProgressIndicator(<FONT CLASS="Int">int</FONT> max) {
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>        <FONT CLASS="This">this</FONT>.max = max;
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>        jbInit();
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>    }
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>    <FONT CLASS="Public">public</FONT> ProgressIndicator(<FONT CLASS="Int">int</FONT> max, String title) {
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>        <FONT CLASS="This">this</FONT>.max = max;
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>        <FONT CLASS="This">this</FONT>.title = title;
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>        jbInit();
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>    }
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> setLocation() {
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>        GraphicsConfiguration config = getGraphicsConfiguration();
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>        <FONT CLASS="Int">int</FONT> x = (<FONT CLASS="Int">int</FONT>) config.getBounds().getCenterX() - (PAGE_WIDTH / <FONT CLASS="IntegerLiteral">2</FONT>);
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>        <FONT CLASS="Int">int</FONT> y = (<FONT CLASS="Int">int</FONT>) config.getBounds().getCenterY() - (PAGE_HEIGHT / <FONT CLASS="IntegerLiteral">2</FONT>);
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>        setLocation(x, y);
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>    }
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> jbInit() {
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>        border1 = BorderFactory.createCompoundBorder(
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>            BorderFactory.createBevelBorder(BevelBorder.RAISED),
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>            BorderFactory.createEmptyBorder(<FONT CLASS="IntegerLiteral">4</FONT>, <FONT CLASS="IntegerLiteral">4</FONT>, <FONT CLASS="IntegerLiteral">4</FONT>, <FONT CLASS="IntegerLiteral">4</FONT>));
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>        jPanel1.setLayout(gridBagLayout1);
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>        <FONT CLASS="Int">int</FONT> row = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>        <FONT CLASS="This">this</FONT>.getContentPane().add(jPanel1, BorderLayout.CENTER);
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>        <FONT CLASS="If">if</FONT> (useIcon) {
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>            PAGE_HEIGHT = <FONT CLASS="IntegerLiteral">110</FONT>;
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>            setImage();
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>            jPanel1.add(imagePanel, <FONT CLASS="New">new</FONT> GridBagConstraints(<FONT CLASS="IntegerLiteral">0</FONT>, row++, <FONT CLASS="IntegerLiteral">1</FONT>, <FONT CLASS="IntegerLiteral">1</FONT>, <FONT CLASS="FloatPointLiteral">0.1</FONT>, <FONT CLASS="FloatPointLiteral">0.9</FONT>
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>                , GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, <FONT CLASS="New">new</FONT> Insets(<FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>), <FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>));
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>            <FONT CLASS="This">this</FONT>.setSize(<FONT CLASS="New">new</FONT> Dimension(PAGE_WIDTH, PAGE_HEIGHT));
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>        }
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>            PAGE_HEIGHT = <FONT CLASS="IntegerLiteral">40</FONT>;
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>            <FONT CLASS="This">this</FONT>.setSize(<FONT CLASS="New">new</FONT> Dimension(PAGE_WIDTH, <FONT CLASS="IntegerLiteral">35</FONT>));
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>        }
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>        jPanel1.setBorder(border1);
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>        jPanel1.setMaximumSize(<FONT CLASS="New">new</FONT> Dimension(PAGE_WIDTH, PAGE_HEIGHT));
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>        jPanel1.setMinimumSize(<FONT CLASS="New">new</FONT> Dimension(PAGE_WIDTH, PAGE_HEIGHT));
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>        jPanel1.setPreferredSize(<FONT CLASS="New">new</FONT> Dimension(PAGE_WIDTH, PAGE_HEIGHT));
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>        textLabel.setText(title);
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>        <FONT CLASS="This">this</FONT>.setTitle(title);
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>        jPanel1.add(textLabel, <FONT CLASS="New">new</FONT> GridBagConstraints(<FONT CLASS="IntegerLiteral">0</FONT>, row++, <FONT CLASS="IntegerLiteral">1</FONT>, <FONT CLASS="IntegerLiteral">1</FONT>, <FONT CLASS="FloatPointLiteral">0.1</FONT>, <FONT CLASS="FloatPointLiteral">0.1</FONT>
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>            , GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, <FONT CLASS="New">new</FONT> Insets(<FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>), <FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>));
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>        jPanel1.add(jProgressBar1, <FONT CLASS="New">new</FONT> GridBagConstraints(<FONT CLASS="IntegerLiteral">0</FONT>, row++, <FONT CLASS="IntegerLiteral">1</FONT>, <FONT CLASS="IntegerLiteral">1</FONT>, <FONT CLASS="FloatPointLiteral">0.1</FONT>, <FONT CLASS="FloatPointLiteral">0.1</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>            , GridBagConstraints.SOUTH, GridBagConstraints.HORIZONTAL, <FONT CLASS="New">new</FONT> Insets(<FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>), <FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>));
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>        jProgressBar1.setMinimum(<FONT CLASS="IntegerLiteral">0</FONT>);
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>        jProgressBar1.setMaximum(max);
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>        <FONT CLASS="This">this</FONT>.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>        <FONT CLASS="This">this</FONT>.setSize(<FONT CLASS="New">new</FONT> Dimension(PAGE_WIDTH, PAGE_HEIGHT));
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>        <FONT CLASS="This">this</FONT>.setResizable(<FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>        <FONT CLASS="This">this</FONT>.setUndecorated(<FONT CLASS="True">true</FONT>);
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>        setLocation();
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>    }
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> tick() {
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>        jProgressBar1.setValue(jProgressBar1.getValue() + <FONT CLASS="IntegerLiteral">1</FONT>);
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>    }
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> setImage() {
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>            ByteArrayOutputStream baos = <FONT CLASS="New">new</FONT> ByteArrayOutputStream();
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>            InputStream in = <FONT CLASS="This">this</FONT>.getClass().getResourceAsStream(IMAGE_RESOURCE);
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>            <FONT CLASS="Byte">byte</FONT>[] buffer = <FONT CLASS="New">new</FONT> <FONT CLASS="Byte">byte</FONT>[<FONT CLASS="IntegerLiteral">2048</FONT>];
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>            <FONT CLASS="Int">int</FONT> read = -<FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>            <FONT CLASS="While">while</FONT> ( (read = in.read(buffer)) != -<FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>                baos.write(buffer, <FONT CLASS="IntegerLiteral">0</FONT>, read);
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>            }
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>            ImageIcon icon = <FONT CLASS="New">new</FONT> ImageIcon(baos.toByteArray());
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>            imagePanel.setHorizontalAlignment(JLabel.CENTER);
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>            imagePanel.setIcon(icon);
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>        }
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>        <FONT CLASS="Catch">catch</FONT> (Exception ex) {
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>        }
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>    }
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>     * TODO move to JUnit
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>     * @param args
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>     */</FONT>
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Void">void</FONT> main(String[] args) {
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>            <A HREF="../../../../org/tp23/antinstaller/selfextract/ProgressIndicator.java.html">ProgressIndicator</A> indicator = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>            indicator = <FONT CLASS="New">new</FONT> <A HREF="../../../../org/tp23/antinstaller/selfextract/ProgressIndicator.java.html">ProgressIndicator</A>(<FONT CLASS="IntegerLiteral">200</FONT>);
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>            indicator.show();
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>            UIManager.setLookAndFeel(<FONT CLASS="StringLiteral">"org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel"</FONT>);
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>        }
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>        <FONT CLASS="Catch">catch</FONT> (Exception ex) {
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>            <FONT CLASS="SingleLineComment">// not concerned about Look and Feel
+<FONT CLASS="LN">60</FONT><A NAME="160"></A></FONT>        }
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>    }
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>}
+<FONT CLASS="LN">64</FONT><A NAME="164"></A></pre>
+</BODY>
+</HTML>

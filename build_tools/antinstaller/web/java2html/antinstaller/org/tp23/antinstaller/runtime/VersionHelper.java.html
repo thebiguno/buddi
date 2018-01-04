@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.runtime.VersionHelper (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">VersionHelper.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.runtime.index.html" target="packageFrame">org.tp23.antinstaller.runtime</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.util.StringTokenizer;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A>
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">21</FONT><A NAME="21"></A> * Version helper accepts version numbers of the following format.
+<FONT CLASS="LN">22</FONT><A NAME="22"></A> * [major][clause].[minor][clause].[minor][clause].... ad infinitum
+<FONT CLASS="LN">23</FONT><A NAME="23"></A> * 
+<FONT CLASS="LN">24</FONT><A NAME="24"></A> * If the Java flag is set to true an attempt is made to parse the string as if it were
+<FONT CLASS="LN">25</FONT><A NAME="25"></A> * returned by System.getProperty("java.version");
+<FONT CLASS="LN">26</FONT><A NAME="26"></A> * Since pre 1.3.1 the system is not parsable the default is to accept the string
+<FONT CLASS="LN">27</FONT><A NAME="27"></A> * if there is a format error.
+<FONT CLASS="LN">28</FONT><A NAME="28"></A> * 
+<FONT CLASS="LN">29</FONT><A NAME="29"></A> * For the non java syntax getting the string wrong will result in failed tests
+<FONT CLASS="LN">30</FONT><A NAME="30"></A> * @author teknopaul
+<FONT CLASS="LN">31</FONT><A NAME="31"></A> *
+<FONT CLASS="LN">32</FONT><A NAME="32"></A> */</FONT>
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> VersionHelper {
+<FONT CLASS="LN">34</FONT><A NAME="34"></A>    
+<FONT CLASS="LN">35</FONT><A NAME="35"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String CLAUSE_ALPHA = <FONT CLASS="StringLiteral">"alpha"</FONT>;
+<FONT CLASS="LN">36</FONT><A NAME="36"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String CLAUSE_BETA = <FONT CLASS="StringLiteral">"beta"</FONT>;
+<FONT CLASS="LN">37</FONT><A NAME="37"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String CLAUSE_GAMMA = <FONT CLASS="StringLiteral">"gamma"</FONT>;
+<FONT CLASS="LN">38</FONT><A NAME="38"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> String CLAUSE_JAVA_BETA = <FONT CLASS="StringLiteral">"ea"</FONT>;
+<FONT CLASS="LN">39</FONT><A NAME="39"></A>
+<FONT CLASS="LN">40</FONT><A NAME="40"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> equalOrHigher(<FONT CLASS="Final">final</FONT> String test, <FONT CLASS="Final">final</FONT> String version) {
+<FONT CLASS="LN">41</FONT><A NAME="41"></A>        <FONT CLASS="Return">return</FONT> equalOrHigher(test, version, <FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">42</FONT><A NAME="42"></A>    }
+<FONT CLASS="LN">43</FONT><A NAME="43"></A>
+<FONT CLASS="LN">44</FONT><A NAME="44"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> majorVersionCompatible(<FONT CLASS="Final">final</FONT> String test, <FONT CLASS="Final">final</FONT> String version) {
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>        <FONT CLASS="Return">return</FONT> getMajorVersion(test) == getMajorVersion(version);
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>    }
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>     * 
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>     * @param test java version string being tested
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>     * @param version java version string being used as reference
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>     * @param javaSyntax
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>     * @return true if the value of &lt;code&gt;test&lt;/code&gt; is greater than or equal to the value of &lt;code&gt;version&lt;/code&gt;
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>     */</FONT>
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> equalOrHigher(<FONT CLASS="Final">final</FONT> String test, <FONT CLASS="Final">final</FONT> String version, <FONT CLASS="Final">final</FONT> <FONT CLASS="Boolean">boolean</FONT> javaSyntax) {
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>            StringTokenizer testSt = <FONT CLASS="New">new</FONT> StringTokenizer(test, <FONT CLASS="StringLiteral">"."</FONT>);
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>            StringTokenizer verSt = <FONT CLASS="New">new</FONT> StringTokenizer(version, <FONT CLASS="StringLiteral">"."</FONT>);
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>            
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>            <FONT CLASS="While">while</FONT> (<FONT CLASS="True">true</FONT>) {
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>                <FONT CLASS="Boolean">boolean</FONT> testMore = testSt.hasMoreTokens(); 
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>                <FONT CLASS="Boolean">boolean</FONT> verMore = verSt.hasMoreTokens();
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>                <FONT CLASS="If">if</FONT>( ! testMore || ! verMore ){
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>                }
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>                String testToken = testSt.nextToken();
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>                String verToken = verSt.nextToken();
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>                <FONT CLASS="Short">short</FONT> testVer = getVersion(testToken);
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>                <FONT CLASS="Short">short</FONT> versionVer = getVersion(verToken);
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>                <FONT CLASS="If">if</FONT>( testVer == versionVer ) {
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>                    <FONT CLASS="If">if</FONT> ( equalClause(getClause( testToken ), getClause(verToken)) ) {
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>                        <FONT CLASS="Continue">continue</FONT>;
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>                    }
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>                    <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>                        <FONT CLASS="Return">return</FONT> higherClause(getClause( testToken ), getClause( verToken ), javaSyntax);
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>                    }
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>                }
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>                <FONT CLASS="Return">return</FONT> testVer &gt; versionVer ;
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>            }
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>            <FONT CLASS="SingleLineComment">// equal up to one not having minor details
+<FONT CLASS="LN">81</FONT><A NAME="81"></A></FONT>            <FONT CLASS="If">if</FONT>( countDots(test) &gt;= countDots(version) ){
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>            }
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>            <FONT CLASS="Return">return</FONT> test.equals(version);
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>        } <FONT CLASS="Catch">catch</FONT> (Exception e) {
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>            <FONT CLASS="SingleLineComment">// syntax exceptions
+<FONT CLASS="LN">87</FONT><A NAME="87"></A></FONT>            <FONT CLASS="If">if</FONT>(javaSyntax){
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>; <FONT CLASS="SingleLineComment">// return true for Java since pre 1.3.1 or other JVMs could get any old rubbish
+<FONT CLASS="LN">89</FONT><A NAME="89"></A></FONT>            }
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>        }
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>    }
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>    
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Boolean">boolean</FONT> isValid(<FONT CLASS="Final">final</FONT> String version) {
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>            StringTokenizer verSt = <FONT CLASS="New">new</FONT> StringTokenizer(version, <FONT CLASS="StringLiteral">"."</FONT>);
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>            
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>            <FONT CLASS="Boolean">boolean</FONT> verMore = <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>            <FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>            <FONT CLASS="For">for</FONT> (; verMore = verSt.hasMoreTokens(); i++) {
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>                
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>                String verToken = verSt.nextToken();
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>                <FONT CLASS="If">if</FONT>(<FONT CLASS="StringLiteral">""</FONT>.equals(verToken)){
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>                    <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>                }
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>                <FONT CLASS="SingleLineComment">// may throw NumberFormatExceptions
+<FONT CLASS="LN">07</FONT><A NAME="107"></A></FONT>                getVersion(verToken);
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>                String clause = getClause(verToken);
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>                <FONT CLASS="If">if</FONT>( ! <FONT CLASS="StringLiteral">""</FONT>.equals(clause)){
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>                    <FONT CLASS="Short">short</FONT> clauseS = clauseToShort(clause);
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>                    <FONT CLASS="If">if</FONT>( ! (clauseS == <FONT CLASS="IntegerLiteral">1</FONT> || clauseS == <FONT CLASS="IntegerLiteral">2</FONT> || clauseS == <FONT CLASS="IntegerLiteral">3</FONT> )){
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>                        <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>                    }
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>                }         
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>            }
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>            <FONT CLASS="If">if</FONT>( ! verMore &amp;&amp; i == <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>; <FONT CLASS="SingleLineComment">// nothing there!
+<FONT CLASS="LN">18</FONT><A NAME="118"></A></FONT>            }
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>        } 
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>        <FONT CLASS="Catch">catch</FONT> (Exception e) {
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>            <FONT CLASS="SingleLineComment">// syntax exceptions
+<FONT CLASS="LN">24</FONT><A NAME="124"></A></FONT>            <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>        }
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>    }
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>     * @return the number part of the clause
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>     */</FONT>
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Short">short</FONT> getVersion(<FONT CLASS="Final">final</FONT> String section) {
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>        StringBuffer sb = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; section.length(); i++) {
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>            <FONT CLASS="Char">char</FONT> c = section.charAt(i);
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>            <FONT CLASS="If">if</FONT>(Character.isDigit(c)) {
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>                sb.append(c);
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>            }
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>            <FONT CLASS="Else">else</FONT>{
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>                <FONT CLASS="Return">return</FONT> Short.parseShort( sb.toString() );
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>            }
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>        }
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>        <FONT CLASS="If">if</FONT>(sb.length() &gt; <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>            <FONT CLASS="Return">return</FONT> Short.parseShort( sb.toString() );
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>        }
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>    }
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>    
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>     * @return  the clause eg beta or ""
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>     */</FONT>
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>    <FONT CLASS="Private">private</FONT> String getClause(<FONT CLASS="Final">final</FONT> String section) {
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; section.length(); i++) {
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>            <FONT CLASS="Char">char</FONT> c = section.charAt(i);
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>            <FONT CLASS="If">if</FONT>(Character.isDigit(c)) {
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>                <FONT CLASS="Continue">continue</FONT>;
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>            }
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>            <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>                <FONT CLASS="Return">return</FONT> section.substring(i);
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>            }
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>        }
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="StringLiteral">""</FONT>;
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>    }
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> higherClause(<FONT CLASS="Final">final</FONT> String test, <FONT CLASS="Final">final</FONT> String clause, <FONT CLASS="Final">final</FONT> <FONT CLASS="Boolean">boolean</FONT> javaSyntax) {
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>        <FONT CLASS="If">if</FONT>(javaSyntax) {
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>            <FONT CLASS="Return">return</FONT> clauseJavaToShort(test) &gt; clauseJavaToShort(clause);
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>        }
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>            <FONT CLASS="Return">return</FONT> clauseToShort(test) &gt; clauseToShort(clause);
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>        }
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>            
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>    }
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Boolean">boolean</FONT> equalClause(<FONT CLASS="Final">final</FONT> String test, <FONT CLASS="Final">final</FONT> String clause) {
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>        <FONT CLASS="Return">return</FONT> clauseToShort(test) == clauseToShort(clause);
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>    }
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>    
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Short">short</FONT> clauseToShort(String clause) {
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>        <FONT CLASS="If">if</FONT>(clause.startsWith(<FONT CLASS="StringLiteral">"-"</FONT>)){
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>            clause = clause.substring(<FONT CLASS="IntegerLiteral">1</FONT>); <FONT CLASS="SingleLineComment">// knock off java style 1-beta dashes
+<FONT CLASS="LN">79</FONT><A NAME="179"></A></FONT>        }
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>        <FONT CLASS="If">if</FONT>( CLAUSE_ALPHA.equals(clause) ) {
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="IntegerLiteral">3</FONT>;
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>        }
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>        <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT>( CLAUSE_BETA.equals(clause) ) {
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="IntegerLiteral">2</FONT>;
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>        }
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>        <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT>( CLAUSE_GAMMA.equals(clause) ) {
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>        }
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>        <FONT CLASS="If">if</FONT>(clause.startsWith(<FONT CLASS="StringLiteral">"_"</FONT>)) { <FONT CLASS="SingleLineComment">// java build version support 1_03-ea-beta  (discarding the sub sub clause "-ea-beta" because I'm lazy)
+<FONT CLASS="LN">90</FONT><A NAME="190"></A></FONT>            <FONT CLASS="Int">int</FONT> hasDash = clause.indexOf(<FONT CLASS="CharacerLiteral">'-'</FONT>);
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>            <FONT CLASS="If">if</FONT>(hasDash &gt; -<FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>                <FONT CLASS="Return">return</FONT> Short.parseShort(clause.substring(<FONT CLASS="IntegerLiteral">1</FONT>, hasDash));
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>            }
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>            <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>                <FONT CLASS="Return">return</FONT> Short.parseShort(clause.substring(<FONT CLASS="IntegerLiteral">1</FONT>));
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>            }
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>        }
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>        <FONT CLASS="Else">else</FONT> <FONT CLASS="Return">return</FONT> Short.MAX_VALUE; <FONT CLASS="SingleLineComment">// no clause assumes higher
+<FONT CLASS="LN">99</FONT><A NAME="199"></A></FONT>    }
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>    
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Short">short</FONT> clauseJavaToShort(String clause) {
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>        <FONT CLASS="If">if</FONT>(clause.startsWith(<FONT CLASS="StringLiteral">"-"</FONT>)){
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>            clause = clause.substring(<FONT CLASS="IntegerLiteral">1</FONT>); <FONT CLASS="SingleLineComment">// knock off java style 1-beta dashes
+<FONT CLASS="LN">04</FONT><A NAME="204"></A></FONT>        }
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>        <FONT CLASS="Else">else</FONT> <FONT CLASS="If">if</FONT>( CLAUSE_JAVA_BETA.equals(clause) ) {  <FONT CLASS="SingleLineComment">// -ea early access are assumed to be less good
+<FONT CLASS="LN">06</FONT><A NAME="206"></A></FONT>            <FONT CLASS="Return">return</FONT> -<FONT CLASS="IntegerLiteral">2</FONT>;
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>        }
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>        <FONT CLASS="If">if</FONT>(clause.startsWith(<FONT CLASS="StringLiteral">"_"</FONT>)) { <FONT CLASS="SingleLineComment">// java build version support 1_03-ea-beta  (discarding the sub sub clause "-ea-beta" because I'm lazy)
+<FONT CLASS="LN">09</FONT><A NAME="209"></A></FONT>            <FONT CLASS="Int">int</FONT> hasDash = clause.indexOf(<FONT CLASS="CharacerLiteral">'-'</FONT>);
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>            <FONT CLASS="If">if</FONT>(hasDash &gt; -<FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>                <FONT CLASS="Return">return</FONT> Short.parseShort(clause.substring(<FONT CLASS="IntegerLiteral">1</FONT>, hasDash));
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>            }
+<FONT CLASS="LN">13</FONT><A NAME="213"></A>            <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>                <FONT CLASS="Return">return</FONT> Short.parseShort(clause.substring(<FONT CLASS="IntegerLiteral">1</FONT>));
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>            }
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>        }
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>        <FONT CLASS="Else">else</FONT> <FONT CLASS="Return">return</FONT> <FONT CLASS="IntegerLiteral">0</FONT>; <FONT CLASS="SingleLineComment">// no clause assumes lower in Java speak
+<FONT CLASS="LN">18</FONT><A NAME="218"></A></FONT>    }
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Short">short</FONT> countDots(<FONT CLASS="Final">final</FONT> String fullver){
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>        <FONT CLASS="Short">short</FONT> count = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; fullver.length(); i++) {
+<FONT CLASS="LN">23</FONT><A NAME="223"></A>            <FONT CLASS="If">if</FONT>(fullver.charAt(i) == <FONT CLASS="CharacerLiteral">'.'</FONT>) {
+<FONT CLASS="LN">24</FONT><A NAME="224"></A>                count++;
+<FONT CLASS="LN">25</FONT><A NAME="225"></A>            }
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>        }
+<FONT CLASS="LN">27</FONT><A NAME="227"></A>        <FONT CLASS="Return">return</FONT> count;
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>    }
+<FONT CLASS="LN">29</FONT><A NAME="229"></A>    
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Short">short</FONT> getMajorVersion(String test){
+<FONT CLASS="LN">31</FONT><A NAME="231"></A>        <FONT CLASS="Return">return</FONT> getVersion(test);
+<FONT CLASS="LN">32</FONT><A NAME="232"></A>    }
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>
+<FONT CLASS="LN">34</FONT><A NAME="234"></A>}
+<FONT CLASS="LN">35</FONT><A NAME="235"></A></pre>
+</BODY>
+</HTML>

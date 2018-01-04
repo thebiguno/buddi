@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+
+Understand the difference between the antinstaller- targets and the
+normal targets like "cleanuptarget"
+
+you CAN NOT CALL antinstaller-message in normal targets since
+the Task is not defined, even if you do define it the tasks will not
+work since they are wired to the installer at runtime with a custom
+Project reference.
+
+
+-->
+<project name="Installation Build"  default=""  basedir=".">
+
+	<property file="ant.install.properties"/>
+
+	<target name="antinstaller-intro" depends="">
+		<antinstaller-message message="yo yo yo!"/>
+		<echo message="This message will not show up"/>
+		<!-- reset a hardcoded default value that will NOT change -->
+		<antinstaller-property name="myProperty" value="yo yo yo!"/>
+		<!-- reset a property value that will change -->
+		<antinstaller-property name="myPropertyDefault" value="yo yo yo!"/>
+		<antinstaller-property resource="/resources/my.props"/>
+		<antinstaller-log message="basedir = ${basedir}"/>
+	</target>
+	<target name="antinstaller-splash" depends="">
+		<antinstaller-message message="Splosh!!"/>
+	</target>
+	<target name="antinstaller-license" depends="">
+		<antinstaller-message message="You didn't read that did you"/>
+	</target>
+	<target name="antinstaller-properties.1" depends="">
+		<antinstaller-message message="You just pressed next to that too (guess?)"/>
+	</target>
+	<target name="antinstaller-LanguageLove" depends="">
+		<antinstaller-message message="Cheesy!"/>
+	</target>
+	<target name="antinstaller-American" depends="">
+		<antinstaller-message message="Sorry that was rude"/>
+	</target>
+	
+	<target name="cleanuptarget" depends="">
+		<!-- N.B. antinstaller-message is NOT going to work -->
+		<echo message="yo yo yo!"/>
+	</target>
+
+	
+</project>

@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.7.dtd">
+
+
+<installer
+			ui="swing,text,swing-auto,text-auto"
+			verbose="true"
+			debug="true"
+			lookAndFeel="org.tp23.jgoodies.plaf.plastic.PlasticXPLookAndFeel"
+			antialiased="true"
+			name="Test Installer"
+			windowIcon="/resources/gkmain_inv.png"
+			defaultImageResource="/resources/makewavesdawn.png"
+			minJavaVersion="1.4"
+			finishButtonText="Build"
+			loadDefaults="prompt"
+			version="1.0">
+	<page
+			type="input"
+			name="intro"
+			displayText="Overflow=&quot;true&quot; test"
+			imageResource="/resources/rockstiles.png"
+			overflow="true"
+			postDisplayTarget="antinstaller-intro">
+		<comment
+				displayText="This is a title comment"
+				title="true"/>
+		<comment
+				displayText="This is just a bold comment"
+				bold="true"/>
+		<comment
+				displayText="This is just a comment"/>
+		<comment
+				explanatoryText="This is aload of text that has tabs	in	it
+and should eventually overflow the page.
+so here is some more waffle and perhaps it is time to download lorum ipsum eh!!
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exercitation ulliam corper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem veleum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel willum lunombro dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. 
+Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie, musica, sport etc., li tot Europa usa li sam vocabularium. Li lingues differe solmen in li grammatica, li pronunciation e li plu commun vocabules. Omnicos directe al desirabilitá de un nov lingua franca: on refusa continuar payar custosi traductores. It solmen va esser necessi far uniform grammatica, pronunciation e plu sommun paroles. 
+Ma quande lingues coalesce, li grammatica del resultant lingue es plu simplic e regulari quam ti del coalescent lingues. Li nov lingua franca va esser plu simplic e regulari quam li existent Europan lingues. It va esser tam simplic quam Occidental: in fact, it va esser Occidental. A un Angleso it va semblar un simplificat Angles, quam un skeptic Cambridge amico dit me que Occidental es. "
+				displayText=""/>
+	</page>
+	<page
+			type="splash"
+			name="splash"
+			displayText="Splash Pages dont support overflow"
+			imageResource="/resources/antbar.png"
+			splashResource="/resources/example-splash.png"
+			altText="example text splash"
+			postDisplayTarget="antinstaller-splash"/>
+
+	<page
+			type="license"
+			name="license"
+			displayText="License don't need overflow"
+			resource="/LICENSE-ant-install.txt"
+			usePaging="true"
+			imageResource="/resources/antbar.png"
+			postDisplayTarget="antinstaller-license">
+	</page>
+	<page
+			type="input"
+			name="properties.1"
+			displayText="Some pages can be normal"
+			postDisplayTarget="antinstaller-properties.1">
+		<text property="myProperty" defaultValue="blah blah" displayText="Enter a value"/>
+		<text property="myPropertyDefault" defaultValue="${myPropertyDefault}" displayText="Enter a value"/>
+		<checkbox
+				property="isvalue"
+				displayText="Do you want to do this"
+				defaultValue="true"
+				force="false"/>
+		<select
+				property="colour"
+				defaultValue="#FF0000"
+				displayText="Select your favorite colour">
+			<option text="Red" value="#FF0000"/>
+			<option text="Green" value="#00FF00"/>
+			<option text="Blue" value="#0000FF"/>
+		</select>
+		<directory
+				property="installDir"
+				defaultValue="/usr/local/demoapp"
+				defaultValueWin="${env.ProgramFiles}\demoapp"
+				displayText="Select an installation directory"
+				create="true"
+				checkExists="true"/>
+		<file
+				property="webxml"
+				defaultValue="/usr/tomcat/webapps/default/WEB-INF/web.xml"
+				defaultValueWin="C:\tomcat\webapps\default\WEB-INF\web.xml"
+				displayText="Select the web.xml file"
+				checkExists="false"/>
+	</page>
+	<page
+			type="input"
+			name="selector"
+			displayText="Overflow page"
+			imageResource="/resources/antbar.png"
+			overflow="true">
+		<select
+				property="lang"
+				defaultValue="uk"
+				displayText="Select your favorite language"
+				explanatoryText="a large-select would work here too">
+			<option text="Spanish" value="es"/>
+			<option text="Catalan" value="ca"/>
+			<option text="English" value="uk"/>
+			<option text="Euskera" value="ek"/>
+			<option text="Mockney" value="??"/>
+			<option text="Giberish" value="¿¿"/>
+			<option text="Love"    value="lv"/>
+			<option text="American" value="us"/>
+		</select>
+	</page>
+	<page
+			ifProperty="${lang}=lv"
+			type="input"
+			name="LanguageLove"
+			displayText="Language of Love"
+			postDisplayTarget="antinstaller-LanguageLove">
+		<comment
+				displayText="Aaaarrr, how sweet"
+				bold="true"/>
+	</page>
+	<page
+			ifProperty="${lang}=us"
+			type="input"
+			name="American"
+			displayText="Hey Yankiee"
+			postDisplayTarget="antinstaller-American">
+		<comment
+				displayText="It totaliser and initialise, with Ss you know, but never mind"
+				bold="true"/>
+	</page>
+	<page
+			type="progress"
+			name="progress"
+			displayText="Progress dont need a past"
+			imageResource="/resources/antbar.png"
+			showTargets="false"
+			target="cleanuptarget">
+	</page>
+</installer>
+
+

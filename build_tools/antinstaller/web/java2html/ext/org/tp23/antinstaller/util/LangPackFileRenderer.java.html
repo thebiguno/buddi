@@ -1,0 +1,247 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.util.LangPackFileRenderer (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">LangPackFileRenderer.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../org.tp23.antinstaller.util.index.html" target="packageFrame">org.tp23.antinstaller.util</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.io.BufferedWriter;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.io.File;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.io.FileWriter;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.io.IOException;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.util.Date;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> java.util.Iterator;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> java.util.List;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A>
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="Import">import</FONT> org.tp23.antinstaller.Installer;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> org.tp23.antinstaller.PropertiesFileRenderer;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A><FONT CLASS="Import">import</FONT> org.tp23.antinstaller.input.CommentOutput;
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Import">import</FONT> org.tp23.antinstaller.input.InputField;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> org.tp23.antinstaller.input.LargeSelectInput;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A><FONT CLASS="Import">import</FONT> org.tp23.antinstaller.input.OutputField;
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Import">import</FONT> org.tp23.antinstaller.input.SecretPropertyField;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="Import">import</FONT> org.tp23.antinstaller.input.ConditionalField;
+<FONT CLASS="LN">34</FONT><A NAME="34"></A><FONT CLASS="Import">import</FONT> org.tp23.antinstaller.input.SelectInput;
+<FONT CLASS="LN">35</FONT><A NAME="35"></A><FONT CLASS="Import">import</FONT> org.tp23.antinstaller.input.TargetSelectInput;
+<FONT CLASS="LN">36</FONT><A NAME="36"></A><FONT CLASS="Import">import</FONT> org.tp23.antinstaller.input.SelectInput.Option;
+<FONT CLASS="LN">37</FONT><A NAME="37"></A><FONT CLASS="Import">import</FONT> org.tp23.antinstaller.page.Page;
+<FONT CLASS="LN">38</FONT><A NAME="38"></A>
+<FONT CLASS="LN">39</FONT><A NAME="39"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">40</FONT><A NAME="40"></A> * &lt;p&gt;Outputs the text from Pages as a Java Properties file. The file produced is compatible
+<FONT CLASS="LN">41</FONT><A NAME="41"></A> * with java.util.Properties. &lt;/p&gt;
+<FONT CLASS="LN">42</FONT><A NAME="42"></A> * &lt;p&gt;It can be used as a stub for creating language packs,  the default text is included as a guide but can be deleted&lt;/p&gt;
+<FONT CLASS="LN">43</FONT><A NAME="43"></A> * @author Paul Hinds
+<FONT CLASS="LN">44</FONT><A NAME="44"></A> */</FONT>
+<FONT CLASS="LN">45</FONT><A NAME="45"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> LangPackFileRenderer{
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> String newLine = System.getProperty(<FONT CLASS="StringLiteral">"line.separator"</FONT>);
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <FONT CLASS="Char">char</FONT>[] hexidecimals = { <FONT CLASS="CharacerLiteral">'0'</FONT>, <FONT CLASS="CharacerLiteral">'1'</FONT>, <FONT CLASS="CharacerLiteral">'2'</FONT>, <FONT CLASS="CharacerLiteral">'3'</FONT>, <FONT CLASS="CharacerLiteral">'4'</FONT>, <FONT CLASS="CharacerLiteral">'5'</FONT>, <FONT CLASS="CharacerLiteral">'6'</FONT>, <FONT CLASS="CharacerLiteral">'7'</FONT>, <FONT CLASS="CharacerLiteral">'8'</FONT>, <FONT CLASS="CharacerLiteral">'9'</FONT>, <FONT CLASS="CharacerLiteral">'A'</FONT>, <FONT CLASS="CharacerLiteral">'B'</FONT>, <FONT CLASS="CharacerLiteral">'C'</FONT>, <FONT CLASS="CharacerLiteral">'D'</FONT>, <FONT CLASS="CharacerLiteral">'E'</FONT>, <FONT CLASS="CharacerLiteral">'F'</FONT> };
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>    <FONT CLASS="Public">public</FONT> LangPackFileRenderer() {
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>    }
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Void">void</FONT> renderProperties(Installer installer, File baseDir, String locale) <FONT CLASS="Throws">throws</FONT> IOException {
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>        Page[] pages = installer.getPages();
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>        StringBuffer propertiesData = <FONT CLASS="New">new</FONT> StringBuffer();
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>        propertiesData.append(<FONT CLASS="StringLiteral">"### Ant Installer - language pack auto generated on "</FONT>);
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>        propertiesData.append(<FONT CLASS="New">new</FONT> Date().toString());
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>        propertiesData.append(newLine);
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>        propertiesData.append(newLine);
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>        propertiesData.append(<FONT CLASS="StringLiteral">"finishButtonText = "</FONT> + installer.getFinishButtonText());
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>        propertiesData.append(newLine);
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>        propertiesData.append(newLine);
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>        String property = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>        String value = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; pages.length; i++) {
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>            OutputField[] fields = pages[i].getOutputField();
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>            propertiesData.append(newLine);
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>            propertiesData.append(<FONT CLASS="StringLiteral">"## Text from Page:"</FONT> + pages[i].getName());
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>            propertiesData.append(newLine);
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>            property = <FONT CLASS="StringLiteral">"page."</FONT> + pages[i].getName() + <FONT CLASS="StringLiteral">".displayText"</FONT>;
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>            value = convert(pages[i].getDisplayText(), <FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>            propertiesData.append(property + <FONT CLASS="StringLiteral">" = "</FONT> + value);
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>            propertiesData.append(newLine);
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>            retrievePropertiesData( fields, propertiesData );
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>        }
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>        <FONT CLASS="SingleLineComment">// create the stub
+<FONT CLASS="LN">84</FONT><A NAME="84"></A></FONT>        <FONT CLASS="If">if</FONT>(locale != <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>            File languagePackStub = <FONT CLASS="New">new</FONT> File(baseDir.getAbsolutePath(), <FONT CLASS="StringLiteral">"LanguagePack_"</FONT> + locale + <FONT CLASS="StringLiteral">".properties"</FONT>);
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>            FileWriter fos = <FONT CLASS="New">new</FONT> FileWriter(languagePackStub);
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>            BufferedWriter writer = <FONT CLASS="New">new</FONT> BufferedWriter(fos);
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>            writer.write(propertiesData.toString());
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>            writer.flush();
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>            fos.close();
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>        }
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>        <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>            <FONT CLASS="SingleLineComment">// create the default
+<FONT CLASS="LN">94</FONT><A NAME="94"></A></FONT>            File languagePack = <FONT CLASS="New">new</FONT> File(baseDir.getAbsolutePath(), <FONT CLASS="StringLiteral">"LanguagePack.properties"</FONT>);
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>            FileWriter fos = <FONT CLASS="New">new</FONT> FileWriter(languagePack);
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>            BufferedWriter writer = <FONT CLASS="New">new</FONT> BufferedWriter(fos);
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>            writer.write(propertiesData.toString());
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>            writer.flush();
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>            fos.close();
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>        }
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>    }
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>    
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> retrievePropertiesData( OutputField[] fields, StringBuffer propertiesData ) {
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>        String property = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>        String value = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>        String explProperty = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>        String explValue = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> f = <FONT CLASS="IntegerLiteral">0</FONT>; f &lt; fields.length; f++) {
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>            
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>            <FONT CLASS="SingleLineComment">// use getName() for comments
+<FONT CLASS="LN">12</FONT><A NAME="112"></A></FONT>            <FONT CLASS="If">if</FONT>(fields[f] <FONT CLASS="InstanceOf">instanceof</FONT> CommentOutput){
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>                property = fields[f].getName() + <FONT CLASS="StringLiteral">".displayText"</FONT>;
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>                value = convert(fields[f].getDisplayText(), <FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>                propertiesData.append(property + <FONT CLASS="StringLiteral">" = "</FONT> + value);
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>                propertiesData.append(newLine);
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>                <FONT CLASS="If">if</FONT> (fields[f].getExplanatoryText() != <FONT CLASS="Null">null</FONT> &amp;&amp; fields[f].getExplanatoryText().trim().length() &gt; <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>                    explProperty = fields[f].getName() + <FONT CLASS="StringLiteral">".explanatoryText"</FONT>;
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>                    explValue = convert(fields[f].getExplanatoryText(), <FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>                    propertiesData.append(explProperty + <FONT CLASS="StringLiteral">" = "</FONT> + explValue);
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>                    propertiesData.append(newLine);
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>                }
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>            }
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>            <FONT CLASS="SingleLineComment">// use getProperty for input types
+<FONT CLASS="LN">26</FONT><A NAME="126"></A></FONT>            <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>                InputField iField = (InputField)fields[f];
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>                property = iField.getProperty() + <FONT CLASS="StringLiteral">".displayText"</FONT>;
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>                value = convert(iField.getDisplayText(), <FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>                propertiesData.append(property + <FONT CLASS="StringLiteral">" = "</FONT> + value);
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>                propertiesData.append(newLine);
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>                <FONT CLASS="If">if</FONT> (iField.getExplanatoryText() != <FONT CLASS="Null">null</FONT> &amp;&amp; iField.getExplanatoryText().trim().length() &gt; <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>                    explProperty = iField.getProperty() + <FONT CLASS="StringLiteral">".explanatoryText"</FONT>;
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>                    explValue = convert(iField.getExplanatoryText(), <FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>                    propertiesData.append(explProperty + <FONT CLASS="StringLiteral">" = "</FONT> + explValue);
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>                    propertiesData.append(newLine);
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>                }
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>                <FONT CLASS="If">if</FONT>(iField <FONT CLASS="InstanceOf">instanceof</FONT> SelectInput) {
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>                    SelectInput selectInput = (SelectInput)iField;
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>                    <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> o = <FONT CLASS="IntegerLiteral">0</FONT>; o &lt; selectInput.getOptions().length; o++) {
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>                        SelectInput.Option option =  selectInput.getOptions()[o];
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>                        property = selectInput.getProperty() + <FONT CLASS="StringLiteral">"."</FONT> + (o + <FONT CLASS="IntegerLiteral">1</FONT>) + <FONT CLASS="StringLiteral">".displayText"</FONT>;
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>                        value = convert(option.getText(), <FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>                        propertiesData.append(property + <FONT CLASS="StringLiteral">" = "</FONT> + value);
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>                        propertiesData.append(newLine);
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>                    }
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>                }
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>                <FONT CLASS="If">if</FONT>(fields[f] <FONT CLASS="InstanceOf">instanceof</FONT> LargeSelectInput) {
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>                    LargeSelectInput selectInput = (LargeSelectInput)iField;
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>                    <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> o = <FONT CLASS="IntegerLiteral">0</FONT>; o &lt; selectInput.getOptions().length; o++) {
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>                        LargeSelectInput.Option option =  selectInput.getOptions()[o];
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>                        property = selectInput.getProperty() + <FONT CLASS="StringLiteral">"."</FONT> + (o + <FONT CLASS="IntegerLiteral">1</FONT>) + <FONT CLASS="StringLiteral">".displayText"</FONT>;
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>                        value = convert(option.getText(), <FONT CLASS="False">false</FONT>);
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>                        propertiesData.append(property + <FONT CLASS="StringLiteral">" = "</FONT> + value);
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>                        propertiesData.append(newLine);
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>                    }
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>                }
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>            }           
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>        }
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>    }
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>    <FONT CLASS="Private">private</FONT> String convert(String input, <FONT CLASS="Boolean">boolean</FONT> doSpaces) {
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>        <FONT CLASS="If">if</FONT> (input == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>            <FONT CLASS="SingleLineComment">// this happens when a page is skipped in text mode
+<FONT CLASS="LN">65</FONT><A NAME="165"></A></FONT>            <FONT CLASS="Return">return</FONT> <FONT CLASS="StringLiteral">""</FONT>;
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>        }
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>        <FONT CLASS="Int">int</FONT> num = input.length();
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>        StringBuffer sb = <FONT CLASS="New">new</FONT> StringBuffer(num);
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; num; i++) {
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>            <FONT CLASS="Char">char</FONT> c = input.charAt(i);
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>            <FONT CLASS="Switch">switch</FONT> (c) {
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>                <FONT CLASS="Case">case</FONT> <FONT CLASS="CharacerLiteral">' '</FONT>:
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>                    <FONT CLASS="If">if</FONT> (i == <FONT CLASS="IntegerLiteral">0</FONT> || doSpaces) {
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>                        sb.append(<FONT CLASS="CharacerLiteral">'\\'</FONT>);
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>                    }
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>                    sb.append(<FONT CLASS="CharacerLiteral">' '</FONT>);
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>                <FONT CLASS="Case">case</FONT> <FONT CLASS="CharacerLiteral">'\n'</FONT>:
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>                    sb.append(<FONT CLASS="StringLiteral">"\\n"</FONT>);
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>                <FONT CLASS="Case">case</FONT> <FONT CLASS="CharacerLiteral">'\r'</FONT>:
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>                    sb.append(<FONT CLASS="StringLiteral">"\\r"</FONT>);
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>                <FONT CLASS="Case">case</FONT> <FONT CLASS="CharacerLiteral">'\\'</FONT>:
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>                    sb.append(<FONT CLASS="StringLiteral">"\\\\"</FONT>);
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>                <FONT CLASS="Case">case</FONT> <FONT CLASS="CharacerLiteral">'\t'</FONT>:
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>                    sb.append(<FONT CLASS="StringLiteral">"\\t"</FONT>);
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>                <FONT CLASS="Case">case</FONT> <FONT CLASS="CharacerLiteral">'\f'</FONT>:
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>                    sb.append(<FONT CLASS="StringLiteral">"\\f"</FONT>);
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>                <FONT CLASS="Case">case</FONT> <FONT CLASS="CharacerLiteral">'='</FONT>:
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>                    sb.append(<FONT CLASS="StringLiteral">"\\="</FONT>);
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>                <FONT CLASS="Case">case</FONT> <FONT CLASS="CharacerLiteral">':'</FONT>:
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>                    sb.append(<FONT CLASS="StringLiteral">"\\:"</FONT>);
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>                <FONT CLASS="Case">case</FONT> <FONT CLASS="CharacerLiteral">'#'</FONT>:
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>                    sb.append(<FONT CLASS="StringLiteral">"\\#"</FONT>);
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>                <FONT CLASS="Case">case</FONT> <FONT CLASS="CharacerLiteral">'!'</FONT>:
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>                    sb.append(<FONT CLASS="StringLiteral">"\\!"</FONT>);
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>                <FONT CLASS="Default">default</FONT>:
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>                    <FONT CLASS="If">if</FONT> ( (c &lt; <FONT CLASS="IntegerLiteral">0x0020</FONT>) || (c &gt; <FONT CLASS="IntegerLiteral">0x007e</FONT>) ) {
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>                        sb.append(<FONT CLASS="StringLiteral">"\\u"</FONT>)
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>                            .append(hex( (c &gt;&gt; <FONT CLASS="IntegerLiteral">12</FONT>) &amp; <FONT CLASS="IntegerLiteral">0xF</FONT>))
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>                            .append(hex( (c &gt;&gt; <FONT CLASS="IntegerLiteral">8</FONT>) &amp; <FONT CLASS="IntegerLiteral">0xF</FONT>))
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>                            .append(hex( (c &gt;&gt; <FONT CLASS="IntegerLiteral">4</FONT>) &amp; <FONT CLASS="IntegerLiteral">0xF</FONT>))
+<FONT CLASS="LN">13</FONT><A NAME="213"></A>                            .append(hex(c &amp; <FONT CLASS="IntegerLiteral">0xF</FONT>));
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>                    }
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>                    <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>                        sb.append(c);
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>                    }
+<FONT CLASS="LN">18</FONT><A NAME="218"></A>            }
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>        }
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>        <FONT CLASS="Return">return</FONT> sb.toString();
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>    }
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>
+<FONT CLASS="LN">23</FONT><A NAME="223"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Char">char</FONT> hex(<FONT CLASS="Int">int</FONT> val) {
+<FONT CLASS="LN">24</FONT><A NAME="224"></A>        <FONT CLASS="Return">return</FONT> hexidecimals[ (val &amp; <FONT CLASS="IntegerLiteral">0xF</FONT>)];
+<FONT CLASS="LN">25</FONT><A NAME="225"></A>    }
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>
+<FONT CLASS="LN">27</FONT><A NAME="227"></A>}
+<FONT CLASS="LN">28</FONT><A NAME="228"></A></pre>
+</BODY>
+</HTML>

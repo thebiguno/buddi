@@ -1,0 +1,299 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.renderer.swing.ProgressPanel (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">ProgressPanel.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/* 
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Copyright 2005 Paul Hinds
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> *
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> *
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">14</FONT><A NAME="14"></A> * limitations under the License.
+<FONT CLASS="LN">15</FONT><A NAME="15"></A> */</FONT>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../../org.tp23.antinstaller.renderer.swing.index.html" target="packageFrame">org.tp23.antinstaller.renderer.swing</A>;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A>
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.awt.Color;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.awt.Dimension;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A><FONT CLASS="Import">import</FONT> java.awt.Font;
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> java.awt.Graphics;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> java.awt.Graphics2D;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A><FONT CLASS="Import">import</FONT> java.awt.Rectangle;
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="Import">import</FONT> java.awt.RenderingHints;
+<FONT CLASS="LN">25</FONT><A NAME="25"></A><FONT CLASS="Import">import</FONT> java.util.ArrayList;
+<FONT CLASS="LN">26</FONT><A NAME="26"></A><FONT CLASS="Import">import</FONT> java.util.Iterator;
+<FONT CLASS="LN">27</FONT><A NAME="27"></A><FONT CLASS="Import">import</FONT> java.util.List;
+<FONT CLASS="LN">28</FONT><A NAME="28"></A>
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Import">import</FONT> javax.swing.JPanel;
+<FONT CLASS="LN">30</FONT><A NAME="30"></A><FONT CLASS="Import">import</FONT> javax.swing.Scrollable;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A>
+<FONT CLASS="LN">32</FONT><A NAME="32"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.BuildEvent;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A><FONT CLASS="Import">import</FONT> org.apache.tools.ant.Target;
+<FONT CLASS="LN">34</FONT><A NAME="34"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">org.tp23.antinstaller.InstallerContext</A>;
+<FONT CLASS="LN">35</FONT><A NAME="35"></A>
+<FONT CLASS="LN">36</FONT><A NAME="36"></A>
+<FONT CLASS="LN">37</FONT><A NAME="37"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">38</FONT><A NAME="38"></A> * Progress panel prints a graphical view of the progress of the Ant targets
+<FONT CLASS="LN">39</FONT><A NAME="39"></A> * being run.  It supports displaying one layer of dependent targets.
+<FONT CLASS="LN">40</FONT><A NAME="40"></A> * @author Paul Hinds
+<FONT CLASS="LN">41</FONT><A NAME="41"></A> * @version $Id: ProgressPanel.java,v 1.5 2006/12/21 00:02:59 teknopaul Exp $
+<FONT CLASS="LN">42</FONT><A NAME="42"></A> */</FONT>
+<FONT CLASS="LN">43</FONT><A NAME="43"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> ProgressPanel <FONT CLASS="Extends">extends</FONT> JPanel <FONT CLASS="Implements">implements</FONT> Scrollable{
+<FONT CLASS="LN">44</FONT><A NAME="44"></A>
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> tHeight = <FONT CLASS="IntegerLiteral">19</FONT>;
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> leftIndent = <FONT CLASS="IntegerLiteral">15</FONT>;
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> DONE = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> INPROGRESS = <FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> TODO = <FONT CLASS="IntegerLiteral">2</FONT>;
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> Color progressColor = <FONT CLASS="New">new</FONT> Color(<FONT CLASS="IntegerLiteral">0</FONT>, <FONT CLASS="IntegerLiteral">125</FONT>, <FONT CLASS="IntegerLiteral">0</FONT>);
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> Font mainFont = <FONT CLASS="New">new</FONT> Font(<FONT CLASS="StringLiteral">"Dialog"</FONT>, Font.PLAIN, <FONT CLASS="IntegerLiteral">11</FONT>);
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> Font subFont = <FONT CLASS="New">new</FONT> Font(<FONT CLASS="StringLiteral">"Dialog"</FONT>, Font.PLAIN, <FONT CLASS="IntegerLiteral">10</FONT>);
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>    List targets = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>    
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Final">final</FONT> <A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx;
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Int">int</FONT> mainTargetPos = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>    <FONT CLASS="Private">private</FONT> ProgressModel currentPM = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>    <FONT CLASS="Public">public</FONT> ProgressPanel(<A HREF="../../../../../org/tp23/antinstaller/InstallerContext.java.html">InstallerContext</A> ctx) {
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>        <FONT CLASS="Super">super</FONT>(<FONT CLASS="True">true</FONT>);
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>        <FONT CLASS="This">this</FONT>.ctx = ctx;
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>    }
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> prepareCalledTargets(){
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>        List targetStrings = ctx.getInstaller().getTargets(ctx);
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>        Iterator iter = targetStrings.iterator();
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>        targets = <FONT CLASS="New">new</FONT> ArrayList();
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>        <FONT CLASS="While">while</FONT> (iter.hasNext()) {
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>            String tgt = (String) iter.next();
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>            targets.add(<FONT CLASS="New">new</FONT> ProgressModel(tgt));
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>        }
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>        <FONT CLASS="This">this</FONT>.setSize(getSize());<FONT CLASS="SingleLineComment">// panel size changes
+<FONT CLASS="LN">73</FONT><A NAME="73"></A></FONT>        revalidate();
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>        repaint();
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>    }
+<FONT CLASS="LN">76</FONT><A NAME="76"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>     * This method assumes that we are send target started methods in order
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>     * but that we do not have the information about "depends" targets and have to
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>     * insert the information as it arrives.  If a TargetStarted event arrives that
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>     * is not the expected target is is assumed to be a depends.
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>     * @param buildEvent
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>     */</FONT>
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> targetStarted(BuildEvent buildEvent){
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>            Target tgt = buildEvent.getTarget();
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>            ProgressModel pm = (ProgressModel)targets.get(mainTargetPos);
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>            pm.state = INPROGRESS;
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>            <FONT CLASS="If">if</FONT>(tgt.getName().equals(pm.name)){
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>                <FONT CLASS="SingleLineComment">// main target
+<FONT CLASS="LN">90</FONT><A NAME="90"></A></FONT>                currentPM = pm;
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>                mainTargetPos++;
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>                revalidate();
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>                repaint();
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>            }
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>            <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>                <FONT CLASS="SingleLineComment">//dependency
+<FONT CLASS="LN">97</FONT><A NAME="97"></A></FONT>                ProgressModel dependency = <FONT CLASS="New">new</FONT> ProgressModel(tgt.getName());
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>                dependency.state = INPROGRESS;
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>                <FONT CLASS="If">if</FONT>(currentPM != <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>                    currentPM.state = DONE;<FONT CLASS="SingleLineComment">// this to catch antcall strangenesses
+<FONT CLASS="LN">01</FONT><A NAME="101"></A></FONT>                }
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>                currentPM = dependency;
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>                pm.subTargets.add(dependency);
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>                <FONT CLASS="This">this</FONT>.setSize(getSize());<FONT CLASS="SingleLineComment">// panel size changes
+<FONT CLASS="LN">05</FONT><A NAME="105"></A></FONT>                revalidate();
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>                repaint();
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>            }
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>        }
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>        <FONT CLASS="Catch">catch</FONT> (Exception e) {
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>            ctx.log(e);
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>        }
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>    }
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> targetFinished() {
+<FONT CLASS="LN">14</FONT><A NAME="114"></A>        <FONT CLASS="SingleLineComment">// BUG 1494105 reports NPE here, looks like no targets specified in his antinstaller-config.xml
+<FONT CLASS="LN">15</FONT><A NAME="115"></A></FONT>        currentPM.state = DONE;
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>    }
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>     * N.B. buildFinished must be fired manually in Ant
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>     */</FONT>
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> buildFinished() {
+<FONT CLASS="LN">22</FONT><A NAME="122"></A>        <FONT CLASS="SingleLineComment">// this is done because antcall sometimes results in targetFinished not being called
+<FONT CLASS="LN">23</FONT><A NAME="123"></A></FONT>        setToDone(targets);
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>        repaint();
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>    }
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>    
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> setToDone(List pModels){
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>        <FONT CLASS="If">if</FONT>(pModels == <FONT CLASS="Null">null</FONT> || pModels.size() == <FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>            <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>        }
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>        Iterator iter = pModels.iterator();
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>        <FONT CLASS="While">while</FONT> (iter.hasNext()) {
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>            ProgressModel pm = (ProgressModel)iter.next();
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>            pm.state = DONE;
+<FONT CLASS="LN">35</FONT><A NAME="135"></A>            setToDone(pm.subTargets);
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>        }
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>    }
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>     */</FONT>
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Void">void</FONT> paintComponent(Graphics g){
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>        <FONT CLASS="Super">super</FONT>.paintComponent(g);
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>        <FONT CLASS="If">if</FONT>(targets == <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>            <FONT CLASS="Return">return</FONT>;
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>        }
+<FONT CLASS="LN">45</FONT><A NAME="145"></A><FONT CLASS="SingleLineComment">//      g.setColor(getBackground());
+<FONT CLASS="LN">46</FONT><A NAME="146"></A></FONT><FONT CLASS="SingleLineComment">//      g.fillRect(g.getClipBounds().x,
+<FONT CLASS="LN">47</FONT><A NAME="147"></A></FONT><FONT CLASS="SingleLineComment">//                  g.getClipBounds().y,
+<FONT CLASS="LN">48</FONT><A NAME="148"></A></FONT><FONT CLASS="SingleLineComment">//                  g.getClipBounds().width,
+<FONT CLASS="LN">49</FONT><A NAME="149"></A></FONT><FONT CLASS="SingleLineComment">//                  g.getClipBounds().height);
+<FONT CLASS="LN">50</FONT><A NAME="150"></A></FONT>        Iterator iter = targets.iterator();
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>        <FONT CLASS="Int">int</FONT> offset = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>        <FONT CLASS="For">for</FONT>(<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">1</FONT>; iter.hasNext(); i++){
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>            ProgressModel pmodel = (ProgressModel)iter.next();
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>            drawTarget(pmodel, (Graphics2D)g, offset, i &lt; targets.size(), i &gt; <FONT CLASS="IntegerLiteral">1</FONT>);
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>            offset += tHeight;
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>            offset += pmodel.subTargets.size() * tHeight;
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>        }
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>    }
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> Dimension getPreferredSize(){
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>        <FONT CLASS="Return">return</FONT> getSize();
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>    }
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>     * @see java.awt.Component#getSize()
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>     */</FONT>
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> Dimension getSize() {
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>        <FONT CLASS="If">if</FONT>(targets == <FONT CLASS="Null">null</FONT>){
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="New">new</FONT> Dimension(SizeConstants.PAGE_WIDTH, tHeight * <FONT CLASS="IntegerLiteral">5</FONT>);
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>        }
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>        <FONT CLASS="Int">int</FONT> count = targets.size();
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>        Iterator iter = targets.iterator();
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>        <FONT CLASS="While">while</FONT>(iter.hasNext()){
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>            ProgressModel pmodel = (ProgressModel)iter.next();
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>            count += pmodel.subTargets.size();
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>        }
+<FONT CLASS="LN">76</FONT><A NAME="176"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="New">new</FONT> Dimension(SizeConstants.PAGE_WIDTH, count * tHeight);
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>    }
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>    <FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>     *
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>     * @param target the main target to be rendered
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>     * @param g
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>     * @param yOffset the vertical offset where this target should be drawn
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>     * @param hasMore if false this target is the last in the list
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>     * @param hasPrev if false this target is the first in the list
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>     */</FONT>
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> drawTarget(ProgressModel target, Graphics2D g,
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>            <FONT CLASS="Int">int</FONT> yOffset, <FONT CLASS="Boolean">boolean</FONT> hasMore, <FONT CLASS="Boolean">boolean</FONT> hasPrev){
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>        g.setFont(mainFont);
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>        g.setColor(Color.gray);
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>        <FONT CLASS="SingleLineComment">//7 vertical line (up)
+<FONT CLASS="LN">92</FONT><A NAME="192"></A></FONT>        <FONT CLASS="If">if</FONT>(hasPrev){
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>            g.drawLine(leftIndent + <FONT CLASS="IntegerLiteral">8</FONT>, yOffset, leftIndent + <FONT CLASS="IntegerLiteral">8</FONT>, yOffset + <FONT CLASS="IntegerLiteral">8</FONT>);
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>        }
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>        <FONT CLASS="SingleLineComment">//7 vertical line (down)
+<FONT CLASS="LN">96</FONT><A NAME="196"></A></FONT>        <FONT CLASS="If">if</FONT>(hasMore || target.subTargets.size() &gt; <FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>            g.drawLine(leftIndent + <FONT CLASS="IntegerLiteral">8</FONT>, (tHeight/<FONT CLASS="IntegerLiteral">2</FONT>) + yOffset, 
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>                    leftIndent + <FONT CLASS="IntegerLiteral">8</FONT>, tHeight + yOffset);
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>        }
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>        <FONT CLASS="SingleLineComment">// sideways line
+<FONT CLASS="LN">01</FONT><A NAME="201"></A></FONT>        <FONT CLASS="Int">int</FONT> xOffset = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>        g.drawLine(leftIndent + <FONT CLASS="IntegerLiteral">8</FONT>, <FONT CLASS="IntegerLiteral">8</FONT> + yOffset, leftIndent + xOffset + <FONT CLASS="IntegerLiteral">20</FONT>, <FONT CLASS="IntegerLiteral">8</FONT> + yOffset);
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>        <FONT CLASS="If">if</FONT>(target.state == DONE){
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>            g.setColor(Color.darkGray);
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>        }
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>        <FONT CLASS="If">if</FONT>(target.state == INPROGRESS){
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>            g.setColor(progressColor);
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>        }
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>        <FONT CLASS="If">if</FONT>(target.state == TODO){
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>            g.setColor(Color.gray);
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>        }
+<FONT CLASS="LN">12</FONT><A NAME="212"></A>        g.fillRoundRect(leftIndent + xOffset + <FONT CLASS="IntegerLiteral">3</FONT>, yOffset + <FONT CLASS="IntegerLiteral">4</FONT>, <FONT CLASS="IntegerLiteral">11</FONT>, <FONT CLASS="IntegerLiteral">9</FONT>, <FONT CLASS="IntegerLiteral">7</FONT>, <FONT CLASS="IntegerLiteral">7</FONT>);
+<FONT CLASS="LN">13</FONT><A NAME="213"></A>        g.setColor(Color.black);
+<FONT CLASS="LN">14</FONT><A NAME="214"></A>        g.drawString(target.name, leftIndent + xOffset + <FONT CLASS="IntegerLiteral">22</FONT>, <FONT CLASS="IntegerLiteral">13</FONT> + yOffset);
+<FONT CLASS="LN">15</FONT><A NAME="215"></A>        <FONT CLASS="If">if</FONT>(target.subTargets.size() &gt; <FONT CLASS="IntegerLiteral">0</FONT>){
+<FONT CLASS="LN">16</FONT><A NAME="216"></A>            Iterator iter = target.subTargets.iterator();
+<FONT CLASS="LN">17</FONT><A NAME="217"></A>            <FONT CLASS="For">for</FONT>(<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">1</FONT>; iter.hasNext(); i++){
+<FONT CLASS="LN">18</FONT><A NAME="218"></A>                drawSubTarget((ProgressModel)iter.next(), g, 
+<FONT CLASS="LN">19</FONT><A NAME="219"></A>                        yOffset += tHeight, hasMore | i &lt; target.subTargets.size());
+<FONT CLASS="LN">20</FONT><A NAME="220"></A>            }
+<FONT CLASS="LN">21</FONT><A NAME="221"></A>        }
+<FONT CLASS="LN">22</FONT><A NAME="222"></A>    }
+<FONT CLASS="LN">23</FONT><A NAME="223"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Void">void</FONT> drawSubTarget(ProgressModel target, Graphics2D g, 
+<FONT CLASS="LN">24</FONT><A NAME="224"></A>            <FONT CLASS="Int">int</FONT> yOffset, <FONT CLASS="Boolean">boolean</FONT> hasMore){
+<FONT CLASS="LN">25</FONT><A NAME="225"></A>        g.setFont(subFont);
+<FONT CLASS="LN">26</FONT><A NAME="226"></A>        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+<FONT CLASS="LN">27</FONT><A NAME="227"></A>        g.setColor(Color.gray);
+<FONT CLASS="LN">28</FONT><A NAME="228"></A>        <FONT CLASS="SingleLineComment">//7 vertical line (up)
+<FONT CLASS="LN">29</FONT><A NAME="229"></A></FONT>        g.drawLine(leftIndent + <FONT CLASS="IntegerLiteral">8</FONT>, yOffset, leftIndent + <FONT CLASS="IntegerLiteral">8</FONT>, yOffset + <FONT CLASS="IntegerLiteral">8</FONT>);
+<FONT CLASS="LN">30</FONT><A NAME="230"></A>        <FONT CLASS="SingleLineComment">//7 vertical line (down)
+<FONT CLASS="LN">31</FONT><A NAME="231"></A></FONT>        <FONT CLASS="If">if</FONT>(hasMore){
+<FONT CLASS="LN">32</FONT><A NAME="232"></A>            g.drawLine(leftIndent + <FONT CLASS="IntegerLiteral">8</FONT>, (tHeight/<FONT CLASS="IntegerLiteral">2</FONT>) + yOffset, leftIndent + <FONT CLASS="IntegerLiteral">8</FONT>, tHeight + yOffset);
+<FONT CLASS="LN">33</FONT><A NAME="233"></A>        }
+<FONT CLASS="LN">34</FONT><A NAME="234"></A>        <FONT CLASS="Int">int</FONT> xOffset = <FONT CLASS="IntegerLiteral">15</FONT>;
+<FONT CLASS="LN">35</FONT><A NAME="235"></A>        <FONT CLASS="SingleLineComment">// sideways line
+<FONT CLASS="LN">36</FONT><A NAME="236"></A></FONT>        g.drawLine(leftIndent + <FONT CLASS="IntegerLiteral">8</FONT>, <FONT CLASS="IntegerLiteral">8</FONT> + yOffset, leftIndent + xOffset + <FONT CLASS="IntegerLiteral">4</FONT>, <FONT CLASS="IntegerLiteral">8</FONT> + yOffset);
+<FONT CLASS="LN">37</FONT><A NAME="237"></A>        <FONT CLASS="If">if</FONT>(target.state == DONE){
+<FONT CLASS="LN">38</FONT><A NAME="238"></A>            g.setColor(Color.darkGray);
+<FONT CLASS="LN">39</FONT><A NAME="239"></A>        }
+<FONT CLASS="LN">40</FONT><A NAME="240"></A>        <FONT CLASS="If">if</FONT>(target.state == INPROGRESS){
+<FONT CLASS="LN">41</FONT><A NAME="241"></A>            g.setColor(progressColor);
+<FONT CLASS="LN">42</FONT><A NAME="242"></A>        }
+<FONT CLASS="LN">43</FONT><A NAME="243"></A>        <FONT CLASS="If">if</FONT>(target.state == TODO){
+<FONT CLASS="LN">44</FONT><A NAME="244"></A>            g.setColor(Color.gray);
+<FONT CLASS="LN">45</FONT><A NAME="245"></A>        }
+<FONT CLASS="LN">46</FONT><A NAME="246"></A>        g.fillRoundRect(leftIndent + xOffset + <FONT CLASS="IntegerLiteral">4</FONT>, yOffset + <FONT CLASS="IntegerLiteral">5</FONT>, <FONT CLASS="IntegerLiteral">9</FONT>, <FONT CLASS="IntegerLiteral">7</FONT>, <FONT CLASS="IntegerLiteral">7</FONT>, <FONT CLASS="IntegerLiteral">7</FONT>);
+<FONT CLASS="LN">47</FONT><A NAME="247"></A>        g.setColor(Color.black);
+<FONT CLASS="LN">48</FONT><A NAME="248"></A>        g.drawString(target.name, leftIndent + xOffset + <FONT CLASS="IntegerLiteral">15</FONT>, <FONT CLASS="IntegerLiteral">12</FONT> + yOffset);
+<FONT CLASS="LN">49</FONT><A NAME="249"></A>    }
+<FONT CLASS="LN">50</FONT><A NAME="250"></A>
+<FONT CLASS="LN">51</FONT><A NAME="251"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> Dimension getPreferredScrollableViewportSize(){
+<FONT CLASS="LN">52</FONT><A NAME="252"></A>        <FONT CLASS="Return">return</FONT> getPreferredSize();
+<FONT CLASS="LN">53</FONT><A NAME="253"></A>    }
+<FONT CLASS="LN">54</FONT><A NAME="254"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Int">int</FONT> getScrollableUnitIncrement(Rectangle visibleRect, <FONT CLASS="Int">int</FONT> orientation, <FONT CLASS="Int">int</FONT> direction){
+<FONT CLASS="LN">55</FONT><A NAME="255"></A>        <FONT CLASS="Return">return</FONT> tHeight;
+<FONT CLASS="LN">56</FONT><A NAME="256"></A>    }
+<FONT CLASS="LN">57</FONT><A NAME="257"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Int">int</FONT> getScrollableBlockIncrement(Rectangle visibleRect, <FONT CLASS="Int">int</FONT> orientation, <FONT CLASS="Int">int</FONT> direction){
+<FONT CLASS="LN">58</FONT><A NAME="258"></A>        <FONT CLASS="Return">return</FONT> tHeight * <FONT CLASS="IntegerLiteral">3</FONT>;
+<FONT CLASS="LN">59</FONT><A NAME="259"></A>    }
+<FONT CLASS="LN">60</FONT><A NAME="260"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Boolean">boolean</FONT> getScrollableTracksViewportWidth(){
+<FONT CLASS="LN">61</FONT><A NAME="261"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="True">true</FONT>;
+<FONT CLASS="LN">62</FONT><A NAME="262"></A>    }
+<FONT CLASS="LN">63</FONT><A NAME="263"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Synchronized">synchronized</FONT> <FONT CLASS="Boolean">boolean</FONT> getScrollableTracksViewportHeight(){
+<FONT CLASS="LN">64</FONT><A NAME="264"></A>        <FONT CLASS="Return">return</FONT> <FONT CLASS="False">false</FONT>;
+<FONT CLASS="LN">65</FONT><A NAME="265"></A>    }
+<FONT CLASS="LN">66</FONT><A NAME="266"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Class">class</FONT> ProgressModel{
+<FONT CLASS="LN">67</FONT><A NAME="267"></A>        <FONT CLASS="Int">int</FONT> state = TODO;
+<FONT CLASS="LN">68</FONT><A NAME="268"></A>        String name;
+<FONT CLASS="LN">69</FONT><A NAME="269"></A>        List subTargets = <FONT CLASS="New">new</FONT> ArrayList();
+<FONT CLASS="LN">70</FONT><A NAME="270"></A>
+<FONT CLASS="LN">71</FONT><A NAME="271"></A>        <FONT CLASS="Public">public</FONT> ProgressModel(String name){
+<FONT CLASS="LN">72</FONT><A NAME="272"></A>            <FONT CLASS="This">this</FONT>.name = name;
+<FONT CLASS="LN">73</FONT><A NAME="273"></A>        }
+<FONT CLASS="LN">74</FONT><A NAME="274"></A>
+<FONT CLASS="LN">75</FONT><A NAME="275"></A>        <FONT CLASS="Int">int</FONT> getHeight(){
+<FONT CLASS="LN">76</FONT><A NAME="276"></A>            <FONT CLASS="Return">return</FONT> tHeight + subTargets.size() * tHeight;
+<FONT CLASS="LN">77</FONT><A NAME="277"></A>        }
+<FONT CLASS="LN">78</FONT><A NAME="278"></A>    }
+<FONT CLASS="LN">79</FONT><A NAME="279"></A>}
+<FONT CLASS="LN">80</FONT><A NAME="280"></A></pre>
+</BODY>
+</HTML>

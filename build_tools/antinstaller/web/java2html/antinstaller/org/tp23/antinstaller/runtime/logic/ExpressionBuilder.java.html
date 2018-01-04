@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.4">
+<TITLE>org.tp23.antinstaller.runtime.logic.ExpressionBuilder (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4" class="ClassName">ExpressionBuilder.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre CLASS="Classes">
+<FONT CLASS="LN">1 </FONT><A NAME="1"></A><FONT CLASS="MultiLineComment">/*
+<FONT CLASS="LN">2 </FONT><A NAME="2"></A> * Licensed under the Apache License, Version 2.0 (the "License");
+<FONT CLASS="LN">3 </FONT><A NAME="3"></A> * you may not use this file except in compliance with the License.
+<FONT CLASS="LN">4 </FONT><A NAME="4"></A> * You may obtain a copy of the License at
+<FONT CLASS="LN">5 </FONT><A NAME="5"></A> *
+<FONT CLASS="LN">6 </FONT><A NAME="6"></A> * http://www.apache.org/licenses/LICENSE-2.0
+<FONT CLASS="LN">7 </FONT><A NAME="7"></A> *
+<FONT CLASS="LN">8 </FONT><A NAME="8"></A> * Unless required by applicable law or agreed to in writing, software
+<FONT CLASS="LN">9 </FONT><A NAME="9"></A> * distributed under the License is distributed on an "AS IS" BASIS,
+<FONT CLASS="LN">10</FONT><A NAME="10"></A> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+<FONT CLASS="LN">11</FONT><A NAME="11"></A> * See the License for the specific language governing permissions and
+<FONT CLASS="LN">12</FONT><A NAME="12"></A> * limitations under the License.
+<FONT CLASS="LN">13</FONT><A NAME="13"></A> */</FONT>
+<FONT CLASS="LN">14</FONT><A NAME="14"></A><FONT CLASS="Package">package</FONT> <A HREF="../../../../../org.tp23.antinstaller.runtime.logic.index.html" target="packageFrame">org.tp23.antinstaller.runtime.logic</A>;
+<FONT CLASS="LN">15</FONT><A NAME="15"></A>
+<FONT CLASS="LN">16</FONT><A NAME="16"></A><FONT CLASS="Import">import</FONT> java.util.Arrays;
+<FONT CLASS="LN">17</FONT><A NAME="17"></A><FONT CLASS="Import">import</FONT> java.util.Comparator;
+<FONT CLASS="LN">18</FONT><A NAME="18"></A><FONT CLASS="Import">import</FONT> java.util.HashMap;
+<FONT CLASS="LN">19</FONT><A NAME="19"></A><FONT CLASS="Import">import</FONT> java.util.Map;
+<FONT CLASS="LN">20</FONT><A NAME="20"></A>
+<FONT CLASS="LN">21</FONT><A NAME="21"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/input/ResultContainer.java.html">org.tp23.antinstaller.input.ResultContainer</A>;
+<FONT CLASS="LN">22</FONT><A NAME="22"></A><FONT CLASS="Import">import</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">org.tp23.antinstaller.runtime.ConfigurationException</A>;
+<FONT CLASS="LN">23</FONT><A NAME="23"></A>
+<FONT CLASS="LN">24</FONT><A NAME="24"></A><FONT CLASS="FormalComment">/**
+<FONT CLASS="LN">25</FONT><A NAME="25"></A> * @author mwilson
+<FONT CLASS="LN">26</FONT><A NAME="26"></A> * @version $Id: ExpressionBuilder.java,v 1.2 2006/12/21 00:03:18 teknopaul Exp $
+<FONT CLASS="LN">27</FONT><A NAME="27"></A> * @since 0.7.4 patch 2
+<FONT CLASS="LN">28</FONT><A NAME="28"></A> */</FONT>
+<FONT CLASS="LN">29</FONT><A NAME="29"></A><FONT CLASS="Public">public</FONT> <FONT CLASS="Class">class</FONT> ExpressionBuilder {
+<FONT CLASS="LN">30</FONT><A NAME="30"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> GROUPING_START_OPERATOR = <FONT CLASS="CharacerLiteral">'('</FONT>;
+<FONT CLASS="LN">31</FONT><A NAME="31"></A>
+<FONT CLASS="LN">32</FONT><A NAME="32"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> GROUPING_END_OPERATOR = <FONT CLASS="CharacerLiteral">')'</FONT>;
+<FONT CLASS="LN">33</FONT><A NAME="33"></A>
+<FONT CLASS="LN">34</FONT><A NAME="34"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/ValuesTest.java.html">ValuesTest</A>[] testValueConditions = { 
+<FONT CLASS="LN">35</FONT><A NAME="35"></A>        <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/EndsWithTest.java.html">EndsWithTest</A>(), 
+<FONT CLASS="LN">36</FONT><A NAME="36"></A>        <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/EqualsTest.java.html">EqualsTest</A>(), 
+<FONT CLASS="LN">37</FONT><A NAME="37"></A>        <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/GreaterThanOrEqualsTest.java.html">GreaterThanOrEqualsTest</A>(),
+<FONT CLASS="LN">38</FONT><A NAME="38"></A>        <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/LessThanOrEqualsTest.java.html">LessThanOrEqualsTest</A>(), 
+<FONT CLASS="LN">39</FONT><A NAME="39"></A>        <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/NotEqualsTest.java.html">NotEqualsTest</A>(), 
+<FONT CLASS="LN">40</FONT><A NAME="40"></A>        <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/StartsWithTest.java.html">StartsWithTest</A>() 
+<FONT CLASS="LN">41</FONT><A NAME="41"></A>    };
+<FONT CLASS="LN">42</FONT><A NAME="42"></A>
+<FONT CLASS="LN">43</FONT><A NAME="43"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/LogicalTest.java.html">LogicalTest</A>[] testLogicalConditions = { 
+<FONT CLASS="LN">44</FONT><A NAME="44"></A>        <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/LogicalAndTest.java.html">LogicalAndTest</A>(), 
+<FONT CLASS="LN">45</FONT><A NAME="45"></A>        <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/LogicalOrTest.java.html">LogicalOrTest</A>() 
+<FONT CLASS="LN">46</FONT><A NAME="46"></A>    };
+<FONT CLASS="LN">47</FONT><A NAME="47"></A>
+<FONT CLASS="LN">48</FONT><A NAME="48"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Final">final</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/SingleExpressionTest.java.html">SingleExpressionTest</A> SINGLE_EXPRESSION_TEST = <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/SingleExpressionTest.java.html">SingleExpressionTest</A>();
+<FONT CLASS="LN">49</FONT><A NAME="49"></A>
+<FONT CLASS="LN">50</FONT><A NAME="50"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> Map tokenMap = <FONT CLASS="New">new</FONT> HashMap();
+<FONT CLASS="LN">51</FONT><A NAME="51"></A>
+<FONT CLASS="LN">52</FONT><A NAME="52"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> String[] valueTokens;
+<FONT CLASS="LN">53</FONT><A NAME="53"></A>
+<FONT CLASS="LN">54</FONT><A NAME="54"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> String[] logicalTokens;
+<FONT CLASS="LN">55</FONT><A NAME="55"></A>
+<FONT CLASS="LN">56</FONT><A NAME="56"></A>    <FONT CLASS="Static">static</FONT> {
+<FONT CLASS="LN">57</FONT><A NAME="57"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; testValueConditions.length; i++) {
+<FONT CLASS="LN">58</FONT><A NAME="58"></A>            String[] tmpTokens = testValueConditions[i].getTestTokens();
+<FONT CLASS="LN">59</FONT><A NAME="59"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> j = <FONT CLASS="IntegerLiteral">0</FONT>; j &lt; tmpTokens.length; j++) {
+<FONT CLASS="LN">60</FONT><A NAME="60"></A>                tokenMap.put(tmpTokens[j], testValueConditions[i]);
+<FONT CLASS="LN">61</FONT><A NAME="61"></A>            }
+<FONT CLASS="LN">62</FONT><A NAME="62"></A>        }
+<FONT CLASS="LN">63</FONT><A NAME="63"></A>
+<FONT CLASS="LN">64</FONT><A NAME="64"></A>        valueTokens = <FONT CLASS="New">new</FONT> String[tokenMap.size()];
+<FONT CLASS="LN">65</FONT><A NAME="65"></A>        <FONT CLASS="Int">int</FONT> index = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">66</FONT><A NAME="66"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; testValueConditions.length; i++) {
+<FONT CLASS="LN">67</FONT><A NAME="67"></A>            String[] tmpTokens = testValueConditions[i].getTestTokens();
+<FONT CLASS="LN">68</FONT><A NAME="68"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> j = <FONT CLASS="IntegerLiteral">0</FONT>; j &lt; tmpTokens.length; j++) {
+<FONT CLASS="LN">69</FONT><A NAME="69"></A>                valueTokens[index++] = tmpTokens[j];
+<FONT CLASS="LN">70</FONT><A NAME="70"></A>            }
+<FONT CLASS="LN">71</FONT><A NAME="71"></A>        }
+<FONT CLASS="LN">72</FONT><A NAME="72"></A>
+<FONT CLASS="LN">73</FONT><A NAME="73"></A>        Comparator lengthComparator = <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/StringLengthComparator.java.html">StringLengthComparator</A>();
+<FONT CLASS="LN">74</FONT><A NAME="74"></A>
+<FONT CLASS="LN">75</FONT><A NAME="75"></A>        <FONT CLASS="SingleLineComment">//Have to sort so that longest test operator is checked for first
+<FONT CLASS="LN">76</FONT><A NAME="76"></A></FONT>        Arrays.sort(valueTokens, lengthComparator);
+<FONT CLASS="LN">77</FONT><A NAME="77"></A>
+<FONT CLASS="LN">78</FONT><A NAME="78"></A>        index = <FONT CLASS="IntegerLiteral">0</FONT>;
+<FONT CLASS="LN">79</FONT><A NAME="79"></A>        <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> mapInitialSize = tokenMap.size();
+<FONT CLASS="LN">80</FONT><A NAME="80"></A>
+<FONT CLASS="LN">81</FONT><A NAME="81"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; testLogicalConditions.length; i++) {
+<FONT CLASS="LN">82</FONT><A NAME="82"></A>            String[] tmpTokens = testLogicalConditions[i].getTestTokens();
+<FONT CLASS="LN">83</FONT><A NAME="83"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> j = <FONT CLASS="IntegerLiteral">0</FONT>; j &lt; tmpTokens.length; j++) {
+<FONT CLASS="LN">84</FONT><A NAME="84"></A>                tokenMap.put(tmpTokens[j], testLogicalConditions[i]);
+<FONT CLASS="LN">85</FONT><A NAME="85"></A>            }
+<FONT CLASS="LN">86</FONT><A NAME="86"></A>        }
+<FONT CLASS="LN">87</FONT><A NAME="87"></A>
+<FONT CLASS="LN">88</FONT><A NAME="88"></A>        logicalTokens = <FONT CLASS="New">new</FONT> String[tokenMap.size() - mapInitialSize];
+<FONT CLASS="LN">89</FONT><A NAME="89"></A>        <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; testLogicalConditions.length; i++) {
+<FONT CLASS="LN">90</FONT><A NAME="90"></A>            String[] tmpTokens = testLogicalConditions[i].getTestTokens();
+<FONT CLASS="LN">91</FONT><A NAME="91"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> j = <FONT CLASS="IntegerLiteral">0</FONT>; j &lt; tmpTokens.length; j++) {
+<FONT CLASS="LN">92</FONT><A NAME="92"></A>                logicalTokens[index++] = tmpTokens[j];
+<FONT CLASS="LN">93</FONT><A NAME="93"></A>            }
+<FONT CLASS="LN">94</FONT><A NAME="94"></A>        }
+<FONT CLASS="LN">95</FONT><A NAME="95"></A>
+<FONT CLASS="LN">96</FONT><A NAME="96"></A>        Arrays.sort(logicalTokens, lengthComparator);
+<FONT CLASS="LN">97</FONT><A NAME="97"></A>
+<FONT CLASS="LN">98</FONT><A NAME="98"></A>    }
+<FONT CLASS="LN">99</FONT><A NAME="99"></A>
+<FONT CLASS="LN">00</FONT><A NAME="100"></A>    <FONT CLASS="Public">public</FONT> <FONT CLASS="Static">static</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/Expression.java.html">Expression</A> parseLogicalExpressions(<A HREF="../../../../../org/tp23/antinstaller/input/ResultContainer.java.html">ResultContainer</A> container, String exprStr) <FONT CLASS="Throws">throws</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">ConfigurationException</A> {
+<FONT CLASS="LN">01</FONT><A NAME="101"></A>        <FONT CLASS="Int">int</FONT> startIndex = skipWhiteSpace(exprStr, <FONT CLASS="IntegerLiteral">0</FONT>);
+<FONT CLASS="LN">02</FONT><A NAME="102"></A>        <FONT CLASS="Int">int</FONT> index = exprStr.indexOf(GROUPING_START_OPERATOR, startIndex);
+<FONT CLASS="LN">03</FONT><A NAME="103"></A>
+<FONT CLASS="LN">04</FONT><A NAME="104"></A>        <FONT CLASS="If">if</FONT> (index == -<FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">05</FONT><A NAME="105"></A>            <FONT CLASS="Return">return</FONT> getSimpleExpression(container, exprStr.substring(startIndex));
+<FONT CLASS="LN">06</FONT><A NAME="106"></A>        }
+<FONT CLASS="LN">07</FONT><A NAME="107"></A>
+<FONT CLASS="LN">08</FONT><A NAME="108"></A>        <FONT CLASS="If">if</FONT> (index != <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">09</FONT><A NAME="109"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">ConfigurationException</A>(<FONT CLASS="StringLiteral">"Illegal ifProperty value: If present, grouping operator "</FONT> + GROUPING_START_OPERATOR
+<FONT CLASS="LN">10</FONT><A NAME="110"></A>                    + <FONT CLASS="StringLiteral">" must be at start of property string"</FONT>);
+<FONT CLASS="LN">11</FONT><A NAME="111"></A>        }
+<FONT CLASS="LN">12</FONT><A NAME="112"></A>
+<FONT CLASS="LN">13</FONT><A NAME="113"></A>        ++startIndex; <FONT CLASS="SingleLineComment">//Skip over grouping operator
+<FONT CLASS="LN">14</FONT><A NAME="114"></A></FONT>
+<FONT CLASS="LN">15</FONT><A NAME="115"></A>        <FONT CLASS="Int">int</FONT> endIndex = exprStr.indexOf(GROUPING_END_OPERATOR, startIndex);
+<FONT CLASS="LN">16</FONT><A NAME="116"></A>
+<FONT CLASS="LN">17</FONT><A NAME="117"></A>        <FONT CLASS="If">if</FONT> (endIndex == -<FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">18</FONT><A NAME="118"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">ConfigurationException</A>(<FONT CLASS="StringLiteral">"Missing closing grouping bracket "</FONT> + GROUPING_END_OPERATOR + <FONT CLASS="StringLiteral">" in expression "</FONT> + exprStr);
+<FONT CLASS="LN">19</FONT><A NAME="119"></A>        }
+<FONT CLASS="LN">20</FONT><A NAME="120"></A>
+<FONT CLASS="LN">21</FONT><A NAME="121"></A>        <FONT CLASS="SingleLineComment">//Check that this isn't an attempt tu use nested logical tests - not supported
+<FONT CLASS="LN">22</FONT><A NAME="122"></A></FONT>        <FONT CLASS="Int">int</FONT> tstIndex = exprStr.indexOf(GROUPING_START_OPERATOR, startIndex);
+<FONT CLASS="LN">23</FONT><A NAME="123"></A>        <FONT CLASS="If">if</FONT> ((tstIndex != -<FONT CLASS="IntegerLiteral">1</FONT>) &amp;&amp; (tstIndex &lt; endIndex)) {
+<FONT CLASS="LN">24</FONT><A NAME="124"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">ConfigurationException</A>(<FONT CLASS="StringLiteral">"Nesting of logical operations is not supported: "</FONT> + exprStr);
+<FONT CLASS="LN">25</FONT><A NAME="125"></A>        }
+<FONT CLASS="LN">26</FONT><A NAME="126"></A>
+<FONT CLASS="LN">27</FONT><A NAME="127"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">28</FONT><A NAME="128"></A>            <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/Expression.java.html">Expression</A> expr1 = parseLogicalExpressions(container, exprStr.substring(startIndex, endIndex));
+<FONT CLASS="LN">29</FONT><A NAME="129"></A>
+<FONT CLASS="LN">30</FONT><A NAME="130"></A>            <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/LogicalTest.java.html">LogicalTest</A> test = <FONT CLASS="Null">null</FONT>;
+<FONT CLASS="LN">31</FONT><A NAME="131"></A>
+<FONT CLASS="LN">32</FONT><A NAME="132"></A>            startIndex = endIndex + <FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">33</FONT><A NAME="133"></A>
+<FONT CLASS="LN">34</FONT><A NAME="134"></A>            <FONT CLASS="SingleLineComment">//Look for logical operator token
+<FONT CLASS="LN">35</FONT><A NAME="135"></A></FONT>            String logicalToken = getLogicalToken(exprStr, startIndex);
+<FONT CLASS="LN">36</FONT><A NAME="136"></A>
+<FONT CLASS="LN">37</FONT><A NAME="137"></A>            <FONT CLASS="For">for</FONT> (<FONT CLASS="Int">int</FONT> i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; logicalTokens.length; i++) {
+<FONT CLASS="LN">38</FONT><A NAME="138"></A>
+<FONT CLASS="LN">39</FONT><A NAME="139"></A>                <FONT CLASS="If">if</FONT> (logicalTokens[i].compareTo(logicalToken) == <FONT CLASS="IntegerLiteral">0</FONT>) {
+<FONT CLASS="LN">40</FONT><A NAME="140"></A>                    test = (<A HREF="../../../../../org/tp23/antinstaller/runtime/logic/LogicalTest.java.html">LogicalTest</A>) tokenMap.get(logicalTokens[i]);
+<FONT CLASS="LN">41</FONT><A NAME="141"></A>                    index = exprStr.indexOf(logicalTokens[i], startIndex);
+<FONT CLASS="LN">42</FONT><A NAME="142"></A>                    startIndex = index + logicalTokens[i].length();
+<FONT CLASS="LN">43</FONT><A NAME="143"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">44</FONT><A NAME="144"></A>                }
+<FONT CLASS="LN">45</FONT><A NAME="145"></A>            }
+<FONT CLASS="LN">46</FONT><A NAME="146"></A>
+<FONT CLASS="LN">47</FONT><A NAME="147"></A>            <FONT CLASS="If">if</FONT> (test == <FONT CLASS="Null">null</FONT>) {
+<FONT CLASS="LN">48</FONT><A NAME="148"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/CompoundExpression.java.html">CompoundExpression</A>(expr1, SINGLE_EXPRESSION_TEST, <FONT CLASS="Null">null</FONT>);
+<FONT CLASS="LN">49</FONT><A NAME="149"></A>            } <FONT CLASS="Else">else</FONT> {
+<FONT CLASS="LN">50</FONT><A NAME="150"></A>                startIndex = skipWhiteSpace(exprStr, startIndex);
+<FONT CLASS="LN">51</FONT><A NAME="151"></A>                String expr2Str = exprStr.substring(startIndex, exprStr.length());
+<FONT CLASS="LN">52</FONT><A NAME="152"></A>                <FONT CLASS="Return">return</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/CompoundExpression.java.html">CompoundExpression</A>(expr1, test, parseLogicalExpressions(container, expr2Str));
+<FONT CLASS="LN">53</FONT><A NAME="153"></A>
+<FONT CLASS="LN">54</FONT><A NAME="154"></A>            }
+<FONT CLASS="LN">55</FONT><A NAME="155"></A>        } <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">Exception</A> e) {
+<FONT CLASS="LN">56</FONT><A NAME="156"></A>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">ConfigurationException</A>(<FONT CLASS="StringLiteral">"Invalid ifProperty expression"</FONT>);
+<FONT CLASS="LN">57</FONT><A NAME="157"></A>        }
+<FONT CLASS="LN">58</FONT><A NAME="158"></A>    }
+<FONT CLASS="LN">59</FONT><A NAME="159"></A>
+<FONT CLASS="LN">60</FONT><A NAME="160"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/Expression.java.html">Expression</A> getSimpleExpression(<A HREF="../../../../../org/tp23/antinstaller/input/ResultContainer.java.html">ResultContainer</A> resultContainer, String exprStr) <FONT CLASS="Throws">throws</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">ConfigurationException</A> {
+<FONT CLASS="LN">61</FONT><A NAME="161"></A>        <FONT CLASS="Try">try</FONT> {
+<FONT CLASS="LN">62</FONT><A NAME="162"></A>            <FONT CLASS="Int">int</FONT> index = -<FONT CLASS="IntegerLiteral">1</FONT>;
+<FONT CLASS="LN">63</FONT><A NAME="163"></A>            <FONT CLASS="Int">int</FONT> i;
+<FONT CLASS="LN">64</FONT><A NAME="164"></A>
+<FONT CLASS="LN">65</FONT><A NAME="165"></A>            <FONT CLASS="For">for</FONT> (i = <FONT CLASS="IntegerLiteral">0</FONT>; i &lt; valueTokens.length; i++) {
+<FONT CLASS="LN">66</FONT><A NAME="166"></A>                index = exprStr.indexOf(valueTokens[i]);
+<FONT CLASS="LN">67</FONT><A NAME="167"></A>
+<FONT CLASS="LN">68</FONT><A NAME="168"></A>                <FONT CLASS="If">if</FONT> (index != -<FONT CLASS="IntegerLiteral">1</FONT>) {
+<FONT CLASS="LN">69</FONT><A NAME="169"></A>                    <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">70</FONT><A NAME="170"></A>                }
+<FONT CLASS="LN">71</FONT><A NAME="171"></A>            }
+<FONT CLASS="LN">72</FONT><A NAME="172"></A>
+<FONT CLASS="LN">73</FONT><A NAME="173"></A>            <FONT CLASS="Return">return</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/logic/SimpleExpression.java.html">SimpleExpression</A>(resultContainer, exprStr.substring(<FONT CLASS="IntegerLiteral">0</FONT>, index), (<A HREF="../../../../../org/tp23/antinstaller/runtime/logic/ValuesTest.java.html">ValuesTest</A>) tokenMap.get(valueTokens[i]), exprStr
+<FONT CLASS="LN">74</FONT><A NAME="174"></A>                    .substring(index + valueTokens[i].length()));
+<FONT CLASS="LN">75</FONT><A NAME="175"></A>        } <FONT CLASS="Catch">catch</FONT> (<A HREF="../../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">Exception</A> e) { <FONT CLASS="SingleLineComment">// can be StringIndexOutOfBoundsException - PH
+<FONT CLASS="LN">76</FONT><A NAME="176"></A></FONT>            <FONT CLASS="Throw">throw</FONT> <FONT CLASS="New">new</FONT> <A HREF="../../../../../org/tp23/antinstaller/runtime/ConfigurationException.java.html">ConfigurationException</A>(<FONT CLASS="StringLiteral">"Invalid ifProperty expression"</FONT>);
+<FONT CLASS="LN">77</FONT><A NAME="177"></A>        }
+<FONT CLASS="LN">78</FONT><A NAME="178"></A>    }
+<FONT CLASS="LN">79</FONT><A NAME="179"></A>
+<FONT CLASS="LN">80</FONT><A NAME="180"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> <FONT CLASS="Int">int</FONT> skipWhiteSpace(<FONT CLASS="Final">final</FONT> String str, <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> startIndex) {
+<FONT CLASS="LN">81</FONT><A NAME="181"></A>        <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> strLen = str.length();
+<FONT CLASS="LN">82</FONT><A NAME="182"></A>        <FONT CLASS="Int">int</FONT> index = startIndex;
+<FONT CLASS="LN">83</FONT><A NAME="183"></A>
+<FONT CLASS="LN">84</FONT><A NAME="184"></A>        <FONT CLASS="While">while</FONT> (index &lt; strLen) {
+<FONT CLASS="LN">85</FONT><A NAME="185"></A>            <FONT CLASS="If">if</FONT> ((str.charAt(index) != <FONT CLASS="CharacerLiteral">' '</FONT>) &amp;&amp; (str.charAt(index) != <FONT CLASS="CharacerLiteral">'\t'</FONT>)) {
+<FONT CLASS="LN">86</FONT><A NAME="186"></A>                <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">87</FONT><A NAME="187"></A>            }
+<FONT CLASS="LN">88</FONT><A NAME="188"></A>
+<FONT CLASS="LN">89</FONT><A NAME="189"></A>            ++index;
+<FONT CLASS="LN">90</FONT><A NAME="190"></A>        }
+<FONT CLASS="LN">91</FONT><A NAME="191"></A>
+<FONT CLASS="LN">92</FONT><A NAME="192"></A>        <FONT CLASS="Return">return</FONT> index;
+<FONT CLASS="LN">93</FONT><A NAME="193"></A>    }
+<FONT CLASS="LN">94</FONT><A NAME="194"></A>
+<FONT CLASS="LN">95</FONT><A NAME="195"></A>    <FONT CLASS="Private">private</FONT> <FONT CLASS="Static">static</FONT> String getLogicalToken(<FONT CLASS="Final">final</FONT> String str, <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> startIndex) {
+<FONT CLASS="LN">96</FONT><A NAME="196"></A>        <FONT CLASS="Final">final</FONT> <FONT CLASS="Int">int</FONT> strLen = str.length();
+<FONT CLASS="LN">97</FONT><A NAME="197"></A>        <FONT CLASS="Int">int</FONT> tokenStart = skipWhiteSpace(str, startIndex);
+<FONT CLASS="LN">98</FONT><A NAME="198"></A>        <FONT CLASS="Int">int</FONT> endIndex = tokenStart;
+<FONT CLASS="LN">99</FONT><A NAME="199"></A>
+<FONT CLASS="LN">00</FONT><A NAME="200"></A>        <FONT CLASS="While">while</FONT> (endIndex &lt; strLen) {
+<FONT CLASS="LN">01</FONT><A NAME="201"></A>            <FONT CLASS="Int">int</FONT> chr = str.charAt(endIndex);
+<FONT CLASS="LN">02</FONT><A NAME="202"></A>            <FONT CLASS="If">if</FONT> ((chr == <FONT CLASS="CharacerLiteral">' '</FONT>) || (chr == <FONT CLASS="CharacerLiteral">'\t'</FONT>) || (chr == GROUPING_START_OPERATOR)) {
+<FONT CLASS="LN">03</FONT><A NAME="203"></A>                <FONT CLASS="Break">break</FONT>;
+<FONT CLASS="LN">04</FONT><A NAME="204"></A>            }
+<FONT CLASS="LN">05</FONT><A NAME="205"></A>
+<FONT CLASS="LN">06</FONT><A NAME="206"></A>            ++endIndex;
+<FONT CLASS="LN">07</FONT><A NAME="207"></A>        }
+<FONT CLASS="LN">08</FONT><A NAME="208"></A>
+<FONT CLASS="LN">09</FONT><A NAME="209"></A>        <FONT CLASS="Return">return</FONT> str.substring(tokenStart, endIndex);
+<FONT CLASS="LN">10</FONT><A NAME="210"></A>    }
+<FONT CLASS="LN">11</FONT><A NAME="211"></A>}
+<FONT CLASS="LN">12</FONT><A NAME="212"></A></pre>
+</BODY>
+</HTML>

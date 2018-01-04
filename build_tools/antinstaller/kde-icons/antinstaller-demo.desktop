@@ -1,0 +1,14 @@
+[Desktop Entry]
+Comment=AntInstaller Demo
+Path=@installDir@
+Icon=@installDir@/kde-icons/AntInstaller.png
+Exec=java -jar '@installDir@/demo/artifacts/demo-installer.jar'
+Name=AntInstaller Demo
+StartupNotify=true
+Terminal=0
+TerminalOptions=
+Type=Application
+Encoding=UTF-8
+X-KDE-SubstituteUID=false
+X-KDE-Username=
+Categories=Development;Java

@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Ant Installer</title>
+  <link href="style.css" type="text/css" rel="stylesheet">
+  <link href="css/nav.css" rel="stylesheet" type="text/css">
+  <link rel="SHORTCUT ICON" type="image/png" href="images/antinstaller-icon.png">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="keywords"
+ content="Ant, installer, AntInstall, gui, console, input, parameters, properties, swing, user interface, validation, configuration">
+ <script type="text/javascript" src="js/menu.js"></script>
+ <script type="text/javascript" src="js/sstree.js"></script>
+ <script type="text/javascript" src="js/winfix.js"></script>
+</head>
+<body onload="collapseAll('contents-panel', ['ol']); "><div id="tpallcontent">
+<table cellspacing="0" width="100%">
+  <tbody>
+    <tr class="tpheader">
+      <th class="tpleft">
+			<a target="_top" href="index.html" title="home"><img src="images/ant-install-small.png" alt="AntInstaller" id="logo" width="76" height="50"/></a>
+			<script type="text/javascript">winFix();</script>
+      </th>
+      <th class="tptop" valign="bottom">
+				<img src="space.gif" height="1" width="440" alt="spacer"/><br/>
+				
+				<table>
+					<tr>
+						<td valign="top">
+							<div class="tpheadertitle">AntInstaller</div>
+							<!--img src="images/ant-install-title.png" alt="AntInstaller"/-->
+						</td>
+						<td width="100%" align="right" valign="bottom" nowrap="NOWRAP">
+				<div class="tpraised">
+				<a class="tpbutton" target="_top" href="index.html">home</a>
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/project/showfiles.php?group_id=123466&amp;package_id=134917">download</a>
+				<a class="tpbutton" target="_top" href="http://sf.net">sourceforge</a> 
+				<a class="tpbutton" target="_top" href="manual-ant.html">antmanual</a> 
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/tracker/?group_id=123466&amp;atid=696615">RFEs</a> 
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/tracker/?group_id=123466&amp;atid=696612">Bugs</a></div>
+						</td>
+					</tr>
+				</table>
+      </th>
+    </tr>
+    <tr class="tpbody">
+		<td class="tpleft" valign="bottom">
+			<br/>
+			<div id="logoset">
+			<a target="_top" href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=123466&amp;type=2" alt="SourceForge.net Logo" border="0" height="37" width="125"></a>
+			<br/><br/>
+			<a target="_top" href="http://sourceforge.net/donate/index.php?group_id=123466">
+			<img src="http://sourceforge.net/images/project-support.jpg" alt="donate to AntInstaller"/>
+			</a>
+			</div>
+		</td>
+      <td class="tpright" valign="top">
+      <div class="tpcontent">
+			<!--[segment-content] page content start -->
+            <h2>Potential Uses</h2>
+			
+			AntInstall is clearly designed for creating installers with Ant, but due to the flexibility of Ant it can be used in other situations too.  
+			<br/><br/>
+			<b>Scripting updates</b><br/>
+			If you wish to script changes to a system, AntInstall could be used to provide a GUI so that users can run the script, select the location of thier intallation, enter validated text options, and then let Ant perform changes to the files in the location selected.
+			
+			<br/><br/>
+			<b>Instant GUI</b><br/>
+			AntInstall can be used to quickly generate a GUI app for arbitary Java process that requires some user input prior to running.  Create an antinstall-config.xml file write a small ant script, and potentially for more complex applications write some Java and add in the Ant script a <code>&lt;java&gt;</code> tag to run your code.
+			<!-- content end [segment-end]-->
+		 	</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div id="contents-panel">
+<!--[segment-file://contents-include.html] menu start -->
+<div id="contents-menu">
+<ol class="sidebar" id="root">
+	<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><b>Site map</b>
+		<ol>
+			<li class="sidebar"><a href="introduction.html">Introduction</a></li>
+			<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><b>Developer References</b>
+				<ol>
+					<li class="sidebar"><a href="quickstart.html">Quick Start</a></li>
+					<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html">Manual</a>
+						<ol class="init-hidden">
+							<li class="sidebar"><a href="manual.html#config">antinstall-config.xml</a></li>
+							<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html#page">Pages</a>
+								<ol class="init-hidden">
+									<li class="sidebar"><a href="manual.html#pagesplash">Splash Page</a></li>
+									<li class="sidebar"><a href="manual.html#pagetext">Text Page</a></li>
+									<li class="sidebar"><a href="manual.html#pagelicense">License Page</a></li>
+									<li class="sidebar"><a href="manual.html#pageinput">Input Page</a></li>
+									<li class="sidebar"><a href="manual.html#pageprogress">Progress Page</a></li>
+								</ol>
+							</li>
+							<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html#inputtypes">Input types</a>
+								<ol class="init-hidden">
+									<li class="sidebar"><a href="manual.html#app-root">Application Root</a></li>
+									<li class="sidebar"><a href="manual.html#checkbox">Checkbox</a></li>
+									<li class="sidebar"><a href="manual.html#comment">Comment</a></li>
+									<li class="sidebar"><a href="manual.html#date">Date</a></li>
+									<li class="sidebar"><a href="manual.html#directory">Directory</a></li>
+									<li class="sidebar"><a href="manual.html#file">File</a></li>
+									<li class="sidebar"><a href="manual.html#large-select">Large Select</a></li>
+									<li class="sidebar"><a href="manual.html#password">Password Text</a></li>
+									<li class="sidebar"><a href="manual.html#password-confirm">Confirm Password</a></li>
+									<li class="sidebar"><a href="manual.html#select">Select</a></li>
+									<li class="sidebar"><a href="manual.html#target">Target</a></li>
+									<li class="sidebar"><a href="manual.html#target-select">Target Select</a></li>
+									<li class="sidebar"><a href="manual.html#text">Unvalidated Text</a></li>
+									<li class="sidebar"><a href="manual.html#validated">Validated Text</a></li>
+									<li class="sidebar"><a href="manual.html#extvalidated">Externally Validated Text</a></li>
+								</ol>
+							</li>
+							<li class="sidebar"><a href="manual.html#extractor">Self Extractor</a></li>
+							<li class="sidebar"><a href="manual.html#non-extractor">Non Extractor</a></li>
+							<li class="sidebar"><a href="manual.html#scripts">Start Scripts</a></li>
+							<li class="sidebar"><a href="manual.html#refs">Dynamic References</a></li>
+							<li class="sidebar"><a href="manual.html#pagedisplay">Page Displaying</a></li>
+						</ol>
+					</li>
+					<li class="sidebar"><a href="installertask.html">Installer Ant task</a></li>
+					<li class="sidebar"><a href="validationofconfig.html">Validation of config</a></li>
+					<li class="sidebar"><a href="lookandfeels.html">LookAndFeels</a> <br/>(inc screenshots)</li>
+					<li class="sidebar"><a href="classpathresources.html">Resources/Classpath issues</a></li>
+					<li class="sidebar"><a href="i18n.html">Internationalisation</a></li>
+					<li class="sidebar"><a href="auto.html">Automated installs</a></li>
+					<li class="sidebar"><a href="installtypes.html">Multiple install types</a></li>
+					<li class="sidebar"><a href="posttargets.html">Post display targets</a></li>
+					<li class="sidebar"><a href="icons.html">Button Icons</a></li>
+					<li class="sidebar"><a href="antinstall-config-example.html">Example antinstall-config.xml</a></li>
+				</ol>
+			</li>
+			<li class="sidebar"><a href="manual-ant.html">Ant Manual</a></li>
+			<li class="sidebar"><a href="antlinks.html">Ant links</a></li>
+			<li class="sidebar"><a href="userusage.html">User usage</a></li>
+			<li class="sidebar"><a href="licenses.html">Licenses</a></li>
+			<li class="sidebar"><a href="potentialuses.html">Potential uses</a></li>
+			<li class="sidebar"><a href="roadmap.html">Road Map</a></li>
+			<li class="sidebar"><a href="wanted.html">Wanted</a></li>
+			<li class="sidebar"><a href="dtds.html">DTDs</a></li>
+			<li class="sidebar"><a href="changelog.html">Changelog</a></li>
+			<li class="sidebar"><a href="http://sourceforge.net/projects/antinstaller">Project page on SourceForge</a></li>
+			<li class="sidebar"><a href="java2html/antinstaller/index.html">Java2HTML (main)</a></li>
+			<li class="sidebar"><a href="java2html/ext/index.html">Java2HTML (extensions)</a></li>
+			<li class="sidebar"><a href="http://antinstaller.cvs.sourceforge.net/antinstaller">Public CVS over HTTP</a></li>
+			<li class="sidebar"><a href="http://sourceforge.net/sendmessage.php?touser=616485">Contact AntInstaller Admin</a></li>
+		</ol>
+	</li>
+</ol>
+<br/>
+<br/>
+</div>
+
+
+<!-- menu end [segment-end]-->
+</div>
+<div id="contents-options">
+<a id="toggle" href="#" onclick="toggleMenu(); return false;">show menu</a>
+</div>
+
+</div>
+</body>
+</html>

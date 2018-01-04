@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+
+<project name="Installation Build"  default=""  basedir=".">
+
+	<property file="ant.install.properties"/>
+
+
+		<target name="default" depends="tgsrc">
+			<echo message="Entered Property [${myProperty}]"/>
+			<echo message="Checkbox Property [${isvalue}]"/>
+			<echo message="Colour selected 	[${colour}]"/>
+			<echo message="Installation Directory [${installDir}]"/>
+			<echo message="Web xml [${webxml}]"/>
+			<echo message="validated text [${validatedtext}]"/>
+			<echo message="unvalidated text [${unvalidatedtext}]"/>
+			<echo message="insecure password [${unsafepassword}]"/>
+			<echo message="lang [${lang}]"/>
+			<echo message="myProperty2 [${myProperty2}]"/>
+			<echo message="colour2 [${colour2}]"/>
+			<echo message="myProperty3 [${myProperty3}]"/>
+			<echo message="date.property [${date.property}]"/>
+			<echo message="colourtarget [${colourtarget}]"/>
+		</target>
+		<target name="tgsrc" depends="Source Sub Target">
+			<echo message="Installing Source files"/>
+			<sleep seconds="1"/>
+		</target>
+		<target name="tgbin" depends="">
+			<echo message="Installing Source files"/>
+			<sleep seconds="5"/>
+		</target>
+		<target name="cleanuptarget" depends="excessdep1,excessdep2,excessdep3,excessdep4,excessdep5,excessdep6,excessdep7,excessdep8">
+			<echo message="Clean up run at end it is added to the last page (the progress page)"/>
+		</target>
+
+		<!-- Operating System Specific targets -->
+		<property environment="env."/>
+		<target name="myOsSpecific-linux" depends="">
+			<echo message="Should only run on Linux"/>
+			<sleep seconds="1"/>
+		</target>
+		<target name="myOsSpecific-mac" depends="">
+			<echo message="Should only run on Apple Mac"/>
+			<sleep seconds="1"/>
+		</target>
+		<target name="myOsSpecific-sun" depends="">
+			<echo message="Should only run on Sun OS or Solaris"/>
+			<sleep seconds="1"/>
+		</target>
+		<target name="myOsSpecific-win" depends="">
+			<echo message="Should only run on Windoze"/>
+			<sleep seconds="1"/>
+		</target>
+		<target name="myOsSpecific-other" depends="">
+			<echo message="Should run if none of the others run"/>
+			<sleep seconds="1"/>
+		</target>
+	<target name="tgt1" depends="dep1,dep2">
+		<echo message="TARGET ONE selected"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="tgt2" depends="">
+		<echo message="TARGET TWO selected"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="tgt3" depends="dep1,dep2">
+		<echo message="TARGET THREE selected"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="dep1" depends="">
+		<echo message="Dependency found"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="dep2" depends="">
+		<echo message="Dependency found"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="Source Sub Target" depends="">
+		<echo message="Dependency found"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="excessdep1" depends="">
+		<echo message="Dependency found"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="excessdep2" depends="">
+		<echo message="Dependency found"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="excessdep3" depends="">
+		<echo message="Dependency found"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="excessdep4" depends="">
+		<echo message="Dependency found"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="excessdep5" depends="">
+		<echo message="Dependency found"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="excessdep6" depends="">
+		<echo message="Dependency found"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="excessdep7" depends="">
+		<echo message="Dependency found"/>
+			<sleep seconds="1"/>
+	</target>
+	<target name="excessdep8" depends="">
+		<echo message="Dependency found"/>
+			<sleep seconds="1"/>
+	</target>
+
+
+</project>

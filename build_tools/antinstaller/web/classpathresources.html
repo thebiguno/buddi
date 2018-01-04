@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Ant Installer</title>
+  <link href="style.css" type="text/css" rel="stylesheet">
+  <link href="css/nav.css" rel="stylesheet" type="text/css">
+  <link rel="SHORTCUT ICON" type="image/png" href="images/antinstaller-icon.png">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="keywords"
+ content="Ant, installer, AntInstall, gui, console, input, parameters, properties, swing, user interface, validation, configuration">
+ <script type="text/javascript" src="js/menu.js"></script>
+ <script type="text/javascript" src="js/sstree.js"></script>
+ <script type="text/javascript" src="js/winfix.js"></script>
+</head>
+<body onload="collapseAll('contents-panel', ['ol']); "><div id="tpallcontent">
+<table cellspacing="0" width="100%">
+  <tbody>
+    <tr class="tpheader">
+      <th class="tpleft">
+			<a target="_top" href="index.html" title="home"><img src="images/ant-install-small.png" alt="AntInstaller" id="logo" width="76" height="50"/></a>
+			<script type="text/javascript">winFix();</script>
+      </th>
+      <th class="tptop" valign="bottom">
+				<img src="space.gif" height="1" width="440" alt="spacer"/><br/>
+				
+				<table>
+					<tr>
+						<td valign="top">
+							<div class="tpheadertitle">AntInstaller</div>
+							<!--img src="images/ant-install-title.png" alt="AntInstaller"/-->
+						</td>
+						<td width="100%" align="right" valign="bottom" nowrap="NOWRAP">
+				<div class="tpraised">
+				<a class="tpbutton" target="_top" href="index.html">home</a>
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/project/showfiles.php?group_id=123466&amp;package_id=134917">download</a>
+				<a class="tpbutton" target="_top" href="http://sf.net">sourceforge</a> 
+				<a class="tpbutton" target="_top" href="manual-ant.html">antmanual</a> 
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/tracker/?group_id=123466&amp;atid=696615">RFEs</a> 
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/tracker/?group_id=123466&amp;atid=696612">Bugs</a></div>
+						</td>
+					</tr>
+				</table>
+      </th>
+    </tr>
+    <tr class="tpbody">
+		<td class="tpleft" valign="bottom">
+			<br/>
+			<div id="logoset">
+			<a target="_top" href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=123466&amp;type=2" alt="SourceForge.net Logo" border="0" height="37" width="125"></a>
+			<br/><br/>
+			<a target="_top" href="http://sourceforge.net/donate/index.php?group_id=123466">
+			<img src="http://sourceforge.net/images/project-support.jpg" alt="donate to AntInstaller"/>
+			</a>
+			</div>
+		</td>
+      <td class="tpright" valign="top">
+      <div class="tpcontent">
+			<!--[segment-content] page content start -->
+                                 <h2>Classpath / Resource issues</h2>
+			
+			<h3>Self-Extracting Jar</h3>
+AntInstall supports delivering the installation package as a self extracting
+Jar.  In Windows if the Java installer from Sun has
+been used and the default application for files that end in <code>.jar</code> has not been changed, double clicking
+on the Jar will launch the installer.  To launch from the command line type<br/>
+<code>&gt; java -jar [installer_name].jar</code>  <br/><br/>
+
+If all classes are packaged in a single Jar everything is on the same classpath, this is useful for almost all situations.
+However, if your installer absolutely requires separate classpaths, for example if custom tasks have clashing dependencies, the classpath must be defined as it would in a normal Ant build.  To achieve this you will have to package the Jars in a self-extractor or, for the non-extractor, extract the Jars to temporary space first.<br/><br/>
+
+If delivering an installer on a CDROM there is no need to package the installer
+as a single Jar.  In which case the following applies.  <br/>
+			<h3>Install Scripts</h3>
+<b>For Linux installations.</b><br/>
+It is recommended to tar and gzip the components with the <code>install.sh</code>(with
+execute permissions) script in the root of the archive. The user should
+the run (or double click on) the script after uncompressing the archive
+to a temporary directory. This is a generally understood method, for
+Linux it is tipical to include a README or INSTALL file with simple
+instructions i.e. "run the install script and follow instructions". Also 
+creating a copy of the script and calling it <code>./configure</code> 
+will help users used to installing with <code>./configure;make;make
+install</code> who don't read your documents. <br/>
+      <br/>
+<b>For Window$ installations.</b><br/>
+For windows installations it is better to use the ZIP compression format.  The demo app includes
+an example of a windows start script (<code>install.cmd</code>) that will set the classpath for the installer.<br/>
+<br/>
+<b>Java required.</b><br/>
+Currently both example install scripts rely on a system property called
+%JAVA_HOME% since this is standard for most Java deployments. If this
+is a problem get in touch and I can write some scripts to check
+standard locations for the Java binary. It is also possible to deliver
+Java with your app, but you will need to check with the Sun licenses as
+to weather this is permitted or not, and users will have a heafty
+download.<br/>
+It may be better to specify the Java command as just <code>java</code> or <code>javaw</code> for windows since Sun ahs made some headway ensuring that if installed the binary can be specified without the need for the full path.
+      
+			<br/>
+			<h3>Classpath</h3>
+The developer creating the installer should ensure that all references in the install script
+are correct when the script is run. In the AntInstall demo the <code>install.sh</code>
+is slightly different to the <code>install.sh</code> in the root
+directory since the libs required are in a different directory. Ensure
+your classpath is correct also ensure that during testing you are not
+useing a default Ant installed on your machine and that you bundle Ant
+1.6 with the installation and all the requried Ant task libs.<br/>
+It is currently possible to include a directory called <code>antlib</code>
+this will be passed to the Ant launcher with the normal ant <code>-lib</code>
+parameter. <br/>
+With self extracting jars all classes should be packaged in the root of the Jar file.<br/>
+
+			<h3>Resources</h3>
+A further classpath consideration is the location of the images for the
+GUI. They must be on the classpath when the AntInstaller runs in the <code>/resources/</code>
+path. This can be achieved by creating a directory <code>./lib/resources</code>
+and adding <code>./lib</code> to the classpath for scripted installs. Alternatively the
+files can be added to a Jar file in the resources path inside the Jar for self-extractor and non-extractor builds. 
+The installer will not fail if the resources are not available but the correct images will not be
+shown.  
+Some missing resources such as the license file for a license page will fail if the resource is not available.<br/><br/>
+
+			<h3>Java version</h3>
+The required Java version is 1.4 or above.  It may be possible to get AI working on 1.3 provided that the JGoodies look and feel is NOT used and regular expressions are not used.  Also the XML parsers and APIs will have to be added to the classpath.<br/>  If regex and 1.3 are a requriement of yours, it is possible to hack the code to use the Apache regex parser included with Ant.  There have been problems with this code and so it is not included by default.  Please get in contact if you would like to work on this feature.
+
+			<!-- content end [segment-end]-->
+		 	</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div id="contents-panel">
+<!--[segment-file://contents-include.html] menu start -->
+<div id="contents-menu">
+<ol class="sidebar" id="root">
+	<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><b>Site map</b>
+		<ol>
+			<li class="sidebar"><a href="introduction.html">Introduction</a></li>
+			<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><b>Developer References</b>
+				<ol>
+					<li class="sidebar"><a href="quickstart.html">Quick Start</a></li>
+					<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html">Manual</a>
+						<ol class="init-hidden">
+							<li class="sidebar"><a href="manual.html#config">antinstall-config.xml</a></li>
+							<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html#page">Pages</a>
+								<ol class="init-hidden">
+									<li class="sidebar"><a href="manual.html#pagesplash">Splash Page</a></li>
+									<li class="sidebar"><a href="manual.html#pagetext">Text Page</a></li>
+									<li class="sidebar"><a href="manual.html#pagelicense">License Page</a></li>
+									<li class="sidebar"><a href="manual.html#pageinput">Input Page</a></li>
+									<li class="sidebar"><a href="manual.html#pageprogress">Progress Page</a></li>
+								</ol>
+							</li>
+							<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html#inputtypes">Input types</a>
+								<ol class="init-hidden">
+									<li class="sidebar"><a href="manual.html#app-root">Application Root</a></li>
+									<li class="sidebar"><a href="manual.html#checkbox">Checkbox</a></li>
+									<li class="sidebar"><a href="manual.html#comment">Comment</a></li>
+									<li class="sidebar"><a href="manual.html#date">Date</a></li>
+									<li class="sidebar"><a href="manual.html#directory">Directory</a></li>
+									<li class="sidebar"><a href="manual.html#file">File</a></li>
+									<li class="sidebar"><a href="manual.html#large-select">Large Select</a></li>
+									<li class="sidebar"><a href="manual.html#password">Password Text</a></li>
+									<li class="sidebar"><a href="manual.html#password-confirm">Confirm Password</a></li>
+									<li class="sidebar"><a href="manual.html#select">Select</a></li>
+									<li class="sidebar"><a href="manual.html#target">Target</a></li>
+									<li class="sidebar"><a href="manual.html#target-select">Target Select</a></li>
+									<li class="sidebar"><a href="manual.html#text">Unvalidated Text</a></li>
+									<li class="sidebar"><a href="manual.html#validated">Validated Text</a></li>
+									<li class="sidebar"><a href="manual.html#extvalidated">Externally Validated Text</a></li>
+								</ol>
+							</li>
+							<li class="sidebar"><a href="manual.html#extractor">Self Extractor</a></li>
+							<li class="sidebar"><a href="manual.html#non-extractor">Non Extractor</a></li>
+							<li class="sidebar"><a href="manual.html#scripts">Start Scripts</a></li>
+							<li class="sidebar"><a href="manual.html#refs">Dynamic References</a></li>
+							<li class="sidebar"><a href="manual.html#pagedisplay">Page Displaying</a></li>
+						</ol>
+					</li>
+					<li class="sidebar"><a href="installertask.html">Installer Ant task</a></li>
+					<li class="sidebar"><a href="validationofconfig.html">Validation of config</a></li>
+					<li class="sidebar"><a href="lookandfeels.html">LookAndFeels</a> <br/>(inc screenshots)</li>
+					<li class="sidebar"><a href="classpathresources.html">Resources/Classpath issues</a></li>
+					<li class="sidebar"><a href="i18n.html">Internationalisation</a></li>
+					<li class="sidebar"><a href="auto.html">Automated installs</a></li>
+					<li class="sidebar"><a href="installtypes.html">Multiple install types</a></li>
+					<li class="sidebar"><a href="posttargets.html">Post display targets</a></li>
+					<li class="sidebar"><a href="icons.html">Button Icons</a></li>
+					<li class="sidebar"><a href="antinstall-config-example.html">Example antinstall-config.xml</a></li>
+				</ol>
+			</li>
+			<li class="sidebar"><a href="manual-ant.html">Ant Manual</a></li>
+			<li class="sidebar"><a href="antlinks.html">Ant links</a></li>
+			<li class="sidebar"><a href="userusage.html">User usage</a></li>
+			<li class="sidebar"><a href="licenses.html">Licenses</a></li>
+			<li class="sidebar"><a href="potentialuses.html">Potential uses</a></li>
+			<li class="sidebar"><a href="roadmap.html">Road Map</a></li>
+			<li class="sidebar"><a href="wanted.html">Wanted</a></li>
+			<li class="sidebar"><a href="dtds.html">DTDs</a></li>
+			<li class="sidebar"><a href="changelog.html">Changelog</a></li>
+			<li class="sidebar"><a href="http://sourceforge.net/projects/antinstaller">Project page on SourceForge</a></li>
+			<li class="sidebar"><a href="java2html/antinstaller/index.html">Java2HTML (main)</a></li>
+			<li class="sidebar"><a href="java2html/ext/index.html">Java2HTML (extensions)</a></li>
+			<li class="sidebar"><a href="http://antinstaller.cvs.sourceforge.net/antinstaller">Public CVS over HTTP</a></li>
+			<li class="sidebar"><a href="http://sourceforge.net/sendmessage.php?touser=616485">Contact AntInstaller Admin</a></li>
+		</ol>
+	</li>
+</ol>
+<br/>
+<br/>
+</div>
+
+
+<!-- menu end [segment-end]-->
+</div>
+<div id="contents-options">
+<a id="toggle" href="#" onclick="toggleMenu(); return false;">show menu</a>
+</div>
+
+</div>
+</body>
+</html>

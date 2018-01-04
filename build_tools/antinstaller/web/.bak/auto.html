@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Ant Installer</title>
+  <link href="style.css" type="text/css" rel="stylesheet">
+  <link href="css/nav.css" rel="stylesheet" type="text/css">
+  <link rel="SHORTCUT ICON" type="image/png" href="images/antinstaller-icon.png">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="keywords"
+ content="Ant, installer, AntInstall, gui, console, input, parameters, properties, swing, user interface, validation, configuration">
+ <script type="text/javascript" src="js/menu.js"></script>
+ <script type="text/javascript" src="js/sstree.js"></script>
+ <script type="text/javascript" src="js/winfix.js"></script>
+</head>
+<body onload="collapseAll('contents-panel', ['ol']); "><div id="tpallcontent">
+<table cellspacing="0" width="100%">
+  <tbody>
+    <tr class="tpheader">
+      <th class="tpleft">
+			<a target="_top" href="index.html" title="home"><img src="images/ant-install-small.png" alt="AntInstaller" id="logo" width="76" height="50"/></a>
+			<script type="text/javascript">winFix();</script>
+      </th>
+      <th class="tptop" valign="bottom">
+				<img src="space.gif" height="1" width="440" alt="spacer"/><br/>
+				
+				<table>
+					<tr>
+						<td valign="top">
+							<div class="tpheadertitle">AntInstaller</div>
+							<!--img src="images/ant-install-title.png" alt="AntInstaller"/-->
+						</td>
+						<td width="100%" align="right" valign="bottom" nowrap="NOWRAP">
+				<div class="tpraised">
+				<a class="tpbutton" target="_top" href="index.html">home</a>
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/project/showfiles.php?group_id=123466&amp;package_id=134917">download</a>
+				<a class="tpbutton" target="_top" href="http://sf.net">sourceforge</a> 
+				<a class="tpbutton" target="_top" href="manual-ant.html">antmanual</a> 
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/tracker/?group_id=123466&amp;atid=696615">RFEs</a> 
+				<a class="tpbutton" target="_top" href="http://sourceforge.net/tracker/?group_id=123466&amp;atid=696612">Bugs</a></div>
+						</td>
+					</tr>
+				</table>
+      </th>
+    </tr>
+    <tr class="tpbody">
+		<td class="tpleft" valign="bottom">
+			<br/>
+			<div id="logoset">
+			<a target="_top" href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=123466&amp;type=2" alt="SourceForge.net Logo" border="0" height="37" width="125"></a>
+			<br/><br/>
+			<a target="_top" href="http://sourceforge.net/donate/index.php?group_id=123466">
+			<img src="http://sourceforge.net/images/project-support.jpg" alt="donate to AntInstaller"/>
+			</a>
+			</div>
+		</td>
+      <td class="tpright" valign="top">
+      <div class="tpcontent">
+			<!--[segment-content] page content start -->
+			  <h2>Automated installations</h2>
+			  
+			<i>``The great thing about text-auto is it gives you completely silent builds just like Ant. The downside to text-auto is that it gives you completely silent builds just like Ant.''</i><br/>
+			<div align="right">
+              -- Paul Hinds<br>
+               Ant Installer Group
+            </div><br/>
+            
+            Welcome to Automated installations, how to take the user interaction out of your user interactive installs!<br/><br/>
+			
+			
+			A much requested feature is automated installations.  Generally it is expected that programs would be delivered with AntInstaller specifically to be able to configure the installations manually, however it is useful to be able to reinstall in a particular environment without having to manually re-enter the properties.  The defaults in the <code>antinstall-config.xml</code> file may not be the correct defaults for the specific environment on which the installation is performed. <br/><br/>
+
+			Be carefull if delivering installers that can be fully automated to third parties,  you should fully understand the consequences of the options before using this feature.  That said, this feature can prevent making human errors with repeated installations in a controlled environment such as reinstalling software on a series of servers.  It is generally safest to use the prompt options when delivering to third parties. <br/><br/>
+
+			To handle these use cases an additional attribute has been added to the installer element and two new UI overrides have been added. <br/><br/>
+
+			The loadDefaults attribute of the installer element can be set to <i>true</i>, <i>false</i>, <i>prompt</i> or <i>prompt-auto</i>.  
+			<ul>
+			
+			<li>When loadDefaults is <i>true</i> the current directory is searched for <code>ant.install.properties</code> and, if found, it is used to reset the default values for all properties and targets.  </li>
+			<li>When loadDefaults is <i>prompt</i> the user is prompted if the file is found and has the option to load the properties or not. Automatic installs without loaded properties sets are not permitted with this option.</li>
+			<li>The <i>prompt-auto</i> loadDefaults option is not expected to be used often. It caters for the situation when it is required that the installer can be run with out any user interaction using only the default values provided in <code>antinstall-config.xml</code> or run with configured properties. If existing properties are found they can be loaded, but if not loaded and either <i>text-auto</i> or <i>swing-auto</i> is selected on the command line the installer will run with no user defined properties.</li>
+			<li>When loadDefaults is <i>false</i> the current directory is not checked for exiszting properties files.</li>
+			</ul>
+			
+			When the installer is run <code>ant.install.properties</code> is written to the current directory, if the current directory is not writable no warning message is given since repeatable installs are not always required. <br/><br/>
+
+			Two additional UI overrides have been added <i>swing-auto</i> and <i>text-auto</i> which can be specified as the first parameter on the command line.  <i>swing-auto</i> loads the swing GUI and skips directly to the progress page with all default values set.  <i>text-auto</i> runs the installer with default values with no questions asked except, potentially, the loadDefaults prompt.  To enable these UI overrides the ui attribute of the installer element must be set in <code>antinstall-config.xml</code>. <br/>
+			for example
+<pre>
+&lt;installer
+	ui="swing,text,swing-auto"
+	...
+</pre>
+			Be careful if setting loadDefaults to <i>true</i>, if <i>text-auto</i> is enabled, selected by the user on the command line and the <code>ant.install.properties</code> file is missing or out of date, an incorrect install will be performed with no oportunity to prevent it.  This is permitted because it may be requried to run the installer with no prompts using the default values specifed in the <code>antinstall-config.xml</code> file. Completely silent, repeatable, installs on the command line are possible with this option.<br/><br/>
+
+			The "automated installations" feature is not compatible with <a href="installtypes.html" title="multiple install types">multiple install types</a> without care.  If a specific -type is used when repeating the install the same -type should be specified, antinstaller does not currently check this.  <br/><br/>
+
+			  <h2>Version control</h2>
+			Version control is provided by setting the version attribute of the installer element of <code>antinstall-config.xml</code>.  Increment the major version to indicate that old properties files are no longer valid.  Increment the minor version to indicate that old properties are valid but some additional manual entering of properties is required.  -auto builds are only permitted if the major and minor versions match.
+			
+			The version numbers support the following syntax. <code>1.4.2</code> where 1 is the major version and 4 then 2 are minor versions. For each major or minor version the strings <code>alpha</code>, <code>beta</code> and <code>gamma</code> can be appended with or with out a <code>-</code> (as required by java) to indicate the state of the code. No additional string is considered to be the best version.  <code>1.4.2 > 1.4 > 1.4beta.2 == 1.4-beta.2</code>
+			  
+			  <h2>Simple use cases</h2>
+			To help explain the options provided some simple use cases are described here.<br/><br/>
+			
+			To enable end users to reload the values they used in a previous install set <code>ui="swing,text"</code> and set <code>loadDefaults="prompt"</code>.<br/><br/>
+			
+			To enable end users to reload the values they used in a previous install and not have to click through the pages set <code>ui="swing,text,swing-auto,text-auto"</code> and set <code>loadDefaults="prompt"</code>.<br/><br/>
+			
+			To run repeatable silent server installations set <code>ui="text,text-auto"</code> and <code>loadDefaults="true"</code>. First time run <code>java -jar myinstaller.jar</code> and enter the properties.  When the installer has finished hard code any passwords.<br/>
+			When you wish to update the code create a new myinstaller.jar and run <code>java -jar myinstaller.jar text-auto</code>.<br/>
+			Should you wish to change the property values or add additional properties delete <code>ant.install.properties</code> from the current directory and run the installer with <code>java -jar myinstaller.jar</code>.<br/><br/>
+			
+			
+			  <h2>antinstaller- targets</h2>
+			antinstaller- targets that are run when pages are shown are run in the -auto modes depending on the current state if ifProperty and ifTarget tests.  If you want to use antinstaller- tasks and support -auto modes you have to work out what the consequences are for your installer. You can also set appropriate properties and use the <code>if</code> attribute in Ant target elements to specify additional process to compensate for -auto builds.<br/><br/>
+
+			You should notice that also if the antinstaller- targets render messages they will be run automatically during swing-auto builds causing (probably unwanted) popups.
+
+			  <h2>Password handling</h2>
+			Passwords are not written to <code>ant.install.properties</code>, if a password field is missing the user is warned that the defaults from <code>antinstall-config.xml</code> will be used.  This can be avoided by entering the password in plain text into <code>ant.install.properties</code> with a text editor provided that does not create security risks.
+			
+			<!-- content end [segment-end]-->
+		 	</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div id="contents-panel">
+<!--[segment-file://contents-include.html] menu start -->
+<div id="contents-menu">
+<ol class="sidebar" id="root">
+	<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><b>Site map</b>
+		<ol>
+			<li class="sidebar"><a href="introduction.html">Introduction</a></li>
+			<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><b>Developer References</b>
+				<ol>
+					<li class="sidebar"><a href="quickstart.html">Quick Start</a></li>
+					<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html">Manual</a>
+						<ol class="init-hidden">
+							<li class="sidebar"><a href="manual.html#config">antinstall-config.xml</a></li>
+							<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html#page">Pages</a>
+								<ol class="init-hidden">
+									<li class="sidebar"><a href="manual.html#pagesplash">Splash Page</a></li>
+									<li class="sidebar"><a href="manual.html#pagetext">Text Page</a></li>
+									<li class="sidebar"><a href="manual.html#pagelicense">License Page</a></li>
+									<li class="sidebar"><a href="manual.html#pageinput">Input Page</a></li>
+									<li class="sidebar"><a href="manual.html#pageprogress">Progress Page</a></li>
+								</ol>
+							</li>
+							<li class="panel"><a href="#default" class="folder" onclick="toggle(this)"></a><a href="manual.html#inputtypes">Input types</a>
+								<ol class="init-hidden">
+									<li class="sidebar"><a href="manual.html#app-root">Application Root</a></li>
+									<li class="sidebar"><a href="manual.html#checkbox">Checkbox</a></li>
+									<li class="sidebar"><a href="manual.html#comment">Comment</a></li>
+									<li class="sidebar"><a href="manual.html#date">Date</a></li>
+									<li class="sidebar"><a href="manual.html#directory">Directory</a></li>
+									<li class="sidebar"><a href="manual.html#file">File</a></li>
+									<li class="sidebar"><a href="manual.html#large-select">Large Select</a></li>
+									<li class="sidebar"><a href="manual.html#password">Password Text</a></li>
+									<li class="sidebar"><a href="manual.html#password-confirm">Confirm Password</a></li>
+									<li class="sidebar"><a href="manual.html#select">Select</a></li>
+									<li class="sidebar"><a href="manual.html#target">Target</a></li>
+									<li class="sidebar"><a href="manual.html#target-select">Target Select</a></li>
+									<li class="sidebar"><a href="manual.html#text">Unvalidated Text</a></li>
+									<li class="sidebar"><a href="manual.html#validated">Validated Text</a></li>
+									<li class="sidebar"><a href="manual.html#extvalidated">Externally Validated Text</a></li>
+								</ol>
+							</li>
+							<li class="sidebar"><a href="manual.html#extractor">Self Extractor</a></li>
+							<li class="sidebar"><a href="manual.html#non-extractor">Non Extractor</a></li>
+							<li class="sidebar"><a href="manual.html#scripts">Start Scripts</a></li>
+							<li class="sidebar"><a href="manual.html#refs">Dynamic References</a></li>
+							<li class="sidebar"><a href="manual.html#pagedisplay">Page Displaying</a></li>
+						</ol>
+					</li>
+					<li class="sidebar"><a href="installertask.html">Installer Ant task</a></li>
+					<li class="sidebar"><a href="validationofconfig.html">Validation of config</a></li>
+					<li class="sidebar"><a href="lookandfeels.html">LookAndFeels</a> <br/>(inc screenshots)</li>
+					<li class="sidebar"><a href="classpathresources.html">Resources/Classpath issues</a></li>
+					<li class="sidebar"><a href="i18n.html">Internationalisation</a></li>
+					<li class="sidebar"><a href="auto.html">Automated installs</a></li>
+					<li class="sidebar"><a href="installtypes.html">Multiple install types</a></li>
+					<li class="sidebar"><a href="posttargets.html">Post display targets</a></li>
+					<li class="sidebar"><a href="icons.html">Button Icons</a></li>
+					<li class="sidebar"><a href="antinstall-config-example.html">Example antinstall-config.xml</a></li>
+				</ol>
+			</li>
+			<li class="sidebar"><a href="manual-ant.html">Ant Manual</a></li>
+			<li class="sidebar"><a href="antlinks.html">Ant links</a></li>
+			<li class="sidebar"><a href="userusage.html">User usage</a></li>
+			<li class="sidebar"><a href="licenses.html">Licenses</a></li>
+			<li class="sidebar"><a href="potentialuses.html">Potential uses</a></li>
+			<li class="sidebar"><a href="roadmap.html">Road Map</a></li>
+			<li class="sidebar"><a href="wanted.html">Wanted</a></li>
+			<li class="sidebar"><a href="dtds.html">DTDs</a></li>
+			<li class="sidebar"><a href="changelog.html">Changelog</a></li>
+			<li class="sidebar"><a href="http://sourceforge.net/projects/antinstaller">Project page on SourceForge</a></li>
+			<li class="sidebar"><a href="java2html/antinstaller/index.html">Java2HTML (main)</a></li>
+			<li class="sidebar"><a href="java2html/ext/index.html">Java2HTML (extensions)</a></li>
+			<li class="sidebar"><a href="http://antinstaller.cvs.sourceforge.net/antinstaller">Public CVS over HTTP</a></li>
+			<li class="sidebar"><a href="http://sourceforge.net/sendmessage.php?touser=616485">Contact AntInstaller Admin</a></li>
+		</ol>
+	</li>
+</ol>
+<br/>
+<br/>
+</div>
+
+
+<!-- menu end [segment-end]-->
+</div>
+<div id="contents-options">
+<a id="toggle" href="#" onclick="toggleMenu(); return false;">show menu</a>
+</div>
+
+</div>
+</body>
+</html>

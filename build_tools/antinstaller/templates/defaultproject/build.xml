@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+
+<!--  this file is creates a build directory -->
+<project name="Create Default Installer"  default=""  basedir="${basedir}">
+
+
+	<property file="${basedir}/ant.install.properties"/>
+	<!-- the above file sets the following -->
+	<property name="ANT_INSTALL_ROOT"   value=""/>
+	<property name="PROJECT_NAME"       value=""/>
+	<property name="PROJECT_SHORT_NAME" value=""/>
+	<property name="PROJECT_ROOT"       value=""/>
+	<property name="PROJECT_SRC"        value=""/>
+	<property name="PROJECT_LIB"        value=""/>
+	<property name="PROJECT_LIC"        value=""/>
+	<property name="PROJECT_BIN"        value=""/>
+	<property name="PROJECT_DOC"        value=""/>
+	<property name="PROJECT_CLASSES"    value=""/>
+		
+	<property name="THIS_PROJECT_ROOT"     value="${PROJECT_ROOT}/${PROJECT_SHORT_NAME}"/>
+
+	<target name="Base">
+		<mkdir dir="${THIS_PROJECT_ROOT}"/>
+		<copy
+			file="${ANT_INSTALL_ROOT}/templates/defaultproject/build-template.xml"
+			tofile="${THIS_PROJECT_ROOT}/build.xml">
+		</copy>
+		<copy
+			file="${ANT_INSTALL_ROOT}/templates/defaultproject/antinstall-config-template.xml"
+			tofile="${THIS_PROJECT_ROOT}/antinstall-config.xml">
+		</copy>
+		<replace file="${THIS_PROJECT_ROOT}/antinstall-config.xml">
+			<replacefilter token="@PROJECT_NAME@"       value="${PROJECT_NAME}"/>
+			<replacefilter token="@PROJECT_SHORT_NAME@" value="${PROJECT_SHORT_NAME}"/>
+		</replace>
+		<copy
+			file="${ANT_INSTALL_ROOT}/templates/defaultproject/create-installer-template.xml"
+			tofile="${THIS_PROJECT_ROOT}/create-installer.xml">
+		</copy>
+		<replace file="${THIS_PROJECT_ROOT}/create-installer.xml">
+			<replacefilter token="@ANT_INSTALL_ROOT@" value="${ANT_INSTALL_ROOT}"/>
+			<replacefilter token="@PROJECT_NAME@"     value="${PROJECT_NAME}"/>
+			<replacefilter token="@PROJECT_SHORT_NAME@"     value="${PROJECT_SHORT_NAME}"/>
+			<replacefilter token="@PROJECT_ROOT@"     value="${PROJECT_ROOT}"/>
+			<replacefilter token="@PROJECT_SRC@"      value="${PROJECT_SRC}"/>
+			<replacefilter token="@PROJECT_LIB@"      value="${PROJECT_LIB}"/>
+			<replacefilter token="@PROJECT_LIC@"      value="${PROJECT_LIC}"/>
+			<replacefilter token="@PROJECT_BIN@"      value="${PROJECT_BIN}"/>
+			<replacefilter token="@PROJECT_DOC@"      value="${PROJECT_DOC}"/>
+			<replacefilter token="@PROJECT_CLASSES@"  value="${PROJECT_CLASSES}"/>
+		</replace>
+	
+		<copy
+			file="${ANT_INSTALL_ROOT}/templates/defaultproject/build-self-extractor-template.sh"
+			tofile="${THIS_PROJECT_ROOT}/build-self-extractor.sh">
+		</copy>
+		<replace file="${THIS_PROJECT_ROOT}/build-self-extractor.sh">
+			<replacefilter token="@ANT_INSTALL_ROOT@"       value="${ANT_INSTALL_ROOT}"/>
+		</replace>
+		<chmod file="${THIS_PROJECT_ROOT}/build-self-extractor.sh" perm="774"/>
+	</target>
+
+	<target name="SourceCode">
+		<replace file="${THIS_PROJECT_ROOT}/create-installer.xml">
+			<replacefilter token="&lt;!--SourceCode" value=""/>
+			<replacefilter token="SourceCode--&gt;"  value=""/>
+		</replace>
+		<replace file="${THIS_PROJECT_ROOT}/build.xml">
+			<replacefilter token="&lt;!--SourceCode" value=""/>
+			<replacefilter token="SourceCode--&gt;"  value=""/>
+		</replace>
+		<replace file="${THIS_PROJECT_ROOT}/antinstall-config.xml">
+			<replacefilter token="&lt;!--SourceCode" value=""/>
+			<replacefilter token="SourceCode--&gt;"  value=""/>
+		</replace>
+	</target>
+
+	<target name="Libraries">
+		<replace file="${THIS_PROJECT_ROOT}/create-installer.xml">
+			<replacefilter token="&lt;!--Libraries" value=""/>
+			<replacefilter token="Libraries--&gt;"  value=""/>
+		</replace>
+		<replace file="${THIS_PROJECT_ROOT}/build.xml">
+			<replacefilter token="&lt;!--Libraries" value=""/>
+			<replacefilter token="Libraries--&gt;"  value=""/>
+		</replace>
+		<replace file="${THIS_PROJECT_ROOT}/antinstall-config.xml">
+			<replacefilter token="&lt;!--Libraries" value=""/>
+			<replacefilter token="Libraries--&gt;"  value=""/>
+		</replace>
+	</target>
+
+	<target name="Documentation">
+		<replace file="${THIS_PROJECT_ROOT}/create-installer.xml">
+			<replacefilter token="&lt;!--Documentation" value=""/>
+			<replacefilter token="Documentation--&gt;"  value=""/>
+		</replace>
+		<replace file="${THIS_PROJECT_ROOT}/build.xml">
+			<replacefilter token="&lt;!--Documentation" value=""/>
+			<replacefilter token="Documentation--&gt;"  value=""/>
+		</replace>
+		<replace file="${THIS_PROJECT_ROOT}/antinstall-config.xml">
+			<replacefilter token="&lt;!--Documentation" value=""/>
+			<replacefilter token="Documentation--&gt;"  value=""/>
+		</replace>
+	</target>
+
+	<target name="Classes">
+		<replace file="${THIS_PROJECT_ROOT}/create-installer.xml">
+			<replacefilter token="&lt;!--Classes" value=""/>
+			<replacefilter token="Classes--&gt;"  value=""/>
+		</replace>
+		<replace file="${THIS_PROJECT_ROOT}/build.xml">
+			<replacefilter token="&lt;!--Classes" value=""/>
+			<replacefilter token="Classes--&gt;"  value=""/>
+		</replace>
+		<replace file="${THIS_PROJECT_ROOT}/antinstall-config.xml">
+			<replacefilter token="&lt;!--Classes" value=""/>
+			<replacefilter token="Classes--&gt;"  value=""/>
+		</replace>
+	</target>
+
+	<target name="Scripts">
+		<replace file="${THIS_PROJECT_ROOT}/create-installer.xml">
+			<replacefilter token="&lt;!--Scripts" value=""/>
+			<replacefilter token="Scripts--&gt;"  value=""/>
+		</replace>
+		<replace file="${THIS_PROJECT_ROOT}/build.xml">
+			<replacefilter token="&lt;!--Scripts" value=""/>
+			<replacefilter token="Scripts--&gt;"  value=""/>
+		</replace>
+		<replace file="${THIS_PROJECT_ROOT}/antinstall-config.xml">
+			<replacefilter token="&lt;!--Scripts" value=""/>
+			<replacefilter token="Scripts--&gt;"  value=""/>
+		</replace>
+	</target>
+
+	<target name="CreateInstaller">
+		<echo message="Creating the Selfextracting installer"/>
+		<ant antfile="${THIS_PROJECT_ROOT}/create-installer.xml"/>
+	</target>
+
+</project>

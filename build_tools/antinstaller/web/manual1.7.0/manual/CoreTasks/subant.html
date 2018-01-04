@@ -1,0 +1,419 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<html>
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+  <title>Subant Task</title>
+</head>
+
+<body>
+
+<h2><a name="subant">Subant Task</a></h2>
+Calls a given target for all defined sub-builds.
+
+          <h3>Description</h3>
+<p>
+            Calls a given target for all defined sub-builds.
+            This is an extension
+            of ant for bulk project execution.
+
+            <strong>This task must not be used outside of a
+                <code>target</code> if it invokes the same build file it is
+                part of.</strong>
+        </p>
+        <p><em>Since Ant 1.6</em></p>
+                              <a name="Use with directories">
+          <strong>Use with directories</strong></a>
+        <p>
+                subant can be used with directory sets to execute a build from different directories.
+                2 different options are offered :
+            </p>
+<ul>
+                <li>
+                    to run the same build file <code>/somepath/otherpath/mybuild.xml</code>
+                    with different base directories, use the genericantfile attribute
+                </li>
+                <li>if you want to run <code>directory1/mybuild.xml</code>, <code>directory2/mybuild.xml</code>, <code>....</code>,
+                    use the antfile attribute. The subant task does not set the base directory for you in this case, because you can specify it in each build file.
+                </li>
+            </ul>
+
+
+ <!-- Ignore -->
+
+
+
+          
+          <h3><a name="attributes">Parameters</a></h3>
+        <table border="1" cellpadding="2" cellspacing="0">
+          <tr>
+        <td>
+          <b>Attribute</b>
+        </td>
+        <td>
+          <b>Description</b>
+        </td>
+        <td>
+          <b>Type</b>
+        </td>
+        <td>
+          <b>Requirement</b>
+        </td>
+          </tr>
+    <!-- Attribute Group -->
+
+    <!-- Attribute Group -->
+        <!-- Attribute -->
+    <tr>
+        <td>
+          antfile
+        </td>
+        <td>
+          Build file name, to use in conjunction with directories.<br> Defaults to "build.xml".<br> If <code>genericantfile</code> is set, this attribute is ignored.
+        </td>
+        <td>
+          String
+        </td>
+        <td>
+          Optional
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          buildpath
+        </td>
+        <td>
+          Set the buildpath to be used to find sub-projects.
+        </td>
+        <td>
+          Path
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          buildpathref
+        </td>
+        <td>
+          Buildpath to use, by reference.
+        </td>
+        <td>
+          Reference
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          failonerror
+        </td>
+        <td>
+          Sets whether to fail with a build exception on error, or go on.
+        </td>
+        <td>
+          boolean
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          genericantfile
+        </td>
+        <td>
+          Build file path, to use in conjunction with directories.<br> Use <code>genericantfile</code>, in order to run the same build file with different basedirs.<br> If this attribute is set, <code>antfile</code> is ignored.
+        </td>
+        <td>
+          File
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          inheritall
+        </td>
+        <td>
+          Corresponds to
+                        <code>&lt;ant&gt;</code>'s
+                        <code>inheritall</code> attribute but defaults
+                        to false in this task..
+        </td>
+        <td>
+          boolean
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          inheritrefs
+        </td>
+        <td>
+          Corresponds to <code>&lt;ant&gt;</code>'s <code>inheritrefs</code> attribute.
+        </td>
+        <td>
+          boolean
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          output
+        </td>
+        <td>
+          Corresponds to <code>&lt;ant&gt;</code>'s <code>output</code> attribute.
+        </td>
+        <td>
+          String
+        </td>
+    </tr>
+    <!-- Attribute -->
+    <tr>
+        <td>
+          target
+        </td>
+        <td>
+          
+        </td>
+        <td>
+          String
+        </td>
+    </tr>
+
+    <!-- Attribute -->
+    <tr>
+        <td>
+          verbose
+        </td>
+        <td>
+          
+            Enable/ disable log messages showing when each sub-build path is entered/ exited.
+            The default value is false.
+        </td>
+        <td>
+          boolean
+        </td>
+    </tr>
+
+
+     </table>
+    <!-- End Attributes -->
+
+    <!-- Start Elements -->
+          
+          <h3><a name="elements">Parameters as nested elements</a></h3>
+
+    <!-- Start Element -->
+          <h4>any filesystem based <a href="../CoreTypes/resources.html#collection">resource collection</a></h4>
+        <p>This includes <code>&lt;fileset&gt;</code>,
+        <code>&lt;dirset&gt;</code> and <code>&lt;filelist&gt;</code>
+        which are the nested resource collections supported prior
+        to Ant 1.7.</p>
+
+          <h4>dirset</h4> (org.apache.tools.ant.types.DirSet)
+        
+        <p>Adds a directory set to the implicit build path. <p> <em>Note that the directories will be added to the build path in no particular order, so if order is significant, one should use a file list instead!</em></p>
+          
+          <h4>filelist</h4> (org.apache.tools.ant.types.FileList)
+      <p>
+        Adds an ordered file list to the implicit build path. <p> <em>Note that contrary to file and directory sets, file lists can reference non-existent files or directories!</em></p>
+
+
+          <h4>fileset</h4> (org.apache.tools.ant.types.FileSet)
+      <p>
+        Adds a file set to the implicit build path. <p> <em>Note that the directories will be added to the build path in no particular order, so if order is significant, one should use a file list instead!</em>
+</p>
+
+
+          <h4>property</h4> (org.apache.tools.ant.taskdefs.Property)
+      <p>
+        Corresponds to <code>&lt;ant&gt;</code>'s nested <code>&lt;property&gt;</code> element.
+</p>
+
+
+          <h4>propertyset</h4> (org.apache.tools.ant.types.PropertySet)
+      <p>
+        Corresponds to <code>&lt;ant&gt;</code>'s nested <code>&lt;propertyset&gt;</code> element.
+</p>
+
+
+          <h4>buildpath</h4> (org.apache.tools.ant.types.Path)
+      <p>
+        Creates a nested build path, and add it to the implicit build path.
+</p>
+
+
+          <h4>buildpathelement</h4> (org.apache.tools.ant.types.Path.PathElement)
+      <p>
+        Creates a nested <code>&lt;buildpathelement&gt;</code>, and add it to the implicit build path.
+</p>
+
+
+          <h4>target</h4> (org.apache.tools.ant.taskdefs.Ant.TargetElement)
+      <p>
+        You can specify multiple targets using nested <code>&lt;target&gt;</code> elements
+        instead of using the target attribute.  These will be executed as if
+        Ant had been invoked with a single target whose dependencies are the
+        targets so specified, in the order specified.
+ <!-- Ignore -->
+ <!-- Ignore -->
+      <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">name</td>
+          <td valign="top">The name of the called target.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+      </table>
+      <p><em>since Ant 1.7</em>.</p>
+      </blockquote></td></tr>
+    </table>
+    <!-- End Element -->
+<!-- manually written end -->
+
+<h3><a name="examples">Examples</a></h3>
+      <p>
+        <pre>
+        &lt;project name="subant" default="subant1"&gt;
+            &lt;property name="build.dir" value="subant.build"/&gt;
+            &lt;target name="subant1"&gt;
+                &lt;subant target=""&gt;
+                    &lt;property name="build.dir" value="subant1.build"/&gt;
+                    &lt;property name="not.overloaded" value="not.overloaded"/&gt;
+                    &lt;fileset dir="." includes="*/build.xml"/&gt;
+                &lt;/subant&gt;
+            &lt;/target&gt;
+        &lt;/project&gt;
+        </pre>
+<p>
+            this snippet build file will run ant in each subdirectory of the project directory,
+            where a file called build.xml can be found.
+            The property build.dir will have the value subant1.build in the ant projects called by subant.
+        </p>
+<pre>
+          &lt;subant target=""&gt;
+              &lt;propertyset&gt;
+                  &lt;propertyref prefix="toplevel"/&gt;
+                  &lt;mapper type="glob" from="foo*" to="bar*"/&gt;
+              &lt;/propertyset&gt;
+              &lt;fileset dir="." includes="*/build.xml"/&gt;
+          &lt;/subant&gt;
+        </pre>
+<p>
+            this snippet build file will run ant in each subdirectory of the project directory,
+            where a file called build.xml can be found.
+            All properties whose name starts with "foo" are passed, their names are changed to start with "bar" instead
+        </p>
+<pre>
+          &lt;subant target="compile" genericantfile="/opt/project/build1.xml"&gt;
+              &lt;dirset dir="." includes="projects*"/&gt;
+          &lt;/subant&gt;
+        </pre>
+<p>
+            assuming the subdirs of the project dir are called projects1, projects2, projects3
+            this snippet will execute the compile target of /opt/project/build1.xml,
+            setting the basedir to projects1, projects2, projects3
+        </p>
+
+        <!-- manually written -->
+        <p>Now a little more complex - but useful - scenario. Assume that we have
+        a directory structure like this:</p>
+        <pre>
+        root
+          |  common.xml
+          |  build.xml
+          |
+          +-- modules
+                +-- modA
+                |     +-- src
+                +-- modB
+                      +-- src
+
+        <u><b>common.xml:</b></u><br>
+        &lt;project&gt;
+            &lt;property name="src.dir"      value="src"/&gt;
+            &lt;property name="build.dir"    value="build"/&gt;
+            &lt;property name="classes.dir"  value="${build.dir}/classes"/&gt;
+
+            &lt;target name="compile"&gt;
+                &lt;mkdir dir="${classes.dir}"/&gt;
+                &lt;javac srcdir="${src.dir}" destdir="${classes.dir}"/&gt;
+            &lt;/target&gt;
+
+            &lt;!-- more targets --&gt;
+        &lt;/project&gt;
+
+        <u><b>build.xml:</b></u><br>
+        &lt;project&gt;
+
+            &lt;macrodef name="iterate"&gt;
+                &lt;attribute name="target"/&gt;
+                &lt;sequential&gt;
+                    &lt;subant target="@{target}"&gt;
+                        &lt;fileset dir="modules" includes="*/build.xml"/&gt;
+                    &lt;/subant&gt;
+                &lt;/sequential&gt;
+            &lt;/macrodef&gt;
+
+
+            &lt;target name="compile"&gt;
+                &lt;iterate target="compile"/&gt;
+            &lt;/target&gt;
+
+            &lt;!-- more targets --&gt;
+        &lt;/project&gt;
+
+        <u><b>modules/modA/build.xml:</b></u><br>
+        &lt;project name="modA"&gt;
+            &lt;import file="../../common.xml"/&gt;
+        &lt;/project&gt;
+        </pre>
+
+        <p>This results in very small buildfiles in the modules, maintainable
+        buildfile (common.xml) and a clear project structure. Additionally
+        the root buildfile is capable to run the whole build over all
+        modules.
+        </p>
+
+        <pre>
+        &lt;subant failonerror="false"&gt;
+            &lt;fileset dir="." includes="**/build.xml" excludes="build.xml"/&gt;
+            &lt;target name="clean"/&gt;
+            &lt;target name="build"/&gt;
+        &lt;/subant&gt;
+        </pre>
+
+        <p>Does a &quot;clean build&quot; for each subproject.</p>
+        <p><b>Hint:</b> because buildfiles are plain xml, you could generate the
+        masterbuildfile from the common buildfile by using a XSLT transformation:
+        </p>
+
+        <pre>
+        &lt;xslt in=&quot;common.xml&quot;
+              out=&quot;master.xml&quot;
+              style=&quot;${ant.home}/etc/common2master.xsl&quot;
+        /&gt;
+        </pre>
+
+
+
+</body>
+</html>
