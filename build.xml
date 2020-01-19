@@ -163,51 +163,14 @@
 			<os name="Mac OS X"/>
 		</condition>
 
-		<ant target="osx_dmg_linux"/>
-		<ant target="osx_dmg"/>
+		<zip destfile="${BUILD}/${SAFE_NAME}-${VERSION}-OSX.zip">
+			<zipfileset dir="${BUILD}/${FULL_NAME}" filemode="755">
+				<include name="**/*"/>
+			</zipfileset>
+		</zip>
 
 		<delete dir="${BUILD}/${FULL_NAME}"/>
 
-	</target>
-
-	<target name="osx_dmg" if="OS_IS_MAC">
-		<exec executable="/usr/bin/hdiutil" os="Mac OS X">
-			<arg line="create -format UDZO -srcfolder '${BUILD}/${FULL_NAME}' -o '${BUILD}/${SAFE_NAME}-${VERSION}.dmg'"/>
-		</exec>
-	</target>
-
-	<target name="osx_dmg_linux" unless="OS_IS_MAC">
-		<!-- This should be run on a *nix system (so that dd, etc are available). Also requires hfsutils package. -->
-		<mkdir dir="${BUILD}/mnt"/>
-		<exec executable="/bin/bash" outputproperty="SIZE">
-			<arg value="-c"/>
-			<arg value="du -s ${BUILD}/${FULL_NAME} | cut -f 1 | xargs expr 100 +"/>
-		</exec>
-		<exec executable="/bin/bash">
-			<arg value="-c"/>
-			<arg value="dd if=/dev/zero of=${BUILD}/${SAFE_NAME}-${VERSION}.dmg bs=1k count=${SIZE}"/>
-		</exec>
-		<exec executable="/bin/bash">
-			<arg value="-c"/>
-			<arg value="hformat -l ${FULL_NAME} ${BUILD}/${SAFE_NAME}-${VERSION}.dmg"/>
-		</exec>
-		<exec executable="sudo">
-			<arg value="/bin/bash"/>
-			<arg value="-c"/>
-			<arg value="mount -t hfs -o loop ${BUILD}/${SAFE_NAME}-${VERSION}.dmg ${BUILD}/mnt"/>
-		</exec>
-		<exec executable="sudo">
-			<arg value="/bin/bash"/>
-			<arg value="-c"/>
-			<arg value="mv ${BUILD}/${FULL_NAME}/* ${BUILD}/mnt/"/>
-		</exec>
-		<exec executable="sudo">
-			<arg value="/bin/bash"/>
-			<arg value="-c"/>
-			<arg value="umount ${BUILD}/mnt"/>
-		</exec>
-		<delete dir="${BUILD}/${FULL_NAME}"/>
-		<delete dir="${BUILD}/mnt"/>
 	</target>
 	
 	<target name="osx_legacy" depends="jar" description="Builds an OSX package for 10.4 - 10.6, using JarBundler.  If on a Mac, will also wrap this in a .dmg; otherwise, will wrap in .zip">
@@ -271,12 +234,13 @@
 			<os name="Mac OS X"/>
 		</condition>
 
-		<ant target="osx_dmg_linux"/>
-		<ant target="osx_dmg"/>
+		<zip destfile="${BUILD}/${SAFE_NAME}-${VERSION}-OSX-Legacy.zip">
+			<zipfileset dir="${BUILD}/${FULL_NAME}" filemode="755">
+				<include name="**/*"/>
+			</zipfileset>
+		</zip>
 
 		<delete dir="${BUILD}/${FULL_NAME}"/>
-
-		<move file="${BUILD}/${SAFE_NAME}-${VERSION}.dmg" tofile="${BUILD}/${SAFE_NAME}-${VERSION}-Legacy.dmg"/>
 	</target>
 	
 	<target name="slackware" depends="jar" description="Creates a Slackware package, with a command line capable launcher.">		

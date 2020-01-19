@@ -154,6 +154,7 @@ public class Const {
 		"Francais",
 		"Greek",
 		"Hebrew",
+		"Hrvatski",
 		"Italiano",
 		"Nederlands",
 		"Norsk",

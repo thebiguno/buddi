@@ -1,3 +1,6 @@
+3.4.1.17 (January 19 2020)
+-Change to packaged JVM to avoid issues with Java VM compatibility
+
 3.4.1.16 (April 3 2019)
 -Added Croatian translation (Hrvatski.lang), provided by Milo
 
