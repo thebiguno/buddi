@@ -41,6 +41,7 @@ public class AboutFrame extends MossFrame implements ActionListener {
 
 	public AboutFrame() {
 		super("AboutFrame");
+		this.setDocumentBasedApplication(false);
 		this.setIconImage(ClassLoaderFunctions.getImageFromClasspath("img/BuddiFrameIcon.gif"));
 
 		okButton = new JButton(TextFormatter.getTranslation(ButtonKeys.BUTTON_OK));

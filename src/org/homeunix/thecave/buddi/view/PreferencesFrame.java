@@ -43,6 +43,7 @@ public class PreferencesFrame extends MossFrame implements ActionListener {
 	@SuppressWarnings("unchecked")
 	public PreferencesFrame() {
 		super("Preferences");
+		this.setDocumentBasedApplication(false);
 		this.setIconImage(ClassLoaderFunctions.getImageFromClasspath("img/BuddiFrameIcon.gif"));
 		tabs = new JTabbedPane();
 		

@@ -28,8 +28,6 @@ import org.homeunix.thecave.buddi.view.menu.items.EditRecordTransaction;
 import org.homeunix.thecave.buddi.view.menu.items.EditUndeleteAccount;
 import org.homeunix.thecave.buddi.view.menu.items.EditUndeleteBudgetCategory;
 
-import ca.digitalcave.moss.common.OperatingSystemUtil;
-import ca.digitalcave.moss.osx.Application;
 import ca.digitalcave.moss.swing.MossFrame;
 import ca.digitalcave.moss.swing.MossMenu;
 
@@ -74,11 +72,9 @@ public class EditMenu extends MossMenu {
 			}
 
 			this.add(new EditEditScheduledTransactions(frame));
-			
-			if (!OperatingSystemUtil.isMac() || !Application.isAppleExtensionsAvailable()){
-				this.addSeparator();
-				this.add(new EditPreferences(frame));
-			}
+
+			this.addSeparator();
+			this.add(new EditPreferences(frame));
 		}
 		else if (getFrame() instanceof TransactionFrame){
 			this.setEnabled(true);
@@ -86,16 +82,18 @@ public class EditMenu extends MossMenu {
 			this.add(new EditRecordTransaction(frame));
 			this.add(new EditClearTransaction(frame));
 			this.add(new EditDeleteTransaction(frame));
-			if (PrefsModel.getInstance().isShowReconciled() || PrefsModel.getInstance().isShowCleared())
+			if (PrefsModel.getInstance().isShowReconciled() || PrefsModel.getInstance().isShowCleared()){
 				this.addSeparator();
-			if (PrefsModel.getInstance().isShowReconciled())
-				this.add(new EditReconcileAndAdvanceTransaction(frame));
-			if (PrefsModel.getInstance().isShowCleared())
-				this.add(new EditClearAndAdvanceTransaction(frame));			
-			if (!OperatingSystemUtil.isMac() || !Application.isAppleExtensionsAvailable()){
-				this.addSeparator();
-				this.add(new EditPreferences(frame));
 			}
+			if (PrefsModel.getInstance().isShowReconciled()){
+				this.add(new EditReconcileAndAdvanceTransaction(frame));
+			}
+			if (PrefsModel.getInstance().isShowCleared()){
+				this.add(new EditClearAndAdvanceTransaction(frame));
+			}
+
+			this.addSeparator();
+			this.add(new EditPreferences(frame));
 		}
 		else {
 			this.setVisible(false);

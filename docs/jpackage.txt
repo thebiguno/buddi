@@ -1,0 +1,5 @@
+Some notes on jpackage:
+
+This is how I ran the OSX build on Jan 19:
+~/Downloads/jdk-14.jdk/Contents/Home/bin/jpackage --name Buddi --input . --main-jar Buddi.jar --type dmg --java-options -Xmx512m --app-version 3.4.1.17 --icon ../img/osx/Buddi.icns
+

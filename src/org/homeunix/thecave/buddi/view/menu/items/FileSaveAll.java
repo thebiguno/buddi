@@ -9,7 +9,6 @@ import org.homeunix.thecave.buddi.i18n.keys.MenuKeys;
 import org.homeunix.thecave.buddi.model.prefs.PrefsModel;
 import org.homeunix.thecave.buddi.view.MainFrame;
 
-import ca.digitalcave.moss.osx.HiddenMossFrame;
 import ca.digitalcave.moss.swing.ApplicationModel;
 import ca.digitalcave.moss.swing.MossFrame;
 import ca.digitalcave.moss.swing.MossMenuItem;
@@ -27,12 +26,5 @@ public class FileSaveAll extends MossMenuItem {
 			if (frame instanceof MainFrame)
 				new FileSave(frame).doClick();
 		}
-	}
-	
-	@Override
-	public void updateMenus() {
-		super.updateMenus();
-
-		this.setEnabled(!(getFrame() instanceof HiddenMossFrame));
 	}
 }

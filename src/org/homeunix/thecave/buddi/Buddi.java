@@ -35,8 +35,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 
-import net.java.dev.SwingWorker;
-
 import org.homeunix.thecave.buddi.i18n.BuddiKeys;
 import org.homeunix.thecave.buddi.i18n.keys.ButtonKeys;
 import org.homeunix.thecave.buddi.model.Document;
@@ -54,11 +52,7 @@ import org.homeunix.thecave.buddi.util.FileFunctions;
 import org.homeunix.thecave.buddi.util.OperationCancelledException;
 import org.homeunix.thecave.buddi.view.MainFrame;
 import org.homeunix.thecave.buddi.view.dialogs.BuddiPasswordDialog;
-import org.homeunix.thecave.buddi.view.menu.bars.FramelessMenuBar;
-import org.homeunix.thecave.buddi.view.menu.items.EditPreferences;
 import org.homeunix.thecave.buddi.view.menu.items.FileOpen;
-import org.homeunix.thecave.buddi.view.menu.items.FileQuit;
-import org.homeunix.thecave.buddi.view.menu.items.HelpAbout;
 
 import ca.digitalcave.moss.application.document.exception.DocumentLoadException;
 import ca.digitalcave.moss.application.document.exception.DocumentSaveException;
@@ -70,13 +64,11 @@ import ca.digitalcave.moss.common.ParseCommands.ParseVariable;
 import ca.digitalcave.moss.common.StreamUtil;
 import ca.digitalcave.moss.common.Version;
 import ca.digitalcave.moss.crypto.IncorrectPasswordException;
-import ca.digitalcave.moss.osx.Application;
-import ca.digitalcave.moss.osx.ApplicationAdapter;
-import ca.digitalcave.moss.osx.ApplicationEvent;
 import ca.digitalcave.moss.swing.ApplicationModel;
 import ca.digitalcave.moss.swing.LookAndFeelUtil;
 import ca.digitalcave.moss.swing.MossFrame;
 import ca.digitalcave.moss.swing.exception.WindowOpenException;
+import net.java.dev.SwingWorker;
 
 /**
  * The main class, containing the launch methods for Buddi.  This class 
@@ -224,11 +216,6 @@ public class Buddi {
 	 * Method to start the GUI.  Should be run from the AWT Dispatch thread.
 	 */
 	private static void launchGUI(){
-		//If we are on a Mac, open a new Frameless menu bar.
-		if (OperatingSystemUtil.isMac() && Application.isAppleExtensionsAvailable()){
-			Application.getApplication().setFramessMenuBar(new FramelessMenuBar());
-		}
-
 		//Handle opening files from command line.
 		if (filesToLoad.size() > 0){
 			for (File f : filesToLoad) {
@@ -262,16 +249,8 @@ public class Buddi {
 							buttons[0]);
 
 					if (reply == JOptionPane.YES_OPTION){
-						String fileLocation;
-						if (Const.BRANCH.equals(Const.STABLE))
-							fileLocation = Const.DOWNLOAD_URL_STABLE;
-						else
-							fileLocation = Const.DOWNLOAD_URL_UNSTABLE;
-
-						fileLocation += Const.DOWNLOAD_TYPE_OSX;
-
 						try{
-							BrowserLauncher.open(fileLocation);
+							BrowserLauncher.open(Const.DOWNLOAD_URL_STABLE);
 						}
 						catch (Exception e){
 							Logger.getLogger(Buddi.class.getName()).log(Level.WARNING, "Unknown Exception", e);
@@ -298,16 +277,8 @@ public class Buddi {
 							buttons[0]);
 
 					if (reply == JOptionPane.YES_OPTION){
-						String fileLocation;
-						if (Const.BRANCH.equals(Const.STABLE))
-							fileLocation = Const.DOWNLOAD_URL_STABLE;
-						else
-							fileLocation = Const.DOWNLOAD_URL_UNSTABLE;
-
-						fileLocation += Const.DOWNLOAD_TYPE_OSX_LEGACY;
-
 						try{
-							BrowserLauncher.open(fileLocation);
+							BrowserLauncher.open(Const.DOWNLOAD_URL_STABLE);
 						}
 						catch (Exception e){
 							Logger.getLogger(Buddi.class.getName()).log(Level.WARNING, "Unknown Exception", e);
@@ -318,7 +289,6 @@ public class Buddi {
 		}
 		
 
-		final int finalOsxMinorVersion = osxMinorVersion;
 		//If we have found a new version last time, we prompt for it now.
 		if (PrefsModel.getInstance().isShowUpdateNotifications() 
 				&& PrefsModel.getInstance().getAvailableVersion() != null){
@@ -345,45 +315,8 @@ public class Buddi {
 								buttons[0]);
 
 						if (reply == JOptionPane.YES_OPTION){
-							String fileLocation;
-							if (Const.BRANCH.equals(Const.STABLE))
-								fileLocation = Const.DOWNLOAD_URL_STABLE;
-							else
-								fileLocation = Const.DOWNLOAD_URL_UNSTABLE;
-
-							//Link to the correct download by default.
-							if (OperatingSystemUtil.isMac() && finalOsxMinorVersion >= 7)
-								//TODO Once Quaqua fixes the combo box bugs in 8.x we can merge back into a single OSX distribution
-								if (System.getProperty("os.version").startsWith("10.7")){
-									fileLocation += Const.DOWNLOAD_TYPE_OSX;	
-								}
-								else {
-									fileLocation += Const.DOWNLOAD_TYPE_OSX_LEGACY;
-								}
-							else if (OperatingSystemUtil.isMac() && finalOsxMinorVersion < 7)
-								fileLocation += Const.DOWNLOAD_TYPE_OSX_LEGACY;
-							else if (OperatingSystemUtil.isWindows()){
-								if (isWindowsInstaller())
-									fileLocation += Const.DOWNLOAD_TYPE_WINDOWS_INSTALLER;
-								else
-									fileLocation += Const.DOWNLOAD_TYPE_WINDOWS;
-							}
-							else {
-								//Check for any specific distributions here
-								if (Buddi.isDebian())
-									fileLocation += Const.DOWNLOAD_TYPE_DEBIAN;
-								else if (Buddi.isSlackware())
-									fileLocation += Const.DOWNLOAD_TYPE_SLACKWARE;
-								else if (Buddi.isRedhat())
-									fileLocation += Const.DOWNLOAD_TYPE_REDHAT;
-								else if (Buddi.isUnix())
-									fileLocation += Const.DOWNLOAD_TYPE_UNIX;
-								else
-									fileLocation += Const.DOWNLOAD_TYPE_GENERIC;
-							}
-
 							try{
-								BrowserLauncher.open(fileLocation);
+								BrowserLauncher.open(Const.DOWNLOAD_URL_STABLE);
 							}
 							catch (Exception e){
 								Logger.getLogger(Buddi.class.getName()).log(Level.WARNING, "Unknown Exception", e);
@@ -692,14 +625,6 @@ public class Buddi {
 			}
 		}
 
-		splash: if (!OperatingSystemUtil.isMac()){
-			for (String string : args) {
-				if (string.equals("--nosplash"))
-					break splash;
-			}
-//			MossSplashScreen.showSplash("img/BuddiSplashScreen.jpg");
-		}
-
 		//Catch runtime exceptions
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler(){
 			public void uncaughtException(Thread arg0, Throwable arg1) {
@@ -711,67 +636,6 @@ public class Buddi {
 			}
 		});
 
-		//Early on, we need to catch any open requests from Apple Launchd.
-		if (OperatingSystemUtil.isMac() && Application.isAppleExtensionsAvailable()){
-			Application application = Application.getApplication();
-			try {
-				application.addAboutMenuItem();
-				application.addPreferencesMenuItem();
-				application.setEnabledAboutMenu(true);
-				application.setEnabledPreferencesMenu(true);
-				application.addApplicationListener(new ApplicationAdapter(){
-					@Override
-					public void handleAbout(ApplicationEvent arg0) {
-						new HelpAbout(null).doClick();
-						arg0.setHandled(true);
-					}
-
-					@Override
-					public void handleOpenFile(final ApplicationEvent arg0) {
-						arg0.setHandled(true);
-						SwingUtilities.invokeLater(new Runnable(){
-							public void run() {
-								openFile(new File(arg0.getFilename()));
-							}
-						});
-					}
-
-					@Override
-					public void handleReOpenApplication(ApplicationEvent arg0) {
-						arg0.setHandled(true);
-
-						if (ApplicationModel.getInstance().getOpenFrames().size() == 0){
-							try {
-								Document model = ModelFactory.createDocument();
-								MainFrame mainWndow = new MainFrame(model);
-								mainWndow.openWindow(
-										PrefsModel.getInstance().getWindowSize(model.getFile() + ""), 
-										PrefsModel.getInstance().getWindowLocation(model.getFile() + ""));
-							}
-							catch (ModelException me){
-								Logger.getLogger(Buddi.class.getName()).log(Level.WARNING, "Model Exception", me);
-							}
-							catch (WindowOpenException woe){}
-						}
-					}
-
-					@Override
-					public void handlePreferences(ApplicationEvent arg0) {
-						new EditPreferences(null).doClick();
-						arg0.setHandled(true);
-					}
-
-					@Override
-					public void handleQuit(ApplicationEvent arg0) {
-						arg0.setHandled(false);  //You must set this to false if you want to be able to cancel it.
-						new FileQuit(null).doClick();
-					}
-				});
-			}
-			catch (RuntimeException e){
-				;	//This will happen on later JVM versions in OSX.  Boo-urns.
-			}
-		}
 
 		//Set up the logging system.  If we have specified --log, we first
 		// try using that file.  If that is not specified, we use the OS
@@ -1146,45 +1010,8 @@ public class Buddi {
 									buttons[0]);
 
 							if (reply == JOptionPane.YES_OPTION){
-								String fileLocation;
-								if (Const.BRANCH.equals(Const.STABLE))
-									fileLocation = Const.DOWNLOAD_URL_STABLE;
-								else
-									fileLocation = Const.DOWNLOAD_URL_UNSTABLE;
-
-								//Link to the correct download by default.
-								int osxMinorVersion = 0;
-								try {
-									osxMinorVersion = Integer.parseInt(System.getProperty("os.version").split("\\.")[1]);
-								}
-								catch (Throwable t){}
-
-								if (OperatingSystemUtil.isMac() && osxMinorVersion >= 7)
-									fileLocation += Const.DOWNLOAD_TYPE_OSX;
-								else if (OperatingSystemUtil.isMac() && osxMinorVersion < 7)
-									fileLocation += Const.DOWNLOAD_TYPE_OSX_LEGACY;
-								else if (OperatingSystemUtil.isWindows()){
-									if (isWindowsInstaller())
-										fileLocation += Const.DOWNLOAD_TYPE_WINDOWS_INSTALLER;
-									else
-										fileLocation += Const.DOWNLOAD_TYPE_WINDOWS;
-								}
-								else {
-									//Check for any specific distributions here
-									if (Buddi.isDebian())
-										fileLocation += Const.DOWNLOAD_TYPE_DEBIAN;
-									else if (Buddi.isSlackware())
-										fileLocation += Const.DOWNLOAD_TYPE_SLACKWARE;
-									else if (Buddi.isRedhat())
-										fileLocation += Const.DOWNLOAD_TYPE_REDHAT;
-									else if (Buddi.isUnix())
-										fileLocation += Const.DOWNLOAD_TYPE_UNIX;
-									else
-										fileLocation += Const.DOWNLOAD_TYPE_GENERIC;
-								}
-
 								try{
-									BrowserLauncher.open(fileLocation);
+									BrowserLauncher.open(Const.DOWNLOAD_URL_STABLE);
 								}
 								catch (Exception e){
 									Logger.getLogger(Buddi.class.getName()).log(Level.WARNING, "Unknown Exception", e);

@@ -53,6 +53,7 @@ public class MainFrame extends MossDocumentFrame {
 	@SuppressWarnings("unchecked")
 	public MainFrame(Document model) {
 		super(model, MainFrame.class.getName() + model.getUid() + "_" + model.getFile());
+		this.setDocumentBasedApplication(false);
 		this.setIconImage(ClassLoaderFunctions.getImageFromClasspath("img/BuddiFrameIcon.gif"));
 		myAccounts = new MyAccountsPanel(this);
 		myBudget = new MyBudgetPanel(this);

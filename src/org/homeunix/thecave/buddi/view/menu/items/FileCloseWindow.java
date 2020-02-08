@@ -12,7 +12,6 @@ import javax.swing.KeyStroke;
 import org.homeunix.thecave.buddi.i18n.keys.MenuKeys;
 import org.homeunix.thecave.buddi.model.prefs.PrefsModel;
 
-import ca.digitalcave.moss.osx.HiddenMossFrame;
 import ca.digitalcave.moss.swing.MossFrame;
 import ca.digitalcave.moss.swing.MossMenuItem;
 
@@ -27,12 +26,5 @@ public class FileCloseWindow extends MossMenuItem {
 	
 	public void actionPerformed(ActionEvent e) {
 		getFrame().closeWindow();
-	}
-	
-	@Override
-	public void updateMenus() {
-		super.updateMenus();
-
-		this.setEnabled(!(getFrame() instanceof HiddenMossFrame));
 	}
 }
