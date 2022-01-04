@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.homeunix.thecave.buddi.model.Document;
 import org.homeunix.thecave.buddi.model.ScheduledTransaction;
+import org.homeunix.thecave.buddi.model.Transaction;
 import org.homeunix.thecave.buddi.model.TransactionSplit;
 import org.homeunix.thecave.buddi.plugin.api.BuddiExportPlugin;
 import org.homeunix.thecave.buddi.plugin.api.exception.PluginException;
@@ -120,46 +121,48 @@ public class ExportBuddiLiveData extends BuddiExportPlugin {
 			}
 			
 			for (ImmutableTransaction transaction : model.getImmutableTransactions()) {
-				final JSONObject t = new JSONObject();
-				t.put("date", formatDate(transaction.getDate()));
-				t.put("deleted", transaction.isDeleted());
-				t.put("description", transaction.getDescription());
-				t.put("number", transaction.getNumber());
-				t.put("uuid", transaction.getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", ""));
-				//Here we have to do some work, since the data models differ a bit.
-				// If there are no splits, then our life is easy: just add a single
-				// split with the from / to sources as indicated.
-				if (transaction.getImmutableFromSplits().size() == 0 && transaction.getImmutableToSplits().size() == 0){
-					final JSONObject s = new JSONObject();
-					s.put("amount", formatCurrency(new BigDecimal(transaction.getAmount()).divide(new BigDecimal(100))));
-					s.put("from", transaction.getFrom().getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", ""));
-					s.put("to", transaction.getTo().getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", ""));
-					s.put("memo", transaction.getMemo());
-					t.append("splits", s);
-				}
-				//If we only have one of either to or from splits, then things are 
-				// still not too complicated; we can just add one split for each
-				// one, with the other side being the single source
-				else if (transaction.getImmutableFromSplits().size() > 0 ^ transaction.getImmutableToSplits().size() > 0){
-					boolean fromSplits = transaction.getImmutableFromSplits().size() > 0;
-					for (ImmutableTransactionSplit split : fromSplits ? transaction.getImmutableFromSplits() : transaction.getImmutableToSplits()) {
+				if (!transaction.isDeleted()){
+					final JSONObject t = new JSONObject();
+					t.put("date", formatDate(transaction.getDate()));
+					t.put("deleted", transaction.isDeleted());
+					t.put("description", transaction.getDescription());
+					t.put("number", transaction.getNumber());
+					t.put("uuid", transaction.getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", ""));
+					//Here we have to do some work, since the data models differ a bit.
+					// If there are no splits, then our life is easy: just add a single
+					// split with the from / to sources as indicated.
+					if (transaction.getImmutableFromSplits().size() == 0 && transaction.getImmutableToSplits().size() == 0){
 						final JSONObject s = new JSONObject();
-						s.put("amount", formatCurrency(new BigDecimal(split.getAmount()).divide(new BigDecimal(100))));
-						s.put("from", fromSplits ? split.getSource().getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", "") : transaction.getFrom().getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", ""));
-						s.put("to", !fromSplits ? split.getSource().getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", "") : transaction.getTo().getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", ""));
+						s.put("amount", formatCurrency(new BigDecimal(transaction.getAmount()).divide(new BigDecimal(100))));
+						s.put("from", transaction.getFrom().getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", ""));
+						s.put("to", transaction.getTo().getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", ""));
 						s.put("memo", transaction.getMemo());
 						t.append("splits", s);
 					}
+					//If we only have one of either to or from splits, then things are 
+					// still not too complicated; we can just add one split for each
+					// one, with the other side being the single source
+					else if (transaction.getImmutableFromSplits().size() > 0 ^ transaction.getImmutableToSplits().size() > 0){
+						boolean fromSplits = transaction.getImmutableFromSplits().size() > 0;
+						for (ImmutableTransactionSplit split : fromSplits ? transaction.getImmutableFromSplits() : transaction.getImmutableToSplits()) {
+							final JSONObject s = new JSONObject();
+							s.put("amount", formatCurrency(new BigDecimal(split.getAmount()).divide(new BigDecimal(100))));
+							s.put("from", fromSplits ? split.getSource().getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", "") : transaction.getFrom().getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", ""));
+							s.put("to", !fromSplits ? split.getSource().getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", "") : transaction.getTo().getUid().replaceAll("org.homeunix.thecave.buddi.model.impl.*Impl-", ""));
+							s.put("memo", transaction.getMemo());
+							t.append("splits", s);
+						}
+					}
+					//If both to and from contain splits, then we have a bit of a problem,
+					// since the Buddi Live data model doesn't really handle that concept.
+					// The closest we can get to it is to make a cross product of splits.
+					// The balances should work out, but it is potentially going to be very ugly.
+					//TODO For now we throw an error in this condition.
+					else {
+						throw new PluginException("Both from / to splits on a given transaction are not currently supported.");
+					}
+					result.append("transactions", t);
 				}
-				//If both to and from contain splits, then we have a bit of a problem,
-				// since the Buddi Live data model doesn't really handle that concept.
-				// The closest we can get to it is to make a cross product of splits.
-				// The balances should work out, but it is potentially going to be very ugly.
-				//TODO For now we throw an error in this condition.
-				else {
-					throw new PluginException("Both from / to splits on a given transaction are not currently supported.");
-				}
-				result.append("transactions", t);
 			}
 
 			final BufferedWriter writer = new BufferedWriter(new FileWriter(file));

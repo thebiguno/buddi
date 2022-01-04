@@ -3,3 +3,5 @@ Some notes on jpackage:
 This is how I ran the OSX build on Jan 19:
 ~/Downloads/jdk-14.jdk/Contents/Home/bin/jpackage --name Buddi --input . --main-jar Buddi.jar --type dmg --java-options -Xmx512m --app-version 3.4.1.17 --icon ../img/osx/Buddi.icns
 
+Windows:
+..\openjdk-14_windows-x64_bin\jdk-14\bin\jpackage.exe --name Buddi --input . --main-jar Buddi.jar --icon ..\Buddi.ico --win-menu  --win-upgrade-uuid ea6f3370-3e4a-4dee-a454-35ee2af3dfbe --app-version 3.4.1.17 
