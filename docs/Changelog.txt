@@ -1,3 +1,6 @@
+3.4.1.18 (January 4 2022)
+-Change Buddilive export to not include deleted (voided) transactions
+
 3.4.1.17 (January 19 2020)
 -Change to packaged JVM to avoid issues with Java VM compatibility
 
